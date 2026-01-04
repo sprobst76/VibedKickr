@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/ble/ble_manager.dart';
+import '../core/ble/heart_rate_service.dart';
 import '../core/ble/models/ble_device.dart';
 import '../core/ble/models/connection_state.dart';
 import '../core/ble/models/ftms_data.dart';
@@ -68,6 +69,42 @@ final ftmsDataProvider = StreamProvider<FtmsData>((ref) {
     return Stream.value(FtmsData.empty());
   }
   return ftmsService.dataStream;
+});
+
+// ============================================================================
+// HR Monitor Providers
+// ============================================================================
+
+/// HR Monitor Connection State Stream
+final hrConnectionStateProvider = StreamProvider<BleConnectionState>((ref) {
+  final bleManager = ref.watch(bleManagerProvider);
+  return bleManager.hrConnectionState;
+});
+
+/// Heart Rate Daten von standalone HR Monitor
+final hrDataProvider = StreamProvider<HeartRateData>((ref) {
+  final bleManager = ref.watch(bleManagerProvider);
+  return bleManager.heartRateData;
+});
+
+/// Gefilterte Trainer-Geräte
+final trainerDevicesProvider = Provider<List<BleDevice>>((ref) {
+  final devices = ref.watch(bleDevicesProvider);
+  return devices.when(
+    data: (list) => list.where((d) => d.isTrainer).toList(),
+    loading: () => [],
+    error: (_, __) => [],
+  );
+});
+
+/// Gefilterte HR Monitor-Geräte
+final hrMonitorDevicesProvider = Provider<List<BleDevice>>((ref) {
+  final devices = ref.watch(bleDevicesProvider);
+  return devices.when(
+    data: (list) => list.where((d) => d.isHeartRateMonitor).toList(),
+    loading: () => [],
+    error: (_, __) => [],
+  );
 });
 
 // ============================================================================
@@ -210,6 +247,9 @@ class LiveTrainingDataNotifier extends StateNotifier<LiveTrainingData> {
   DateTime? _startTime;
   bool _isRunning = false;
 
+  // HR vom standalone Monitor (hat Priorität)
+  int? _standaloneHr;
+
   LiveTrainingDataNotifier(this._ref) : super(const LiveTrainingData()) {
     _init();
   }
@@ -220,7 +260,7 @@ class LiveTrainingDataNotifier extends StateNotifier<LiveTrainingData> {
     if (!bleManager.isSupported) {
       return; // Don't subscribe if BLE not available
     }
-    
+
     // Listen to FTMS data
     _ref.listen<AsyncValue<FtmsData>>(
       ftmsDataProvider,
@@ -230,8 +270,20 @@ class LiveTrainingDataNotifier extends StateNotifier<LiveTrainingData> {
         });
       },
     );
+
+    // Listen to standalone HR Monitor data
+    _ref.listen<AsyncValue<HeartRateData>>(
+      hrDataProvider,
+      (previous, next) {
+        next.whenData((hrData) {
+          _standaloneHr = hrData.heartRate;
+          // Update HR in state immediately
+          state = state.copyWith(heartRate: hrData.heartRate);
+        });
+      },
+    );
   }
-  
+
   void _updateFromFtmsData(FtmsData data) {
     final profile = _ref.read(athleteProfileProvider);
     final zone = profile.powerZones.zoneForPower(data.power);
@@ -242,10 +294,13 @@ class LiveTrainingDataNotifier extends StateNotifier<LiveTrainingData> {
       history.removeAt(0);
     }
 
+    // HR: Standalone Monitor hat Priorität, sonst Trainer HR
+    final heartRate = _standaloneHr ?? data.heartRate;
+
     state = state.copyWith(
       power: data.power,
       cadence: data.cadence,
-      heartRate: data.heartRate,
+      heartRate: heartRate,
       speed: data.speed,
       distance: data.distance,
       currentZone: zone,

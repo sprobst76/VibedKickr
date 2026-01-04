@@ -29,15 +29,17 @@ class _DeviceScanPageState extends ConsumerState<DeviceScanPage> {
   @override
   Widget build(BuildContext context) {
     final bleManager = ref.watch(bleManagerProvider);
-    final connectionState = ref.watch(bleConnectionStateProvider);
+    final trainerState = ref.watch(bleConnectionStateProvider);
+    final hrState = ref.watch(hrConnectionStateProvider);
     final isScanning = ref.watch(bleScanningProvider);
-    final devices = ref.watch(bleDevicesProvider);
+    final trainers = ref.watch(trainerDevicesProvider);
+    final hrMonitors = ref.watch(hrMonitorDevicesProvider);
 
     // Show unsupported platform message
     if (!bleManager.isSupported) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Gerät verbinden'),
+          title: const Text('Geräte verbinden'),
           leading: IconButton(
             icon: const Icon(Icons.close),
             onPressed: () => context.pop(),
@@ -91,7 +93,7 @@ class _DeviceScanPageState extends ConsumerState<DeviceScanPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gerät verbinden'),
+        title: const Text('Geräte verbinden'),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => context.pop(),
@@ -118,95 +120,224 @@ class _DeviceScanPageState extends ConsumerState<DeviceScanPage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Connection Status
-          connectionState.when(
-            data: (state) {
-              if (state.isConnected) {
-                return _ConnectedBanner(device: state.device!);
-              }
-              if (state.isConnecting) {
-                return _ConnectingBanner(device: state.device!);
-              }
-              if (state.hasError) {
-                return _ErrorBanner(message: state.errorMessage!);
-              }
-              return const SizedBox.shrink();
-            },
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-          ),
-
-          // Scan Hint
-          isScanning.when(
-            data: (scanning) => scanning
-                ? Container(
-                    padding: const EdgeInsets.all(16),
-                    child: const Row(
-                      children: [
-                        SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                        SizedBox(width: 12),
-                        Text('Suche nach Geräten...'),
-                      ],
-                    ),
-                  )
-                : const SizedBox.shrink(),
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-          ),
-
-          // Device List
-          Expanded(
-            child: devices.when(
-              data: (deviceList) {
-                if (deviceList.isEmpty) {
-                  return const _EmptyState();
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Trainer Connection Status
+            trainerState.when(
+              data: (state) {
+                if (state.isConnected) {
+                  return _ConnectedBanner(
+                    device: state.device!,
+                    deviceType: BleDeviceType.trainer,
+                    onDisconnect: () => bleManager.disconnectTrainer(),
+                  );
                 }
-
-                // Sortiere: Bekannte Trainer zuerst, dann nach Signalstärke
-                final sortedDevices = [...deviceList]..sort((a, b) {
-                    if (a.isKnownTrainer && !b.isKnownTrainer) return -1;
-                    if (!a.isKnownTrainer && b.isKnownTrainer) return 1;
-                    return b.rssi.compareTo(a.rssi);
-                  });
-
-                return ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: sortedDevices.length,
-                  itemBuilder: (context, index) {
-                    final device = sortedDevices[index];
-                    return _DeviceListTile(
-                      device: device,
-                      onTap: () => _connectToDevice(device),
-                    );
-                  },
-                );
+                if (state.isConnecting) {
+                  return _ConnectingBanner(device: state.device!);
+                }
+                if (state.hasError) {
+                  return _ErrorBanner(message: state.errorMessage!);
+                }
+                return const SizedBox.shrink();
               },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text('Fehler: $e')),
+              loading: () => const SizedBox.shrink(),
+              error: (_, __) => const SizedBox.shrink(),
             ),
-          ),
-        ],
+
+            // HR Monitor Connection Status
+            hrState.when(
+              data: (state) {
+                if (state.isConnected) {
+                  return _ConnectedBanner(
+                    device: state.device!,
+                    deviceType: BleDeviceType.heartRateMonitor,
+                    onDisconnect: () => bleManager.disconnectHrMonitor(),
+                  );
+                }
+                if (state.isConnecting) {
+                  return _ConnectingBanner(device: state.device!);
+                }
+                if (state.hasError) {
+                  return _ErrorBanner(message: state.errorMessage!);
+                }
+                return const SizedBox.shrink();
+              },
+              loading: () => const SizedBox.shrink(),
+              error: (_, __) => const SizedBox.shrink(),
+            ),
+
+            // Scan Hint
+            isScanning.when(
+              data: (scanning) => scanning
+                  ? Container(
+                      padding: const EdgeInsets.all(16),
+                      child: const Row(
+                        children: [
+                          SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                          SizedBox(width: 12),
+                          Text('Suche nach Geräten...'),
+                        ],
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+              loading: () => const SizedBox.shrink(),
+              error: (_, __) => const SizedBox.shrink(),
+            ),
+
+            // Trainer Section
+            _DeviceSection(
+              title: 'Smart Trainer',
+              icon: Icons.directions_bike,
+              iconColor: AppColors.primary,
+              devices: trainers,
+              emptyMessage: 'Keine Trainer gefunden',
+              onDeviceTap: (device) => _connectTrainer(device),
+            ),
+
+            const SizedBox(height: 16),
+
+            // HR Monitor Section
+            _DeviceSection(
+              title: 'Herzfrequenz-Monitore',
+              icon: Icons.favorite,
+              iconColor: AppColors.error,
+              devices: hrMonitors,
+              emptyMessage: 'Keine HR-Monitore gefunden',
+              onDeviceTap: (device) => _connectHrMonitor(device),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Info Text
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'Du kannst gleichzeitig einen Trainer und einen HR-Monitor verbinden. '
+                'Der HR-Monitor hat Priorität für die Herzfrequenz-Messung.',
+                style: TextStyle(
+                  color: AppColors.textMuted,
+                  fontSize: 12,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
       ),
     );
   }
 
-  Future<void> _connectToDevice(BleDevice device) async {
+  Future<void> _connectTrainer(BleDevice device) async {
     final bleManager = ref.read(bleManagerProvider);
-    final success = await bleManager.connect(device);
+    final success = await bleManager.connectTrainer(device);
 
     if (success && mounted) {
-      // Kurz warten, dann zurück zum Dashboard
-      await Future.delayed(const Duration(milliseconds: 500));
-      if (mounted) {
-        context.pop();
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Trainer verbunden: ${device.name}'),
+          backgroundColor: AppColors.success,
+        ),
+      );
     }
+  }
+
+  Future<void> _connectHrMonitor(BleDevice device) async {
+    final bleManager = ref.read(bleManagerProvider);
+    final success = await bleManager.connectHrMonitor(device);
+
+    if (success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('HR-Monitor verbunden: ${device.name}'),
+          backgroundColor: AppColors.success,
+        ),
+      );
+    }
+  }
+}
+
+class _DeviceSection extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color iconColor;
+  final List<BleDevice> devices;
+  final String emptyMessage;
+  final void Function(BleDevice) onDeviceTap;
+
+  const _DeviceSection({
+    required this.title,
+    required this.icon,
+    required this.iconColor,
+    required this.devices,
+    required this.emptyMessage,
+    required this.onDeviceTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Section Header
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          child: Row(
+            children: [
+              Icon(icon, color: iconColor, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                '${devices.length} gefunden',
+                style: const TextStyle(
+                  color: AppColors.textMuted,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // Device List or Empty State
+        if (devices.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: Center(
+              child: Text(
+                emptyMessage,
+                style: const TextStyle(color: AppColors.textMuted),
+              ),
+            ),
+          )
+        else
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: devices.length,
+            itemBuilder: (context, index) {
+              final device = devices[index];
+              return _DeviceListTile(
+                device: device,
+                onTap: () => onDeviceTap(device),
+              );
+            },
+          ),
+      ],
+    );
   }
 }
 
@@ -221,6 +352,9 @@ class _DeviceListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isTrainer = device.deviceType == BleDeviceType.trainer;
+    final color = isTrainer ? AppColors.primary : AppColors.error;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
@@ -234,18 +368,12 @@ class _DeviceListTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: device.isKnownTrainer
-                      ? AppColors.primary.withOpacity(0.1)
-                      : AppColors.surfaceLight,
+                  color: color.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
-                  device.isKnownTrainer
-                      ? Icons.directions_bike
-                      : Icons.bluetooth,
-                  color: device.isKnownTrainer
-                      ? AppColors.primary
-                      : AppColors.textSecondary,
+                  isTrainer ? Icons.directions_bike : Icons.favorite,
+                  color: color,
                 ),
               ),
               const SizedBox(width: 16),
@@ -270,26 +398,25 @@ class _DeviceListTile extends StatelessWidget {
                         fontSize: 12,
                       ),
                     ),
-                    if (device.isKnownTrainer)
-                      Container(
-                        margin: const EdgeInsets.only(top: 4),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Text(
-                          'Smart Trainer',
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                          ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        isTrainer ? 'Smart Trainer' : 'HR Monitor',
+                        style: TextStyle(
+                          color: color,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
+                    ),
                   ],
                 ),
               ),
@@ -348,21 +475,33 @@ class _SignalStrengthIndicator extends StatelessWidget {
 
 class _ConnectedBanner extends StatelessWidget {
   final BleDevice device;
+  final BleDeviceType deviceType;
+  final VoidCallback onDisconnect;
 
-  const _ConnectedBanner({required this.device});
+  const _ConnectedBanner({
+    required this.device,
+    required this.deviceType,
+    required this.onDisconnect,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final isTrainer = deviceType == BleDeviceType.trainer;
+    final label = isTrainer ? 'Trainer' : 'HR-Monitor';
+    final icon = isTrainer ? Icons.directions_bike : Icons.favorite;
+
     return Container(
       padding: const EdgeInsets.all(16),
       color: AppColors.success.withOpacity(0.1),
       child: Row(
         children: [
-          const Icon(Icons.check_circle, color: AppColors.success),
-          const SizedBox(width: 12),
+          Icon(icon, color: AppColors.success, size: 20),
+          const SizedBox(width: 8),
+          const Icon(Icons.check_circle, color: AppColors.success, size: 16),
+          const SizedBox(width: 8),
           Expanded(
             child: Text(
-              'Verbunden mit ${device.name}',
+              '$label: ${device.name}',
               style: const TextStyle(
                 color: AppColors.success,
                 fontWeight: FontWeight.w500,
@@ -370,9 +509,7 @@ class _ConnectedBanner extends StatelessWidget {
             ),
           ),
           TextButton(
-            onPressed: () {
-              // Trennen
-            },
+            onPressed: onDisconnect,
             child: const Text('Trennen'),
           ),
         ],
@@ -428,40 +565,6 @@ class _ErrorBanner extends StatelessWidget {
               message,
               style: const TextStyle(color: AppColors.error),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.bluetooth_searching,
-            size: 64,
-            color: AppColors.textMuted.withOpacity(0.5),
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            'Keine Geräte gefunden',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Stelle sicher, dass dein Trainer\neingeschaltet und in Reichweite ist.',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: AppColors.textSecondary),
           ),
         ],
       ),

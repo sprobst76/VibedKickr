@@ -1,18 +1,27 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
+/// Gerätetyp für Multi-Device Support
+enum BleDeviceType {
+  trainer,
+  heartRateMonitor,
+  unknown,
+}
+
 /// Repräsentiert ein gefundenes BLE-Gerät
 class BleDevice extends Equatable {
   final String id;
   final String name;
   final int rssi;
   final BluetoothDevice bluetoothDevice;
+  final BleDeviceType deviceType;
 
   const BleDevice({
     required this.id,
     required this.name,
     required this.rssi,
     required this.bluetoothDevice,
+    this.deviceType = BleDeviceType.unknown,
   });
 
   /// Signalstärke als Prozent (0-100)
@@ -32,6 +41,12 @@ class BleDevice extends Equatable {
         lowerName.contains('saris');
   }
 
+  /// Ist das Gerät ein Trainer?
+  bool get isTrainer => deviceType == BleDeviceType.trainer;
+
+  /// Ist das Gerät ein HR Monitor?
+  bool get isHeartRateMonitor => deviceType == BleDeviceType.heartRateMonitor;
+
   @override
-  List<Object?> get props => [id, name, rssi];
+  List<Object?> get props => [id, name, rssi, deviceType];
 }
