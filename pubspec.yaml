@@ -46,6 +46,7 @@ dependencies:
   
   # HTTP & OAuth
   dio: ^5.5.0
+  url_launcher: ^6.2.5
   
   # Utils
   collection: ^1.18.0

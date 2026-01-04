@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../providers/providers.dart';
+import '../widgets/strava_settings_card.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -110,6 +111,11 @@ class SettingsPage extends ConsumerWidget {
               },
             ),
           ),
+          const SizedBox(height: 24),
+
+          // Strava
+          _SectionHeader(title: 'Verbindungen'),
+          const StravaSettingsCard(),
           const SizedBox(height: 24),
 
           // Info

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/export/session_exporter.dart';
+import '../../../../core/strava/strava_api.dart';
+import '../../../../core/strava/strava_service.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/duration_formatter.dart';
 import '../../../../domain/entities/training_session.dart';
@@ -32,7 +34,7 @@ class SessionDetailPage extends ConsumerWidget {
             data: (session) => session != null
                 ? IconButton(
                     icon: const Icon(Icons.share),
-                    onPressed: () => _showExportDialog(context, session),
+                    onPressed: () => _showExportDialog(context, ref, session),
                     tooltip: 'Exportieren',
                   )
                 : const SizedBox.shrink(),
@@ -58,7 +60,9 @@ class SessionDetailPage extends ConsumerWidget {
     );
   }
 
-  void _showExportDialog(BuildContext context, TrainingSession session) {
+  void _showExportDialog(BuildContext context, WidgetRef ref, TrainingSession session) {
+    final stravaState = ref.read(stravaServiceProvider);
+
     showModalBottomSheet(
       context: context,
       builder: (context) => SafeArea(
@@ -68,16 +72,38 @@ class SessionDetailPage extends ConsumerWidget {
             const Padding(
               padding: EdgeInsets.all(16),
               child: Text(
-                'Exportieren als',
+                'Exportieren & Teilen',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
+            // Strava Upload (wenn verbunden)
+            if (stravaState.isConnected)
+              ListTile(
+                leading: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFC4C02).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.upload,
+                    color: Color(0xFFFC4C02),
+                  ),
+                ),
+                title: const Text('Zu Strava hochladen'),
+                subtitle: Text('Als ${stravaState.athleteName ?? "Strava"}'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _uploadToStrava(context, ref, session);
+                },
+              ),
+            const Divider(height: 1),
             ListTile(
               leading: const Icon(Icons.file_download),
-              title: const Text('FIT'),
+              title: const Text('FIT exportieren'),
               subtitle: const Text('Garmin FIT Format'),
               onTap: () {
                 Navigator.pop(context);
@@ -86,7 +112,7 @@ class SessionDetailPage extends ConsumerWidget {
             ),
             ListTile(
               leading: const Icon(Icons.code),
-              title: const Text('TCX'),
+              title: const Text('TCX exportieren'),
               subtitle: const Text('Training Center XML'),
               onTap: () {
                 Navigator.pop(context);
@@ -113,6 +139,78 @@ class SessionDetailPage extends ConsumerWidget {
           SnackBar(content: Text('Export fehlgeschlagen: $e')),
         );
       }
+    }
+  }
+
+  Future<void> _uploadToStrava(
+    BuildContext context,
+    WidgetRef ref,
+    TrainingSession session,
+  ) async {
+    // Loading Dialog anzeigen
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const AlertDialog(
+        content: Row(
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(width: 24),
+            Text('Wird zu Strava hochgeladen...'),
+          ],
+        ),
+      ),
+    );
+
+    try {
+      final result = await ref
+          .read(stravaServiceProvider.notifier)
+          .uploadSession(session);
+
+      if (!context.mounted) return;
+      Navigator.pop(context); // Loading Dialog schließen
+
+      if (result.status == StravaUploadStatus.complete) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Erfolgreich zu Strava hochgeladen!'),
+            backgroundColor: AppColors.success,
+            action: result.activityId != null
+                ? SnackBarAction(
+                    label: 'Öffnen',
+                    textColor: Colors.white,
+                    onPressed: () {
+                      // TODO: Open Strava activity URL
+                    },
+                  )
+                : null,
+          ),
+        );
+      } else if (result.status == StravaUploadStatus.processing) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Upload wird von Strava verarbeitet...'),
+            backgroundColor: AppColors.warning,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Upload fehlgeschlagen: ${result.error}'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } catch (e) {
+      if (!context.mounted) return;
+      Navigator.pop(context); // Loading Dialog schließen
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Fehler: $e'),
+          backgroundColor: AppColors.error,
+        ),
+      );
     }
   }
 
