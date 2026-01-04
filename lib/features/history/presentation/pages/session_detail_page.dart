@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/export/session_exporter.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/duration_formatter.dart';
 import '../../../../domain/entities/training_session.dart';
@@ -27,6 +28,16 @@ class SessionDetailPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Training Details'),
         actions: [
+          sessionAsync.maybeWhen(
+            data: (session) => session != null
+                ? IconButton(
+                    icon: const Icon(Icons.share),
+                    onPressed: () => _showExportDialog(context, session),
+                    tooltip: 'Exportieren',
+                  )
+                : const SizedBox.shrink(),
+            orElse: () => const SizedBox.shrink(),
+          ),
           IconButton(
             icon: const Icon(Icons.delete_outline),
             onPressed: () => _confirmDelete(context, ref),
@@ -45,6 +56,64 @@ class SessionDetailPage extends ConsumerWidget {
         error: (error, stack) => Center(child: Text('Fehler: $error')),
       ),
     );
+  }
+
+  void _showExportDialog(BuildContext context, TrainingSession session) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                'Exportieren als',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.file_download),
+              title: const Text('FIT'),
+              subtitle: const Text('Garmin FIT Format'),
+              onTap: () {
+                Navigator.pop(context);
+                _exportSession(context, session, ExportFormat.fit);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.code),
+              title: const Text('TCX'),
+              subtitle: const Text('Training Center XML'),
+              onTap: () {
+                Navigator.pop(context);
+                _exportSession(context, session, ExportFormat.tcx);
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _exportSession(
+    BuildContext context,
+    TrainingSession session,
+    ExportFormat format,
+  ) async {
+    try {
+      await SessionExporter.exportAndShare(session, format);
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Export fehlgeschlagen: $e')),
+        );
+      }
+    }
   }
 
   Future<void> _confirmDelete(BuildContext context, WidgetRef ref) async {
