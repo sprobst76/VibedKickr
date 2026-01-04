@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/audio/audio_cue_service.dart';
 import '../../../domain/entities/workout.dart';
 import '../../../domain/entities/training_session.dart';
 import '../../../providers/providers.dart';
@@ -21,6 +22,7 @@ class WorkoutPlayerData {
   final Duration intervalElapsed;
   final Duration totalElapsed;
   final int currentTargetPower;
+  final int? countdownSeconds; // Countdown vor Intervallwechsel (3, 2, 1)
 
   const WorkoutPlayerData({
     this.state = WorkoutPlayerState.idle,
@@ -29,6 +31,7 @@ class WorkoutPlayerData {
     this.intervalElapsed = Duration.zero,
     this.totalElapsed = Duration.zero,
     this.currentTargetPower = 0,
+    this.countdownSeconds,
   });
 
   WorkoutInterval? get currentInterval {
@@ -65,6 +68,8 @@ class WorkoutPlayerData {
     Duration? intervalElapsed,
     Duration? totalElapsed,
     int? currentTargetPower,
+    int? countdownSeconds,
+    bool clearCountdown = false,
   }) {
     return WorkoutPlayerData(
       state: state ?? this.state,
@@ -73,6 +78,7 @@ class WorkoutPlayerData {
       intervalElapsed: intervalElapsed ?? this.intervalElapsed,
       totalElapsed: totalElapsed ?? this.totalElapsed,
       currentTargetPower: currentTargetPower ?? this.currentTargetPower,
+      countdownSeconds: clearCountdown ? null : (countdownSeconds ?? this.countdownSeconds),
     );
   }
 }
@@ -89,8 +95,23 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
   Timer? _timer;
   DateTime? _intervalStartTime;
   DateTime? _sessionStartTime;
+  int? _lastCountdownPlayed; // Verhindert doppelte Audio-Cues
 
-  WorkoutPlayerNotifier(this._ref) : super(const WorkoutPlayerData());
+  WorkoutPlayerNotifier(this._ref) : super(const WorkoutPlayerData()) {
+    // Audio Service initialisieren
+    _initAudio();
+  }
+
+  Future<void> _initAudio() async {
+    try {
+      final audioService = _ref.read(audioCueServiceProvider);
+      await audioService.initialize();
+    } catch (_) {
+      // Audio nicht verfügbar - silent fail
+    }
+  }
+
+  bool get _soundEnabled => _ref.read(soundEnabledProvider);
 
   void loadWorkout(Workout workout) {
     state = WorkoutPlayerData(
@@ -123,12 +144,16 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
 
     _intervalStartTime = DateTime.now();
     _sessionStartTime = DateTime.now();
+    _lastCountdownPlayed = null;
 
     // Session starten
     _startSession(SessionType.workout, workoutId: state.workout?.id);
 
     // Trainer steuern
     _setTrainerPower(targetPower);
+
+    // Audio Cue: Workout startet
+    _playAudioCue(AudioCueType.intervalStart);
 
     // Timer starten
     _startTimer();
@@ -178,9 +203,33 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
     final intervalElapsed = now.difference(_intervalStartTime ?? now);
     final totalElapsed = now.difference(_sessionStartTime ?? now);
 
+    // Countdown-Logik für Intervallwechsel
+    final interval = state.currentInterval;
+    int? countdown;
+
+    if (interval != null && state.nextInterval != null) {
+      final remaining = interval.duration - intervalElapsed;
+      final remainingSeconds = remaining.inSeconds;
+
+      // Countdown bei 3, 2, 1 Sekunden
+      if (remainingSeconds <= 3 && remainingSeconds >= 0) {
+        countdown = remainingSeconds;
+
+        // Audio Cue nur einmal pro Sekunde
+        if (_soundEnabled && _lastCountdownPlayed != remainingSeconds) {
+          _lastCountdownPlayed = remainingSeconds;
+          if (remainingSeconds > 0) {
+            _playAudioCue(AudioCueType.countdown);
+          }
+        }
+      }
+    }
+
     state = state.copyWith(
       intervalElapsed: intervalElapsed,
       totalElapsed: totalElapsed,
+      countdownSeconds: countdown,
+      clearCountdown: countdown == null,
     );
 
     // Update target power in live data
@@ -189,7 +238,6 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
         );
 
     // Check if interval is complete
-    final interval = state.currentInterval;
     if (interval != null && intervalElapsed >= interval.duration) {
       _nextInterval();
     }
@@ -201,7 +249,11 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
     if (state.workout == null || nextIndex >= state.workout!.intervals.length) {
       // Workout complete
       _timer?.cancel();
-      state = state.copyWith(state: WorkoutPlayerState.finished);
+      _playAudioCue(AudioCueType.workoutComplete);
+      state = state.copyWith(
+        state: WorkoutPlayerState.finished,
+        clearCountdown: true,
+      );
       return;
     }
 
@@ -210,17 +262,20 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
     final targetPower = nextInterval.powerTarget.resolveWatts(ftp);
 
     _intervalStartTime = DateTime.now();
+    _lastCountdownPlayed = null;
 
     state = state.copyWith(
       currentIntervalIndex: nextIndex,
       intervalElapsed: Duration.zero,
       currentTargetPower: targetPower,
+      clearCountdown: true,
     );
 
     // Trainer steuern
     _setTrainerPower(targetPower);
 
-    // TODO: Audio Cue abspielen
+    // Audio Cue: Neues Intervall startet
+    _playAudioCue(AudioCueType.intervalStart);
   }
 
   void _startSession(SessionType type, {String? workoutId}) {
@@ -236,6 +291,17 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
 
     if (ftmsService != null && watts > 0) {
       ftmsService.setTargetPower(watts);
+    }
+  }
+
+  void _playAudioCue(AudioCueType type) {
+    if (!_soundEnabled) return;
+
+    try {
+      final audioService = _ref.read(audioCueServiceProvider);
+      audioService.playCue(type);
+    } catch (_) {
+      // Audio nicht verfügbar - silent fail
     }
   }
 

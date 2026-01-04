@@ -260,6 +260,9 @@ class _MobileLayout extends StatelessWidget {
             power: liveData.power,
             targetPower: playerState.currentTargetPower,
             zone: liveData.currentZone,
+            countdown: playerState.countdownSeconds,
+            nextInterval: playerState.nextInterval,
+            ftp: profile.ftp,
           ),
           const SizedBox(height: 24),
 
@@ -352,6 +355,9 @@ class _DesktopLayout extends StatelessWidget {
                   power: liveData.power,
                   targetPower: playerState.currentTargetPower,
                   zone: liveData.currentZone,
+                  countdown: playerState.countdownSeconds,
+                  nextInterval: playerState.nextInterval,
+                  ftp: profile.ftp,
                 ),
                 const Spacer(),
               ],
@@ -395,11 +401,17 @@ class _PowerDisplay extends StatelessWidget {
   final int power;
   final int targetPower;
   final int zone;
+  final int? countdown;
+  final WorkoutInterval? nextInterval;
+  final int ftp;
 
   const _PowerDisplay({
     required this.power,
     required this.targetPower,
     required this.zone,
+    this.countdown,
+    this.nextInterval,
+    this.ftp = 200,
   });
 
   @override
@@ -407,6 +419,15 @@ class _PowerDisplay extends StatelessWidget {
     final zoneColor = ZoneColors.forZone(zone);
     final diff = power - targetPower;
     final isOnTarget = targetPower == 0 || diff.abs() <= targetPower * 0.05;
+
+    // Countdown aktiv?
+    if (countdown != null && countdown! > 0 && nextInterval != null) {
+      return _CountdownOverlay(
+        countdown: countdown!,
+        nextInterval: nextInterval!,
+        ftp: ftp,
+      );
+    }
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -481,6 +502,77 @@ class _PowerDisplay extends StatelessWidget {
             ],
           ),
         ],
+      ],
+    );
+  }
+}
+
+/// Countdown-Overlay vor Intervallwechsel
+class _CountdownOverlay extends StatelessWidget {
+  final int countdown;
+  final WorkoutInterval nextInterval;
+  final int ftp;
+
+  const _CountdownOverlay({
+    required this.countdown,
+    required this.nextInterval,
+    required this.ftp,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final nextPower = nextInterval.powerTarget.resolveWatts(ftp);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Nächstes Intervall Info
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          decoration: BoxDecoration(
+            color: AppColors.warning.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text(
+            'Nächstes Intervall: ${nextPower}W',
+            style: const TextStyle(
+              color: AppColors.warning,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Countdown Zahl
+        TweenAnimationBuilder<double>(
+          tween: Tween(begin: 1.2, end: 1.0),
+          duration: const Duration(milliseconds: 200),
+          key: ValueKey(countdown),
+          builder: (context, scale, child) {
+            return Transform.scale(
+              scale: scale,
+              child: Text(
+                '$countdown',
+                style: const TextStyle(
+                  fontSize: 144,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.warning,
+                  height: 1,
+                ),
+              ),
+            );
+          },
+        ),
+
+        const SizedBox(height: 16),
+        Text(
+          nextInterval.name,
+          style: const TextStyle(
+            fontSize: 24,
+            color: AppColors.textSecondary,
+          ),
+        ),
       ],
     );
   }
