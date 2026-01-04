@@ -9,6 +9,7 @@ import '../../../../providers/providers.dart';
 import '../../../../routing/app_router.dart';
 import '../widgets/connection_status_bar.dart';
 import '../widgets/live_chart.dart';
+import '../widgets/personal_records_card.dart';
 import '../widgets/power_gauge.dart';
 import '../widgets/metric_card.dart';
 
@@ -151,6 +152,10 @@ class _MobileLayout extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 24),
+
+          // Personal Records
+          const PersonalRecordsCard(),
           const SizedBox(height: 24),
 
           // Live Chart

@@ -7,10 +7,31 @@ import '../core/ble/models/ble_device.dart';
 import '../core/ble/models/connection_state.dart';
 import '../core/ble/models/ftms_data.dart';
 import '../core/database/app_database.dart';
+import '../core/database/daos/personal_record_dao.dart';
+import '../core/services/personal_record_service.dart';
 import '../data/repositories/session_repository_impl.dart';
 import '../domain/entities/athlete_profile.dart';
 import '../domain/entities/training_session.dart';
 import '../domain/repositories/session_repository.dart';
+
+// Re-export PersonalRecord for convenience
+export '../core/database/daos/personal_record_dao.dart' show PersonalRecord;
+export '../core/database/tables/personal_record_table.dart' show RecordType;
+export '../core/services/personal_record_service.dart';
+
+/// Ergebnis einer beendeten Session
+class SessionFinishResult {
+  final TrainingSession session;
+  final List<PersonalRecord> newRecords;
+
+  const SessionFinishResult({
+    required this.session,
+    this.newRecords = const [],
+  });
+
+  /// Wurden neue PRs aufgestellt?
+  bool get hasNewRecords => newRecords.isNotEmpty;
+}
 
 // ============================================================================
 // BLE Providers
@@ -338,7 +359,7 @@ class ActiveSessionNotifier extends StateNotifier<TrainingSession?> {
     _ref.read(liveTrainingDataProvider.notifier).resumeSession();
   }
 
-  Future<TrainingSession?> finishSession() async {
+  Future<SessionFinishResult?> finishSession() async {
     _recordingTimer?.cancel();
     _ref.read(liveTrainingDataProvider.notifier).stopSession();
 
@@ -366,11 +387,25 @@ class ActiveSessionNotifier extends StateNotifier<TrainingSession?> {
       print('Fehler beim Speichern der Session: $e');
     }
 
+    // Personal Records analysieren
+    List<PersonalRecord> newRecords = [];
+    try {
+      final prService = _ref.read(personalRecordServiceProvider);
+      newRecords = await prService.analyzeSession(finishedSession);
+    } catch (e) {
+      // PR-Analyse-Fehler nicht kritisch
+      // ignore: avoid_print
+      print('Fehler bei PR-Analyse: $e');
+    }
+
     state = null;
     _dataPoints.clear();
     _sessionStart = null;
 
-    return finishedSession;
+    return SessionFinishResult(
+      session: finishedSession,
+      newRecords: newRecords,
+    );
   }
 
   void cancelSession() {

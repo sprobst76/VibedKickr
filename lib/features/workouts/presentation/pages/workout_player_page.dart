@@ -131,24 +131,97 @@ class _WorkoutPlayerPageState extends ConsumerState<WorkoutPlayerPage> {
 
   Future<void> _handleStop(BuildContext context, WidgetRef ref) async {
     ref.read(workoutPlayerProvider.notifier).stop();
-    final session = await ref.read(activeSessionProvider.notifier).finishSession();
+    final result = await ref.read(activeSessionProvider.notifier).finishSession();
 
-    if (session != null && session.dataPoints.isNotEmpty) {
+    if (result != null && result.session.dataPoints.isNotEmpty) {
       if (context.mounted) {
+        // Standard Snackbar für Session-Statistiken
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Training gespeichert: ${session.stats?.avgPower ?? 0}W Durchschnitt, '
-              '${session.stats?.tss ?? 0} TSS',
+              'Training gespeichert: ${result.session.stats?.avgPower ?? 0}W Durchschnitt, '
+              '${result.session.stats?.tss ?? 0} TSS',
             ),
           ),
         );
+
+        // PR Dialog anzeigen, wenn neue Records aufgestellt wurden
+        if (result.hasNewRecords) {
+          await _showNewRecordsDialog(context, result.newRecords);
+        }
       }
     }
 
     if (context.mounted) {
       context.pop();
     }
+  }
+
+  Future<void> _showNewRecordsDialog(
+      BuildContext context, List<PersonalRecord> records) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            const Icon(Icons.emoji_events, color: Colors.amber, size: 28),
+            const SizedBox(width: 8),
+            Text('${records.length == 1 ? "Neuer" : "Neue"} Personal Record${records.length > 1 ? "s" : ""}!'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: records.map((record) {
+            final improvement = record.improvement;
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      record.recordType.displayName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    '${record.powerWatts}W',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  if (improvement != null) ...[
+                    const SizedBox(width: 8),
+                    Text(
+                      '+${improvement}W',
+                      style: const TextStyle(
+                        color: AppColors.success,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Super!'),
+          ),
+        ],
+      ),
+    );
   }
 }
 
