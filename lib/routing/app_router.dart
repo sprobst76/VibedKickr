@@ -6,6 +6,7 @@ import '../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../features/device_connection/presentation/pages/device_scan_page.dart';
 import '../features/history/presentation/pages/session_detail_page.dart';
 import '../features/history/presentation/pages/session_history_page.dart';
+import '../features/workouts/presentation/pages/workout_builder_page.dart';
 import '../features/workouts/presentation/pages/workout_list_page.dart';
 import '../features/workouts/presentation/pages/workout_player_page.dart';
 import '../features/settings/presentation/pages/settings_page.dart';
@@ -15,6 +16,7 @@ class AppRoutes {
   static const dashboard = '/';
   static const deviceScan = '/devices';
   static const workouts = '/workouts';
+  static const workoutBuilder = '/workouts/builder';
   static const workoutPlayer = '/workouts/player';
   static const history = '/history';
   static const settings = '/settings';
@@ -61,6 +63,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.deviceScan,
         builder: (context, state) => const DeviceScanPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.workoutBuilder,
+        builder: (context, state) {
+          final workoutId = state.uri.queryParameters['workoutId'];
+          return WorkoutBuilderPage(workoutId: workoutId);
+        },
       ),
       GoRoute(
         path: AppRoutes.workoutPlayer,

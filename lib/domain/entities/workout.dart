@@ -1,7 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
-
-part 'workout.g.dart';
 
 enum WorkoutType {
   endurance,
@@ -24,7 +21,6 @@ enum IntervalType {
 }
 
 /// Leistungsziel für ein Intervall
-@JsonSerializable()
 class PowerTarget extends Equatable {
   final PowerTargetType type;
   final int? watts; // Für absolute
@@ -32,7 +28,7 @@ class PowerTarget extends Equatable {
   final int? minWatts; // Für Range
   final int? maxWatts; // Für Range
 
-  const PowerTarget._({
+  const PowerTarget({
     required this.type,
     this.watts,
     this.ftpPercent,
@@ -42,22 +38,22 @@ class PowerTarget extends Equatable {
 
   /// Absolute Watt-Zahl
   factory PowerTarget.absolute(int watts) {
-    return PowerTarget._(type: PowerTargetType.absolute, watts: watts);
+    return PowerTarget(type: PowerTargetType.absolute, watts: watts);
   }
 
   /// Prozent vom FTP
   factory PowerTarget.ftpPercent(int percent) {
-    return PowerTarget._(type: PowerTargetType.ftpPercent, ftpPercent: percent);
+    return PowerTarget(type: PowerTargetType.ftpPercent, ftpPercent: percent);
   }
 
   /// Watt-Range (für ERG mit Toleranz)
   factory PowerTarget.range(int min, int max) {
-    return PowerTarget._(type: PowerTargetType.range, minWatts: min, maxWatts: max);
+    return PowerTarget(type: PowerTargetType.range, minWatts: min, maxWatts: max);
   }
 
   /// Freies Fahren
   factory PowerTarget.free() {
-    return const PowerTarget._(type: PowerTargetType.free);
+    return const PowerTarget(type: PowerTargetType.free);
   }
 
   /// Berechnet die Ziel-Watt basierend auf FTP
@@ -70,9 +66,27 @@ class PowerTarget extends Equatable {
     };
   }
 
-  factory PowerTarget.fromJson(Map<String, dynamic> json) =>
-      _$PowerTargetFromJson(json);
-  Map<String, dynamic> toJson() => _$PowerTargetToJson(this);
+  factory PowerTarget.fromJson(Map<String, dynamic> json) {
+    final type = PowerTargetType.values.firstWhere(
+      (t) => t.name == json['type'],
+      orElse: () => PowerTargetType.free,
+    );
+    return PowerTarget(
+      type: type,
+      watts: json['watts'] as int?,
+      ftpPercent: json['ftpPercent'] as int?,
+      minWatts: json['minWatts'] as int?,
+      maxWatts: json['maxWatts'] as int?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'type': type.name,
+        'watts': watts,
+        'ftpPercent': ftpPercent,
+        'minWatts': minWatts,
+        'maxWatts': maxWatts,
+      };
 
   @override
   List<Object?> get props => [type, watts, ftpPercent, minWatts, maxWatts];
@@ -81,7 +95,6 @@ class PowerTarget extends Equatable {
 enum PowerTargetType { absolute, ftpPercent, range, free }
 
 /// Ein einzelnes Intervall im Workout
-@JsonSerializable()
 class WorkoutInterval extends Equatable {
   final String name;
   final Duration duration;
@@ -101,9 +114,51 @@ class WorkoutInterval extends Equatable {
     this.instructions,
   });
 
-  factory WorkoutInterval.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutIntervalFromJson(json);
-  Map<String, dynamic> toJson() => _$WorkoutIntervalToJson(this);
+  factory WorkoutInterval.fromJson(Map<String, dynamic> json) {
+    return WorkoutInterval(
+      name: json['name'] as String,
+      duration: Duration(milliseconds: json['durationMs'] as int),
+      type: IntervalType.values.firstWhere(
+        (t) => t.name == json['type'],
+        orElse: () => IntervalType.work,
+      ),
+      powerTarget: PowerTarget.fromJson(json['powerTarget'] as Map<String, dynamic>),
+      cadenceMin: json['cadenceMin'] as int?,
+      cadenceMax: json['cadenceMax'] as int?,
+      instructions: json['instructions'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'durationMs': duration.inMilliseconds,
+        'type': type.name,
+        'powerTarget': powerTarget.toJson(),
+        'cadenceMin': cadenceMin,
+        'cadenceMax': cadenceMax,
+        'instructions': instructions,
+      };
+
+  /// Erstellt eine Kopie mit optionalen Änderungen
+  WorkoutInterval copyWith({
+    String? name,
+    Duration? duration,
+    IntervalType? type,
+    PowerTarget? powerTarget,
+    int? cadenceMin,
+    int? cadenceMax,
+    String? instructions,
+  }) {
+    return WorkoutInterval(
+      name: name ?? this.name,
+      duration: duration ?? this.duration,
+      type: type ?? this.type,
+      powerTarget: powerTarget ?? this.powerTarget,
+      cadenceMin: cadenceMin ?? this.cadenceMin,
+      cadenceMax: cadenceMax ?? this.cadenceMax,
+      instructions: instructions ?? this.instructions,
+    );
+  }
 
   @override
   List<Object?> get props =>
@@ -111,7 +166,6 @@ class WorkoutInterval extends Equatable {
 }
 
 /// Komplettes Workout
-@JsonSerializable()
 class Workout extends Equatable {
   final String id;
   final String name;
@@ -119,6 +173,7 @@ class Workout extends Equatable {
   final WorkoutType type;
   final List<WorkoutInterval> intervals;
   final DateTime? createdAt;
+  final bool isCustom;
 
   const Workout({
     required this.id,
@@ -127,6 +182,7 @@ class Workout extends Equatable {
     required this.type,
     required this.intervals,
     this.createdAt,
+    this.isCustom = false,
   });
 
   /// Gesamtdauer des Workouts
@@ -150,12 +206,58 @@ class Workout extends Equatable {
     return tss.round();
   }
 
-  factory Workout.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutFromJson(json);
-  Map<String, dynamic> toJson() => _$WorkoutToJson(this);
+  factory Workout.fromJson(Map<String, dynamic> json) {
+    return Workout(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      description: json['description'] as String? ?? '',
+      type: WorkoutType.values.firstWhere(
+        (t) => t.name == json['type'],
+        orElse: () => WorkoutType.interval,
+      ),
+      intervals: (json['intervals'] as List)
+          .map((i) => WorkoutInterval.fromJson(i as Map<String, dynamic>))
+          .toList(),
+      createdAt: json['createdAt'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json['createdAt'] as int)
+          : null,
+      isCustom: json['isCustom'] as bool? ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'description': description,
+        'type': type.name,
+        'intervals': intervals.map((i) => i.toJson()).toList(),
+        'createdAt': createdAt?.millisecondsSinceEpoch,
+        'isCustom': isCustom,
+      };
+
+  /// Erstellt eine Kopie mit optionalen Änderungen
+  Workout copyWith({
+    String? id,
+    String? name,
+    String? description,
+    WorkoutType? type,
+    List<WorkoutInterval>? intervals,
+    DateTime? createdAt,
+    bool? isCustom,
+  }) {
+    return Workout(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      type: type ?? this.type,
+      intervals: intervals ?? this.intervals,
+      createdAt: createdAt ?? this.createdAt,
+      isCustom: isCustom ?? this.isCustom,
+    );
+  }
 
   @override
-  List<Object?> get props => [id, name, description, type, intervals, createdAt];
+  List<Object?> get props => [id, name, description, type, intervals, createdAt, isCustom];
 }
 
 /// Vordefinierte Workouts

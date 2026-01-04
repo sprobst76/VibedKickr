@@ -7,11 +7,13 @@ import 'package:path_provider/path_provider.dart';
 
 import 'tables/training_session_table.dart';
 import 'tables/data_point_table.dart';
+import 'tables/custom_workout_table.dart';
 import 'daos/session_dao.dart';
+import 'daos/workout_dao.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [TrainingSessions, DataPoints])
+@DriftDatabase(tables: [TrainingSessions, DataPoints, CustomWorkouts])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
@@ -20,9 +22,10 @@ class AppDatabase extends _$AppDatabase {
 
   // DAO Zugriff (lazy initialized)
   late final SessionDao sessionDao = SessionDao(this);
+  late final WorkoutDao workoutDao = WorkoutDao(this);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -30,7 +33,10 @@ class AppDatabase extends _$AppDatabase {
           await m.createAll();
         },
         onUpgrade: (m, from, to) async {
-          // Zukünftige Migrationen hier
+          // Migration v1 -> v2: Custom Workouts Tabelle hinzufügen
+          if (from < 2) {
+            await m.createTable(customWorkouts);
+          }
         },
       );
 }

@@ -1486,18 +1486,427 @@ class DataPointsCompanion extends UpdateCompanion<DataPointEntity> {
   }
 }
 
+class $CustomWorkoutsTable extends CustomWorkouts
+    with TableInfo<$CustomWorkoutsTable, CustomWorkoutEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CustomWorkoutsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
+  static const VerificationMeta _workoutTypeMeta =
+      const VerificationMeta('workoutType');
+  @override
+  late final GeneratedColumn<String> workoutType = GeneratedColumn<String>(
+      'workout_type', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _intervalsJsonMeta =
+      const VerificationMeta('intervalsJson');
+  @override
+  late final GeneratedColumn<String> intervalsJson = GeneratedColumn<String>(
+      'intervals_json', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, name, description, workoutType, intervalsJson, createdAt, updatedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'custom_workouts';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<CustomWorkoutEntity> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    }
+    if (data.containsKey('workout_type')) {
+      context.handle(
+          _workoutTypeMeta,
+          workoutType.isAcceptableOrUnknown(
+              data['workout_type']!, _workoutTypeMeta));
+    } else if (isInserting) {
+      context.missing(_workoutTypeMeta);
+    }
+    if (data.containsKey('intervals_json')) {
+      context.handle(
+          _intervalsJsonMeta,
+          intervalsJson.isAcceptableOrUnknown(
+              data['intervals_json']!, _intervalsJsonMeta));
+    } else if (isInserting) {
+      context.missing(_intervalsJsonMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CustomWorkoutEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CustomWorkoutEntity(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      workoutType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}workout_type'])!,
+      intervalsJson: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}intervals_json'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
+    );
+  }
+
+  @override
+  $CustomWorkoutsTable createAlias(String alias) {
+    return $CustomWorkoutsTable(attachedDatabase, alias);
+  }
+}
+
+class CustomWorkoutEntity extends DataClass
+    implements Insertable<CustomWorkoutEntity> {
+  /// Workout ID (UUID)
+  final String id;
+
+  /// Name des Workouts
+  final String name;
+
+  /// Beschreibung
+  final String description;
+
+  /// Workout-Typ (enum als String)
+  final String workoutType;
+
+  /// Intervalle als JSON
+  final String intervalsJson;
+
+  /// Erstellungsdatum
+  final DateTime createdAt;
+
+  /// Letztes Update
+  final DateTime? updatedAt;
+  const CustomWorkoutEntity(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.workoutType,
+      required this.intervalsJson,
+      required this.createdAt,
+      this.updatedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['workout_type'] = Variable<String>(workoutType);
+    map['intervals_json'] = Variable<String>(intervalsJson);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
+    return map;
+  }
+
+  CustomWorkoutsCompanion toCompanion(bool nullToAbsent) {
+    return CustomWorkoutsCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: Value(description),
+      workoutType: Value(workoutType),
+      intervalsJson: Value(intervalsJson),
+      createdAt: Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
+    );
+  }
+
+  factory CustomWorkoutEntity.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CustomWorkoutEntity(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      workoutType: serializer.fromJson<String>(json['workoutType']),
+      intervalsJson: serializer.fromJson<String>(json['intervalsJson']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'workoutType': serializer.toJson<String>(workoutType),
+      'intervalsJson': serializer.toJson<String>(intervalsJson),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+    };
+  }
+
+  CustomWorkoutEntity copyWith(
+          {String? id,
+          String? name,
+          String? description,
+          String? workoutType,
+          String? intervalsJson,
+          DateTime? createdAt,
+          Value<DateTime?> updatedAt = const Value.absent()}) =>
+      CustomWorkoutEntity(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        workoutType: workoutType ?? this.workoutType,
+        intervalsJson: intervalsJson ?? this.intervalsJson,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+      );
+  CustomWorkoutEntity copyWithCompanion(CustomWorkoutsCompanion data) {
+    return CustomWorkoutEntity(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description:
+          data.description.present ? data.description.value : this.description,
+      workoutType:
+          data.workoutType.present ? data.workoutType.value : this.workoutType,
+      intervalsJson: data.intervalsJson.present
+          ? data.intervalsJson.value
+          : this.intervalsJson,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CustomWorkoutEntity(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('workoutType: $workoutType, ')
+          ..write('intervalsJson: $intervalsJson, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, name, description, workoutType, intervalsJson, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CustomWorkoutEntity &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.workoutType == this.workoutType &&
+          other.intervalsJson == this.intervalsJson &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class CustomWorkoutsCompanion extends UpdateCompanion<CustomWorkoutEntity> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<String> workoutType;
+  final Value<String> intervalsJson;
+  final Value<DateTime> createdAt;
+  final Value<DateTime?> updatedAt;
+  final Value<int> rowid;
+  const CustomWorkoutsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.workoutType = const Value.absent(),
+    this.intervalsJson = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CustomWorkoutsCompanion.insert({
+    required String id,
+    required String name,
+    this.description = const Value.absent(),
+    required String workoutType,
+    required String intervalsJson,
+    required DateTime createdAt,
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        workoutType = Value(workoutType),
+        intervalsJson = Value(intervalsJson),
+        createdAt = Value(createdAt);
+  static Insertable<CustomWorkoutEntity> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? workoutType,
+    Expression<String>? intervalsJson,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (workoutType != null) 'workout_type': workoutType,
+      if (intervalsJson != null) 'intervals_json': intervalsJson,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CustomWorkoutsCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? name,
+      Value<String>? description,
+      Value<String>? workoutType,
+      Value<String>? intervalsJson,
+      Value<DateTime>? createdAt,
+      Value<DateTime?>? updatedAt,
+      Value<int>? rowid}) {
+    return CustomWorkoutsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      workoutType: workoutType ?? this.workoutType,
+      intervalsJson: intervalsJson ?? this.intervalsJson,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (workoutType.present) {
+      map['workout_type'] = Variable<String>(workoutType.value);
+    }
+    if (intervalsJson.present) {
+      map['intervals_json'] = Variable<String>(intervalsJson.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CustomWorkoutsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('workoutType: $workoutType, ')
+          ..write('intervalsJson: $intervalsJson, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $TrainingSessionsTable trainingSessions =
       $TrainingSessionsTable(this);
   late final $DataPointsTable dataPoints = $DataPointsTable(this);
+  late final $CustomWorkoutsTable customWorkouts = $CustomWorkoutsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [trainingSessions, dataPoints];
+      [trainingSessions, dataPoints, customWorkouts];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
@@ -2110,6 +2519,167 @@ class $$DataPointsTableOrderingComposer
   }
 }
 
+typedef $$CustomWorkoutsTableCreateCompanionBuilder = CustomWorkoutsCompanion
+    Function({
+  required String id,
+  required String name,
+  Value<String> description,
+  required String workoutType,
+  required String intervalsJson,
+  required DateTime createdAt,
+  Value<DateTime?> updatedAt,
+  Value<int> rowid,
+});
+typedef $$CustomWorkoutsTableUpdateCompanionBuilder = CustomWorkoutsCompanion
+    Function({
+  Value<String> id,
+  Value<String> name,
+  Value<String> description,
+  Value<String> workoutType,
+  Value<String> intervalsJson,
+  Value<DateTime> createdAt,
+  Value<DateTime?> updatedAt,
+  Value<int> rowid,
+});
+
+class $$CustomWorkoutsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $CustomWorkoutsTable,
+    CustomWorkoutEntity,
+    $$CustomWorkoutsTableFilterComposer,
+    $$CustomWorkoutsTableOrderingComposer,
+    $$CustomWorkoutsTableCreateCompanionBuilder,
+    $$CustomWorkoutsTableUpdateCompanionBuilder> {
+  $$CustomWorkoutsTableTableManager(
+      _$AppDatabase db, $CustomWorkoutsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$CustomWorkoutsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$CustomWorkoutsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> description = const Value.absent(),
+            Value<String> workoutType = const Value.absent(),
+            Value<String> intervalsJson = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime?> updatedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              CustomWorkoutsCompanion(
+            id: id,
+            name: name,
+            description: description,
+            workoutType: workoutType,
+            intervalsJson: intervalsJson,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String name,
+            Value<String> description = const Value.absent(),
+            required String workoutType,
+            required String intervalsJson,
+            required DateTime createdAt,
+            Value<DateTime?> updatedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              CustomWorkoutsCompanion.insert(
+            id: id,
+            name: name,
+            description: description,
+            workoutType: workoutType,
+            intervalsJson: intervalsJson,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$CustomWorkoutsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $CustomWorkoutsTable> {
+  $$CustomWorkoutsTableFilterComposer(super.$state);
+  ColumnFilters<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get workoutType => $state.composableBuilder(
+      column: $state.table.workoutType,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get intervalsJson => $state.composableBuilder(
+      column: $state.table.intervalsJson,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$CustomWorkoutsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $CustomWorkoutsTable> {
+  $$CustomWorkoutsTableOrderingComposer(super.$state);
+  ColumnOrderings<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get workoutType => $state.composableBuilder(
+      column: $state.table.workoutType,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get intervalsJson => $state.composableBuilder(
+      column: $state.table.intervalsJson,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
@@ -2117,4 +2687,6 @@ class $AppDatabaseManager {
       $$TrainingSessionsTableTableManager(_db, _db.trainingSessions);
   $$DataPointsTableTableManager get dataPoints =>
       $$DataPointsTableTableManager(_db, _db.dataPoints);
+  $$CustomWorkoutsTableTableManager get customWorkouts =>
+      $$CustomWorkoutsTableTableManager(_db, _db.customWorkouts);
 }

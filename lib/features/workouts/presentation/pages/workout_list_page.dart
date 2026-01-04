@@ -9,13 +9,20 @@ import '../../../../domain/entities/training_session.dart';
 import '../../../../providers/providers.dart';
 import '../../../../routing/app_router.dart';
 
+/// Provider für benutzerdefinierte Workouts
+final customWorkoutsProvider = StreamProvider<List<Workout>>((ref) {
+  final db = ref.watch(appDatabaseProvider);
+  return db.workoutDao.watchAllWorkouts();
+});
+
 class WorkoutListPage extends ConsumerWidget {
   const WorkoutListPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(athleteProfileProvider);
-    final workouts = PredefinedWorkouts.all;
+    final customWorkoutsAsync = ref.watch(customWorkoutsProvider);
+    final predefinedWorkouts = PredefinedWorkouts.all;
 
     return Scaffold(
       appBar: AppBar(
@@ -23,35 +30,76 @@ class WorkoutListPage extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {
-              // TODO: Workout Builder
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Workout Builder kommt bald!')),
-              );
-            },
+            onPressed: () => context.push(AppRoutes.workoutBuilder),
             tooltip: 'Neues Workout',
           ),
         ],
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: workouts.length + 1, // +1 für Free Ride
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return _FreeRideCard(
-              onTap: () => _startFreeRide(context, ref),
-            );
-          }
+      body: customWorkoutsAsync.when(
+        data: (customWorkouts) {
+          final allWorkouts = [...customWorkouts, ...predefinedWorkouts];
+          final hasCustom = customWorkouts.isNotEmpty;
 
-          final workout = workouts[index - 1];
-          return _WorkoutCard(
-            workout: workout,
-            ftp: profile.ftp,
-            onTap: () => context.push(
-              '${AppRoutes.workoutPlayer}?workoutId=${workout.id}',
-            ),
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: allWorkouts.length + (hasCustom ? 2 : 1), // +1 Free Ride, +1 Header
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return _FreeRideCard(
+                  onTap: () => _startFreeRide(context, ref),
+                );
+              }
+
+              // Custom Workouts Sektion
+              if (hasCustom && index == 1) {
+                return const _SectionHeader(title: 'Meine Workouts');
+              }
+
+              // Offset für Custom Workouts
+              final workoutIndex = index - (hasCustom ? 2 : 1);
+
+              // Custom Workouts zuerst
+              if (hasCustom && workoutIndex < customWorkouts.length) {
+                final workout = customWorkouts[workoutIndex];
+                return _WorkoutCard(
+                  workout: workout,
+                  ftp: profile.ftp,
+                  isCustom: true,
+                  onTap: () => context.push(
+                    '${AppRoutes.workoutPlayer}?workoutId=${workout.id}',
+                  ),
+                  onEdit: () => context.push(
+                    '${AppRoutes.workoutBuilder}?workoutId=${workout.id}',
+                  ),
+                  onDelete: () => _confirmDelete(context, ref, workout),
+                );
+              }
+
+              // Predefined Header
+              final predefinedIndex = workoutIndex - customWorkouts.length;
+              if (hasCustom && predefinedIndex == 0) {
+                return const _SectionHeader(title: 'Vordefinierte Workouts');
+              }
+
+              // Predefined Workouts
+              final realPredefinedIndex = hasCustom ? predefinedIndex - 1 : workoutIndex;
+              if (realPredefinedIndex >= 0 && realPredefinedIndex < predefinedWorkouts.length) {
+                final workout = predefinedWorkouts[realPredefinedIndex];
+                return _WorkoutCard(
+                  workout: workout,
+                  ftp: profile.ftp,
+                  onTap: () => context.push(
+                    '${AppRoutes.workoutPlayer}?workoutId=${workout.id}',
+                  ),
+                );
+              }
+
+              return const SizedBox.shrink();
+            },
           );
         },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(child: Text('Fehler: $e')),
       ),
     );
   }
@@ -61,6 +109,54 @@ class WorkoutListPage extends ConsumerWidget {
           type: SessionType.freeRide,
         );
     context.push(AppRoutes.workoutPlayer);
+  }
+
+  Future<void> _confirmDelete(BuildContext context, WidgetRef ref, Workout workout) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Workout löschen?'),
+        content: Text('Möchtest du "${workout.name}" wirklich löschen?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Abbrechen'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: const Text('Löschen'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      final db = ref.read(appDatabaseProvider);
+      await db.workoutDao.deleteWorkout(workout.id);
+    }
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String title;
+
+  const _SectionHeader({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, top: 16, bottom: 8),
+      child: Text(
+        title.toUpperCase(),
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: AppColors.textMuted,
+          letterSpacing: 1,
+        ),
+      ),
+    );
   }
 }
 
@@ -140,11 +236,17 @@ class _WorkoutCard extends StatelessWidget {
   final Workout workout;
   final int ftp;
   final VoidCallback onTap;
+  final bool isCustom;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   const _WorkoutCard({
     required this.workout,
     required this.ftp,
     required this.onTap,
+    this.isCustom = false,
+    this.onEdit,
+    this.onDelete,
   });
 
   @override
@@ -170,23 +272,45 @@ class _WorkoutCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          workout.name,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                workout.name,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            if (isCustom) ...[
+                              IconButton(
+                                icon: const Icon(Icons.edit, size: 18),
+                                onPressed: onEdit,
+                                tooltip: 'Bearbeiten',
+                                visualDensity: VisualDensity.compact,
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.delete_outline, size: 18),
+                                onPressed: onDelete,
+                                tooltip: 'Löschen',
+                                visualDensity: VisualDensity.compact,
+                              ),
+                            ],
+                          ],
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          workout.description,
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 13,
+                        if (workout.description.isNotEmpty) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            workout.description,
+                            style: const TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 13,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                        ],
                       ],
                     ),
                   ),
