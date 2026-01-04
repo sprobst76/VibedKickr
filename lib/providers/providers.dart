@@ -6,8 +6,11 @@ import '../core/ble/ble_manager.dart';
 import '../core/ble/models/ble_device.dart';
 import '../core/ble/models/connection_state.dart';
 import '../core/ble/models/ftms_data.dart';
+import '../core/database/app_database.dart';
+import '../data/repositories/session_repository_impl.dart';
 import '../domain/entities/athlete_profile.dart';
 import '../domain/entities/training_session.dart';
+import '../domain/repositories/session_repository.dart';
 
 // ============================================================================
 // BLE Providers
@@ -44,6 +47,29 @@ final ftmsDataProvider = StreamProvider<FtmsData>((ref) {
     return Stream.value(FtmsData.empty());
   }
   return ftmsService.dataStream;
+});
+
+// ============================================================================
+// Database & Repository Providers
+// ============================================================================
+
+/// SQLite Datenbank (Drift)
+final appDatabaseProvider = Provider<AppDatabase>((ref) {
+  final db = AppDatabase();
+  ref.onDispose(() => db.close());
+  return db;
+});
+
+/// Session Repository
+final sessionRepositoryProvider = Provider<SessionRepository>((ref) {
+  final db = ref.watch(appDatabaseProvider);
+  return SessionRepositoryImpl(db);
+});
+
+/// Alle gespeicherten Sessions als Stream
+final savedSessionsProvider = StreamProvider<List<TrainingSession>>((ref) {
+  final repository = ref.watch(sessionRepositoryProvider);
+  return repository.watchAllSessions();
 });
 
 // ============================================================================
@@ -312,7 +338,7 @@ class ActiveSessionNotifier extends StateNotifier<TrainingSession?> {
     _ref.read(liveTrainingDataProvider.notifier).resumeSession();
   }
 
-  TrainingSession? finishSession() {
+  Future<TrainingSession?> finishSession() async {
     _recordingTimer?.cancel();
     _ref.read(liveTrainingDataProvider.notifier).stopSession();
 
@@ -329,6 +355,16 @@ class ActiveSessionNotifier extends StateNotifier<TrainingSession?> {
       dataPoints: List.from(_dataPoints),
       stats: stats,
     );
+
+    // Session in Datenbank speichern
+    try {
+      final repository = _ref.read(sessionRepositoryProvider);
+      await repository.saveSession(finishedSession);
+    } catch (e) {
+      // Fehler beim Speichern loggen, aber Session trotzdem zurückgeben
+      // ignore: avoid_print
+      print('Fehler beim Speichern der Session: $e');
+    }
 
     state = null;
     _dataPoints.clear();

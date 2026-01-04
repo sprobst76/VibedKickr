@@ -129,23 +129,26 @@ class _WorkoutPlayerPageState extends ConsumerState<WorkoutPlayerPage> {
     }
   }
 
-  void _handleStop(BuildContext context, WidgetRef ref) {
+  Future<void> _handleStop(BuildContext context, WidgetRef ref) async {
     ref.read(workoutPlayerProvider.notifier).stop();
-    final session = ref.read(activeSessionProvider.notifier).finishSession();
-    
+    final session = await ref.read(activeSessionProvider.notifier).finishSession();
+
     if (session != null && session.dataPoints.isNotEmpty) {
-      // TODO: Session speichern und Summary zeigen
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Training gespeichert: ${session.stats?.avgPower ?? 0}W Durchschnitt, '
-            '${session.stats?.tss ?? 0} TSS',
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Training gespeichert: ${session.stats?.avgPower ?? 0}W Durchschnitt, '
+              '${session.stats?.tss ?? 0} TSS',
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
-    
-    context.pop();
+
+    if (context.mounted) {
+      context.pop();
+    }
   }
 }
 

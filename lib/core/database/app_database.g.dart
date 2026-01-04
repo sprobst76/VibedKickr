@@ -1,0 +1,2120 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'app_database.dart';
+
+// ignore_for_file: type=lint
+class $TrainingSessionsTable extends TrainingSessions
+    with TableInfo<$TrainingSessionsTable, TrainingSessionEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TrainingSessionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _startTimeMeta =
+      const VerificationMeta('startTime');
+  @override
+  late final GeneratedColumn<int> startTime = GeneratedColumn<int>(
+      'start_time', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _endTimeMeta =
+      const VerificationMeta('endTime');
+  @override
+  late final GeneratedColumn<int> endTime = GeneratedColumn<int>(
+      'end_time', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _sessionTypeMeta =
+      const VerificationMeta('sessionType');
+  @override
+  late final GeneratedColumn<String> sessionType = GeneratedColumn<String>(
+      'session_type', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _workoutIdMeta =
+      const VerificationMeta('workoutId');
+  @override
+  late final GeneratedColumn<String> workoutId = GeneratedColumn<String>(
+      'workout_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _routeIdMeta =
+      const VerificationMeta('routeId');
+  @override
+  late final GeneratedColumn<String> routeId = GeneratedColumn<String>(
+      'route_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _statsDurationMsMeta =
+      const VerificationMeta('statsDurationMs');
+  @override
+  late final GeneratedColumn<int> statsDurationMs = GeneratedColumn<int>(
+      'stats_duration_ms', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _statsAvgPowerMeta =
+      const VerificationMeta('statsAvgPower');
+  @override
+  late final GeneratedColumn<int> statsAvgPower = GeneratedColumn<int>(
+      'stats_avg_power', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _statsMaxPowerMeta =
+      const VerificationMeta('statsMaxPower');
+  @override
+  late final GeneratedColumn<int> statsMaxPower = GeneratedColumn<int>(
+      'stats_max_power', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _statsNormalizedPowerMeta =
+      const VerificationMeta('statsNormalizedPower');
+  @override
+  late final GeneratedColumn<int> statsNormalizedPower = GeneratedColumn<int>(
+      'stats_normalized_power', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _statsIntensityFactorMeta =
+      const VerificationMeta('statsIntensityFactor');
+  @override
+  late final GeneratedColumn<double> statsIntensityFactor =
+      GeneratedColumn<double>('stats_intensity_factor', aliasedName, false,
+          type: DriftSqlType.double,
+          requiredDuringInsert: false,
+          defaultValue: const Constant(0.0));
+  static const VerificationMeta _statsTssMeta =
+      const VerificationMeta('statsTss');
+  @override
+  late final GeneratedColumn<int> statsTss = GeneratedColumn<int>(
+      'stats_tss', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _statsTotalWorkMeta =
+      const VerificationMeta('statsTotalWork');
+  @override
+  late final GeneratedColumn<int> statsTotalWork = GeneratedColumn<int>(
+      'stats_total_work', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _statsAvgCadenceMeta =
+      const VerificationMeta('statsAvgCadence');
+  @override
+  late final GeneratedColumn<int> statsAvgCadence = GeneratedColumn<int>(
+      'stats_avg_cadence', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _statsMaxCadenceMeta =
+      const VerificationMeta('statsMaxCadence');
+  @override
+  late final GeneratedColumn<int> statsMaxCadence = GeneratedColumn<int>(
+      'stats_max_cadence', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _statsAvgHeartRateMeta =
+      const VerificationMeta('statsAvgHeartRate');
+  @override
+  late final GeneratedColumn<int> statsAvgHeartRate = GeneratedColumn<int>(
+      'stats_avg_heart_rate', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _statsMaxHeartRateMeta =
+      const VerificationMeta('statsMaxHeartRate');
+  @override
+  late final GeneratedColumn<int> statsMaxHeartRate = GeneratedColumn<int>(
+      'stats_max_heart_rate', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _statsCaloriesMeta =
+      const VerificationMeta('statsCalories');
+  @override
+  late final GeneratedColumn<int> statsCalories = GeneratedColumn<int>(
+      'stats_calories', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _statsDistanceMeta =
+      const VerificationMeta('statsDistance');
+  @override
+  late final GeneratedColumn<double> statsDistance = GeneratedColumn<double>(
+      'stats_distance', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
+  static const VerificationMeta _syncStatusJsonMeta =
+      const VerificationMeta('syncStatusJson');
+  @override
+  late final GeneratedColumn<String> syncStatusJson = GeneratedColumn<String>(
+      'sync_status_json', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('{}'));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        startTime,
+        endTime,
+        sessionType,
+        workoutId,
+        routeId,
+        statsDurationMs,
+        statsAvgPower,
+        statsMaxPower,
+        statsNormalizedPower,
+        statsIntensityFactor,
+        statsTss,
+        statsTotalWork,
+        statsAvgCadence,
+        statsMaxCadence,
+        statsAvgHeartRate,
+        statsMaxHeartRate,
+        statsCalories,
+        statsDistance,
+        syncStatusJson
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'training_sessions';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<TrainingSessionEntity> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('start_time')) {
+      context.handle(_startTimeMeta,
+          startTime.isAcceptableOrUnknown(data['start_time']!, _startTimeMeta));
+    } else if (isInserting) {
+      context.missing(_startTimeMeta);
+    }
+    if (data.containsKey('end_time')) {
+      context.handle(_endTimeMeta,
+          endTime.isAcceptableOrUnknown(data['end_time']!, _endTimeMeta));
+    }
+    if (data.containsKey('session_type')) {
+      context.handle(
+          _sessionTypeMeta,
+          sessionType.isAcceptableOrUnknown(
+              data['session_type']!, _sessionTypeMeta));
+    } else if (isInserting) {
+      context.missing(_sessionTypeMeta);
+    }
+    if (data.containsKey('workout_id')) {
+      context.handle(_workoutIdMeta,
+          workoutId.isAcceptableOrUnknown(data['workout_id']!, _workoutIdMeta));
+    }
+    if (data.containsKey('route_id')) {
+      context.handle(_routeIdMeta,
+          routeId.isAcceptableOrUnknown(data['route_id']!, _routeIdMeta));
+    }
+    if (data.containsKey('stats_duration_ms')) {
+      context.handle(
+          _statsDurationMsMeta,
+          statsDurationMs.isAcceptableOrUnknown(
+              data['stats_duration_ms']!, _statsDurationMsMeta));
+    }
+    if (data.containsKey('stats_avg_power')) {
+      context.handle(
+          _statsAvgPowerMeta,
+          statsAvgPower.isAcceptableOrUnknown(
+              data['stats_avg_power']!, _statsAvgPowerMeta));
+    }
+    if (data.containsKey('stats_max_power')) {
+      context.handle(
+          _statsMaxPowerMeta,
+          statsMaxPower.isAcceptableOrUnknown(
+              data['stats_max_power']!, _statsMaxPowerMeta));
+    }
+    if (data.containsKey('stats_normalized_power')) {
+      context.handle(
+          _statsNormalizedPowerMeta,
+          statsNormalizedPower.isAcceptableOrUnknown(
+              data['stats_normalized_power']!, _statsNormalizedPowerMeta));
+    }
+    if (data.containsKey('stats_intensity_factor')) {
+      context.handle(
+          _statsIntensityFactorMeta,
+          statsIntensityFactor.isAcceptableOrUnknown(
+              data['stats_intensity_factor']!, _statsIntensityFactorMeta));
+    }
+    if (data.containsKey('stats_tss')) {
+      context.handle(_statsTssMeta,
+          statsTss.isAcceptableOrUnknown(data['stats_tss']!, _statsTssMeta));
+    }
+    if (data.containsKey('stats_total_work')) {
+      context.handle(
+          _statsTotalWorkMeta,
+          statsTotalWork.isAcceptableOrUnknown(
+              data['stats_total_work']!, _statsTotalWorkMeta));
+    }
+    if (data.containsKey('stats_avg_cadence')) {
+      context.handle(
+          _statsAvgCadenceMeta,
+          statsAvgCadence.isAcceptableOrUnknown(
+              data['stats_avg_cadence']!, _statsAvgCadenceMeta));
+    }
+    if (data.containsKey('stats_max_cadence')) {
+      context.handle(
+          _statsMaxCadenceMeta,
+          statsMaxCadence.isAcceptableOrUnknown(
+              data['stats_max_cadence']!, _statsMaxCadenceMeta));
+    }
+    if (data.containsKey('stats_avg_heart_rate')) {
+      context.handle(
+          _statsAvgHeartRateMeta,
+          statsAvgHeartRate.isAcceptableOrUnknown(
+              data['stats_avg_heart_rate']!, _statsAvgHeartRateMeta));
+    }
+    if (data.containsKey('stats_max_heart_rate')) {
+      context.handle(
+          _statsMaxHeartRateMeta,
+          statsMaxHeartRate.isAcceptableOrUnknown(
+              data['stats_max_heart_rate']!, _statsMaxHeartRateMeta));
+    }
+    if (data.containsKey('stats_calories')) {
+      context.handle(
+          _statsCaloriesMeta,
+          statsCalories.isAcceptableOrUnknown(
+              data['stats_calories']!, _statsCaloriesMeta));
+    }
+    if (data.containsKey('stats_distance')) {
+      context.handle(
+          _statsDistanceMeta,
+          statsDistance.isAcceptableOrUnknown(
+              data['stats_distance']!, _statsDistanceMeta));
+    }
+    if (data.containsKey('sync_status_json')) {
+      context.handle(
+          _syncStatusJsonMeta,
+          syncStatusJson.isAcceptableOrUnknown(
+              data['sync_status_json']!, _syncStatusJsonMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TrainingSessionEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TrainingSessionEntity(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      startTime: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}start_time'])!,
+      endTime: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}end_time']),
+      sessionType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}session_type'])!,
+      workoutId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}workout_id']),
+      routeId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}route_id']),
+      statsDurationMs: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stats_duration_ms'])!,
+      statsAvgPower: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stats_avg_power'])!,
+      statsMaxPower: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stats_max_power'])!,
+      statsNormalizedPower: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}stats_normalized_power'])!,
+      statsIntensityFactor: attachedDatabase.typeMapping.read(
+          DriftSqlType.double,
+          data['${effectivePrefix}stats_intensity_factor'])!,
+      statsTss: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stats_tss'])!,
+      statsTotalWork: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stats_total_work'])!,
+      statsAvgCadence: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stats_avg_cadence']),
+      statsMaxCadence: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stats_max_cadence']),
+      statsAvgHeartRate: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}stats_avg_heart_rate']),
+      statsMaxHeartRate: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}stats_max_heart_rate']),
+      statsCalories: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stats_calories']),
+      statsDistance: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}stats_distance']),
+      syncStatusJson: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}sync_status_json'])!,
+    );
+  }
+
+  @override
+  $TrainingSessionsTable createAlias(String alias) {
+    return $TrainingSessionsTable(attachedDatabase, alias);
+  }
+}
+
+class TrainingSessionEntity extends DataClass
+    implements Insertable<TrainingSessionEntity> {
+  final String id;
+  final int startTime;
+  final int? endTime;
+  final String sessionType;
+  final String? workoutId;
+  final String? routeId;
+  final int statsDurationMs;
+  final int statsAvgPower;
+  final int statsMaxPower;
+  final int statsNormalizedPower;
+  final double statsIntensityFactor;
+  final int statsTss;
+  final int statsTotalWork;
+  final int? statsAvgCadence;
+  final int? statsMaxCadence;
+  final int? statsAvgHeartRate;
+  final int? statsMaxHeartRate;
+  final int? statsCalories;
+  final double? statsDistance;
+  final String syncStatusJson;
+  const TrainingSessionEntity(
+      {required this.id,
+      required this.startTime,
+      this.endTime,
+      required this.sessionType,
+      this.workoutId,
+      this.routeId,
+      required this.statsDurationMs,
+      required this.statsAvgPower,
+      required this.statsMaxPower,
+      required this.statsNormalizedPower,
+      required this.statsIntensityFactor,
+      required this.statsTss,
+      required this.statsTotalWork,
+      this.statsAvgCadence,
+      this.statsMaxCadence,
+      this.statsAvgHeartRate,
+      this.statsMaxHeartRate,
+      this.statsCalories,
+      this.statsDistance,
+      required this.syncStatusJson});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['start_time'] = Variable<int>(startTime);
+    if (!nullToAbsent || endTime != null) {
+      map['end_time'] = Variable<int>(endTime);
+    }
+    map['session_type'] = Variable<String>(sessionType);
+    if (!nullToAbsent || workoutId != null) {
+      map['workout_id'] = Variable<String>(workoutId);
+    }
+    if (!nullToAbsent || routeId != null) {
+      map['route_id'] = Variable<String>(routeId);
+    }
+    map['stats_duration_ms'] = Variable<int>(statsDurationMs);
+    map['stats_avg_power'] = Variable<int>(statsAvgPower);
+    map['stats_max_power'] = Variable<int>(statsMaxPower);
+    map['stats_normalized_power'] = Variable<int>(statsNormalizedPower);
+    map['stats_intensity_factor'] = Variable<double>(statsIntensityFactor);
+    map['stats_tss'] = Variable<int>(statsTss);
+    map['stats_total_work'] = Variable<int>(statsTotalWork);
+    if (!nullToAbsent || statsAvgCadence != null) {
+      map['stats_avg_cadence'] = Variable<int>(statsAvgCadence);
+    }
+    if (!nullToAbsent || statsMaxCadence != null) {
+      map['stats_max_cadence'] = Variable<int>(statsMaxCadence);
+    }
+    if (!nullToAbsent || statsAvgHeartRate != null) {
+      map['stats_avg_heart_rate'] = Variable<int>(statsAvgHeartRate);
+    }
+    if (!nullToAbsent || statsMaxHeartRate != null) {
+      map['stats_max_heart_rate'] = Variable<int>(statsMaxHeartRate);
+    }
+    if (!nullToAbsent || statsCalories != null) {
+      map['stats_calories'] = Variable<int>(statsCalories);
+    }
+    if (!nullToAbsent || statsDistance != null) {
+      map['stats_distance'] = Variable<double>(statsDistance);
+    }
+    map['sync_status_json'] = Variable<String>(syncStatusJson);
+    return map;
+  }
+
+  TrainingSessionsCompanion toCompanion(bool nullToAbsent) {
+    return TrainingSessionsCompanion(
+      id: Value(id),
+      startTime: Value(startTime),
+      endTime: endTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endTime),
+      sessionType: Value(sessionType),
+      workoutId: workoutId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(workoutId),
+      routeId: routeId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(routeId),
+      statsDurationMs: Value(statsDurationMs),
+      statsAvgPower: Value(statsAvgPower),
+      statsMaxPower: Value(statsMaxPower),
+      statsNormalizedPower: Value(statsNormalizedPower),
+      statsIntensityFactor: Value(statsIntensityFactor),
+      statsTss: Value(statsTss),
+      statsTotalWork: Value(statsTotalWork),
+      statsAvgCadence: statsAvgCadence == null && nullToAbsent
+          ? const Value.absent()
+          : Value(statsAvgCadence),
+      statsMaxCadence: statsMaxCadence == null && nullToAbsent
+          ? const Value.absent()
+          : Value(statsMaxCadence),
+      statsAvgHeartRate: statsAvgHeartRate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(statsAvgHeartRate),
+      statsMaxHeartRate: statsMaxHeartRate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(statsMaxHeartRate),
+      statsCalories: statsCalories == null && nullToAbsent
+          ? const Value.absent()
+          : Value(statsCalories),
+      statsDistance: statsDistance == null && nullToAbsent
+          ? const Value.absent()
+          : Value(statsDistance),
+      syncStatusJson: Value(syncStatusJson),
+    );
+  }
+
+  factory TrainingSessionEntity.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TrainingSessionEntity(
+      id: serializer.fromJson<String>(json['id']),
+      startTime: serializer.fromJson<int>(json['startTime']),
+      endTime: serializer.fromJson<int?>(json['endTime']),
+      sessionType: serializer.fromJson<String>(json['sessionType']),
+      workoutId: serializer.fromJson<String?>(json['workoutId']),
+      routeId: serializer.fromJson<String?>(json['routeId']),
+      statsDurationMs: serializer.fromJson<int>(json['statsDurationMs']),
+      statsAvgPower: serializer.fromJson<int>(json['statsAvgPower']),
+      statsMaxPower: serializer.fromJson<int>(json['statsMaxPower']),
+      statsNormalizedPower:
+          serializer.fromJson<int>(json['statsNormalizedPower']),
+      statsIntensityFactor:
+          serializer.fromJson<double>(json['statsIntensityFactor']),
+      statsTss: serializer.fromJson<int>(json['statsTss']),
+      statsTotalWork: serializer.fromJson<int>(json['statsTotalWork']),
+      statsAvgCadence: serializer.fromJson<int?>(json['statsAvgCadence']),
+      statsMaxCadence: serializer.fromJson<int?>(json['statsMaxCadence']),
+      statsAvgHeartRate: serializer.fromJson<int?>(json['statsAvgHeartRate']),
+      statsMaxHeartRate: serializer.fromJson<int?>(json['statsMaxHeartRate']),
+      statsCalories: serializer.fromJson<int?>(json['statsCalories']),
+      statsDistance: serializer.fromJson<double?>(json['statsDistance']),
+      syncStatusJson: serializer.fromJson<String>(json['syncStatusJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'startTime': serializer.toJson<int>(startTime),
+      'endTime': serializer.toJson<int?>(endTime),
+      'sessionType': serializer.toJson<String>(sessionType),
+      'workoutId': serializer.toJson<String?>(workoutId),
+      'routeId': serializer.toJson<String?>(routeId),
+      'statsDurationMs': serializer.toJson<int>(statsDurationMs),
+      'statsAvgPower': serializer.toJson<int>(statsAvgPower),
+      'statsMaxPower': serializer.toJson<int>(statsMaxPower),
+      'statsNormalizedPower': serializer.toJson<int>(statsNormalizedPower),
+      'statsIntensityFactor': serializer.toJson<double>(statsIntensityFactor),
+      'statsTss': serializer.toJson<int>(statsTss),
+      'statsTotalWork': serializer.toJson<int>(statsTotalWork),
+      'statsAvgCadence': serializer.toJson<int?>(statsAvgCadence),
+      'statsMaxCadence': serializer.toJson<int?>(statsMaxCadence),
+      'statsAvgHeartRate': serializer.toJson<int?>(statsAvgHeartRate),
+      'statsMaxHeartRate': serializer.toJson<int?>(statsMaxHeartRate),
+      'statsCalories': serializer.toJson<int?>(statsCalories),
+      'statsDistance': serializer.toJson<double?>(statsDistance),
+      'syncStatusJson': serializer.toJson<String>(syncStatusJson),
+    };
+  }
+
+  TrainingSessionEntity copyWith(
+          {String? id,
+          int? startTime,
+          Value<int?> endTime = const Value.absent(),
+          String? sessionType,
+          Value<String?> workoutId = const Value.absent(),
+          Value<String?> routeId = const Value.absent(),
+          int? statsDurationMs,
+          int? statsAvgPower,
+          int? statsMaxPower,
+          int? statsNormalizedPower,
+          double? statsIntensityFactor,
+          int? statsTss,
+          int? statsTotalWork,
+          Value<int?> statsAvgCadence = const Value.absent(),
+          Value<int?> statsMaxCadence = const Value.absent(),
+          Value<int?> statsAvgHeartRate = const Value.absent(),
+          Value<int?> statsMaxHeartRate = const Value.absent(),
+          Value<int?> statsCalories = const Value.absent(),
+          Value<double?> statsDistance = const Value.absent(),
+          String? syncStatusJson}) =>
+      TrainingSessionEntity(
+        id: id ?? this.id,
+        startTime: startTime ?? this.startTime,
+        endTime: endTime.present ? endTime.value : this.endTime,
+        sessionType: sessionType ?? this.sessionType,
+        workoutId: workoutId.present ? workoutId.value : this.workoutId,
+        routeId: routeId.present ? routeId.value : this.routeId,
+        statsDurationMs: statsDurationMs ?? this.statsDurationMs,
+        statsAvgPower: statsAvgPower ?? this.statsAvgPower,
+        statsMaxPower: statsMaxPower ?? this.statsMaxPower,
+        statsNormalizedPower: statsNormalizedPower ?? this.statsNormalizedPower,
+        statsIntensityFactor: statsIntensityFactor ?? this.statsIntensityFactor,
+        statsTss: statsTss ?? this.statsTss,
+        statsTotalWork: statsTotalWork ?? this.statsTotalWork,
+        statsAvgCadence: statsAvgCadence.present
+            ? statsAvgCadence.value
+            : this.statsAvgCadence,
+        statsMaxCadence: statsMaxCadence.present
+            ? statsMaxCadence.value
+            : this.statsMaxCadence,
+        statsAvgHeartRate: statsAvgHeartRate.present
+            ? statsAvgHeartRate.value
+            : this.statsAvgHeartRate,
+        statsMaxHeartRate: statsMaxHeartRate.present
+            ? statsMaxHeartRate.value
+            : this.statsMaxHeartRate,
+        statsCalories:
+            statsCalories.present ? statsCalories.value : this.statsCalories,
+        statsDistance:
+            statsDistance.present ? statsDistance.value : this.statsDistance,
+        syncStatusJson: syncStatusJson ?? this.syncStatusJson,
+      );
+  TrainingSessionEntity copyWithCompanion(TrainingSessionsCompanion data) {
+    return TrainingSessionEntity(
+      id: data.id.present ? data.id.value : this.id,
+      startTime: data.startTime.present ? data.startTime.value : this.startTime,
+      endTime: data.endTime.present ? data.endTime.value : this.endTime,
+      sessionType:
+          data.sessionType.present ? data.sessionType.value : this.sessionType,
+      workoutId: data.workoutId.present ? data.workoutId.value : this.workoutId,
+      routeId: data.routeId.present ? data.routeId.value : this.routeId,
+      statsDurationMs: data.statsDurationMs.present
+          ? data.statsDurationMs.value
+          : this.statsDurationMs,
+      statsAvgPower: data.statsAvgPower.present
+          ? data.statsAvgPower.value
+          : this.statsAvgPower,
+      statsMaxPower: data.statsMaxPower.present
+          ? data.statsMaxPower.value
+          : this.statsMaxPower,
+      statsNormalizedPower: data.statsNormalizedPower.present
+          ? data.statsNormalizedPower.value
+          : this.statsNormalizedPower,
+      statsIntensityFactor: data.statsIntensityFactor.present
+          ? data.statsIntensityFactor.value
+          : this.statsIntensityFactor,
+      statsTss: data.statsTss.present ? data.statsTss.value : this.statsTss,
+      statsTotalWork: data.statsTotalWork.present
+          ? data.statsTotalWork.value
+          : this.statsTotalWork,
+      statsAvgCadence: data.statsAvgCadence.present
+          ? data.statsAvgCadence.value
+          : this.statsAvgCadence,
+      statsMaxCadence: data.statsMaxCadence.present
+          ? data.statsMaxCadence.value
+          : this.statsMaxCadence,
+      statsAvgHeartRate: data.statsAvgHeartRate.present
+          ? data.statsAvgHeartRate.value
+          : this.statsAvgHeartRate,
+      statsMaxHeartRate: data.statsMaxHeartRate.present
+          ? data.statsMaxHeartRate.value
+          : this.statsMaxHeartRate,
+      statsCalories: data.statsCalories.present
+          ? data.statsCalories.value
+          : this.statsCalories,
+      statsDistance: data.statsDistance.present
+          ? data.statsDistance.value
+          : this.statsDistance,
+      syncStatusJson: data.syncStatusJson.present
+          ? data.syncStatusJson.value
+          : this.syncStatusJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrainingSessionEntity(')
+          ..write('id: $id, ')
+          ..write('startTime: $startTime, ')
+          ..write('endTime: $endTime, ')
+          ..write('sessionType: $sessionType, ')
+          ..write('workoutId: $workoutId, ')
+          ..write('routeId: $routeId, ')
+          ..write('statsDurationMs: $statsDurationMs, ')
+          ..write('statsAvgPower: $statsAvgPower, ')
+          ..write('statsMaxPower: $statsMaxPower, ')
+          ..write('statsNormalizedPower: $statsNormalizedPower, ')
+          ..write('statsIntensityFactor: $statsIntensityFactor, ')
+          ..write('statsTss: $statsTss, ')
+          ..write('statsTotalWork: $statsTotalWork, ')
+          ..write('statsAvgCadence: $statsAvgCadence, ')
+          ..write('statsMaxCadence: $statsMaxCadence, ')
+          ..write('statsAvgHeartRate: $statsAvgHeartRate, ')
+          ..write('statsMaxHeartRate: $statsMaxHeartRate, ')
+          ..write('statsCalories: $statsCalories, ')
+          ..write('statsDistance: $statsDistance, ')
+          ..write('syncStatusJson: $syncStatusJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      startTime,
+      endTime,
+      sessionType,
+      workoutId,
+      routeId,
+      statsDurationMs,
+      statsAvgPower,
+      statsMaxPower,
+      statsNormalizedPower,
+      statsIntensityFactor,
+      statsTss,
+      statsTotalWork,
+      statsAvgCadence,
+      statsMaxCadence,
+      statsAvgHeartRate,
+      statsMaxHeartRate,
+      statsCalories,
+      statsDistance,
+      syncStatusJson);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TrainingSessionEntity &&
+          other.id == this.id &&
+          other.startTime == this.startTime &&
+          other.endTime == this.endTime &&
+          other.sessionType == this.sessionType &&
+          other.workoutId == this.workoutId &&
+          other.routeId == this.routeId &&
+          other.statsDurationMs == this.statsDurationMs &&
+          other.statsAvgPower == this.statsAvgPower &&
+          other.statsMaxPower == this.statsMaxPower &&
+          other.statsNormalizedPower == this.statsNormalizedPower &&
+          other.statsIntensityFactor == this.statsIntensityFactor &&
+          other.statsTss == this.statsTss &&
+          other.statsTotalWork == this.statsTotalWork &&
+          other.statsAvgCadence == this.statsAvgCadence &&
+          other.statsMaxCadence == this.statsMaxCadence &&
+          other.statsAvgHeartRate == this.statsAvgHeartRate &&
+          other.statsMaxHeartRate == this.statsMaxHeartRate &&
+          other.statsCalories == this.statsCalories &&
+          other.statsDistance == this.statsDistance &&
+          other.syncStatusJson == this.syncStatusJson);
+}
+
+class TrainingSessionsCompanion extends UpdateCompanion<TrainingSessionEntity> {
+  final Value<String> id;
+  final Value<int> startTime;
+  final Value<int?> endTime;
+  final Value<String> sessionType;
+  final Value<String?> workoutId;
+  final Value<String?> routeId;
+  final Value<int> statsDurationMs;
+  final Value<int> statsAvgPower;
+  final Value<int> statsMaxPower;
+  final Value<int> statsNormalizedPower;
+  final Value<double> statsIntensityFactor;
+  final Value<int> statsTss;
+  final Value<int> statsTotalWork;
+  final Value<int?> statsAvgCadence;
+  final Value<int?> statsMaxCadence;
+  final Value<int?> statsAvgHeartRate;
+  final Value<int?> statsMaxHeartRate;
+  final Value<int?> statsCalories;
+  final Value<double?> statsDistance;
+  final Value<String> syncStatusJson;
+  final Value<int> rowid;
+  const TrainingSessionsCompanion({
+    this.id = const Value.absent(),
+    this.startTime = const Value.absent(),
+    this.endTime = const Value.absent(),
+    this.sessionType = const Value.absent(),
+    this.workoutId = const Value.absent(),
+    this.routeId = const Value.absent(),
+    this.statsDurationMs = const Value.absent(),
+    this.statsAvgPower = const Value.absent(),
+    this.statsMaxPower = const Value.absent(),
+    this.statsNormalizedPower = const Value.absent(),
+    this.statsIntensityFactor = const Value.absent(),
+    this.statsTss = const Value.absent(),
+    this.statsTotalWork = const Value.absent(),
+    this.statsAvgCadence = const Value.absent(),
+    this.statsMaxCadence = const Value.absent(),
+    this.statsAvgHeartRate = const Value.absent(),
+    this.statsMaxHeartRate = const Value.absent(),
+    this.statsCalories = const Value.absent(),
+    this.statsDistance = const Value.absent(),
+    this.syncStatusJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TrainingSessionsCompanion.insert({
+    required String id,
+    required int startTime,
+    this.endTime = const Value.absent(),
+    required String sessionType,
+    this.workoutId = const Value.absent(),
+    this.routeId = const Value.absent(),
+    this.statsDurationMs = const Value.absent(),
+    this.statsAvgPower = const Value.absent(),
+    this.statsMaxPower = const Value.absent(),
+    this.statsNormalizedPower = const Value.absent(),
+    this.statsIntensityFactor = const Value.absent(),
+    this.statsTss = const Value.absent(),
+    this.statsTotalWork = const Value.absent(),
+    this.statsAvgCadence = const Value.absent(),
+    this.statsMaxCadence = const Value.absent(),
+    this.statsAvgHeartRate = const Value.absent(),
+    this.statsMaxHeartRate = const Value.absent(),
+    this.statsCalories = const Value.absent(),
+    this.statsDistance = const Value.absent(),
+    this.syncStatusJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        startTime = Value(startTime),
+        sessionType = Value(sessionType);
+  static Insertable<TrainingSessionEntity> custom({
+    Expression<String>? id,
+    Expression<int>? startTime,
+    Expression<int>? endTime,
+    Expression<String>? sessionType,
+    Expression<String>? workoutId,
+    Expression<String>? routeId,
+    Expression<int>? statsDurationMs,
+    Expression<int>? statsAvgPower,
+    Expression<int>? statsMaxPower,
+    Expression<int>? statsNormalizedPower,
+    Expression<double>? statsIntensityFactor,
+    Expression<int>? statsTss,
+    Expression<int>? statsTotalWork,
+    Expression<int>? statsAvgCadence,
+    Expression<int>? statsMaxCadence,
+    Expression<int>? statsAvgHeartRate,
+    Expression<int>? statsMaxHeartRate,
+    Expression<int>? statsCalories,
+    Expression<double>? statsDistance,
+    Expression<String>? syncStatusJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (startTime != null) 'start_time': startTime,
+      if (endTime != null) 'end_time': endTime,
+      if (sessionType != null) 'session_type': sessionType,
+      if (workoutId != null) 'workout_id': workoutId,
+      if (routeId != null) 'route_id': routeId,
+      if (statsDurationMs != null) 'stats_duration_ms': statsDurationMs,
+      if (statsAvgPower != null) 'stats_avg_power': statsAvgPower,
+      if (statsMaxPower != null) 'stats_max_power': statsMaxPower,
+      if (statsNormalizedPower != null)
+        'stats_normalized_power': statsNormalizedPower,
+      if (statsIntensityFactor != null)
+        'stats_intensity_factor': statsIntensityFactor,
+      if (statsTss != null) 'stats_tss': statsTss,
+      if (statsTotalWork != null) 'stats_total_work': statsTotalWork,
+      if (statsAvgCadence != null) 'stats_avg_cadence': statsAvgCadence,
+      if (statsMaxCadence != null) 'stats_max_cadence': statsMaxCadence,
+      if (statsAvgHeartRate != null) 'stats_avg_heart_rate': statsAvgHeartRate,
+      if (statsMaxHeartRate != null) 'stats_max_heart_rate': statsMaxHeartRate,
+      if (statsCalories != null) 'stats_calories': statsCalories,
+      if (statsDistance != null) 'stats_distance': statsDistance,
+      if (syncStatusJson != null) 'sync_status_json': syncStatusJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TrainingSessionsCompanion copyWith(
+      {Value<String>? id,
+      Value<int>? startTime,
+      Value<int?>? endTime,
+      Value<String>? sessionType,
+      Value<String?>? workoutId,
+      Value<String?>? routeId,
+      Value<int>? statsDurationMs,
+      Value<int>? statsAvgPower,
+      Value<int>? statsMaxPower,
+      Value<int>? statsNormalizedPower,
+      Value<double>? statsIntensityFactor,
+      Value<int>? statsTss,
+      Value<int>? statsTotalWork,
+      Value<int?>? statsAvgCadence,
+      Value<int?>? statsMaxCadence,
+      Value<int?>? statsAvgHeartRate,
+      Value<int?>? statsMaxHeartRate,
+      Value<int?>? statsCalories,
+      Value<double?>? statsDistance,
+      Value<String>? syncStatusJson,
+      Value<int>? rowid}) {
+    return TrainingSessionsCompanion(
+      id: id ?? this.id,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      sessionType: sessionType ?? this.sessionType,
+      workoutId: workoutId ?? this.workoutId,
+      routeId: routeId ?? this.routeId,
+      statsDurationMs: statsDurationMs ?? this.statsDurationMs,
+      statsAvgPower: statsAvgPower ?? this.statsAvgPower,
+      statsMaxPower: statsMaxPower ?? this.statsMaxPower,
+      statsNormalizedPower: statsNormalizedPower ?? this.statsNormalizedPower,
+      statsIntensityFactor: statsIntensityFactor ?? this.statsIntensityFactor,
+      statsTss: statsTss ?? this.statsTss,
+      statsTotalWork: statsTotalWork ?? this.statsTotalWork,
+      statsAvgCadence: statsAvgCadence ?? this.statsAvgCadence,
+      statsMaxCadence: statsMaxCadence ?? this.statsMaxCadence,
+      statsAvgHeartRate: statsAvgHeartRate ?? this.statsAvgHeartRate,
+      statsMaxHeartRate: statsMaxHeartRate ?? this.statsMaxHeartRate,
+      statsCalories: statsCalories ?? this.statsCalories,
+      statsDistance: statsDistance ?? this.statsDistance,
+      syncStatusJson: syncStatusJson ?? this.syncStatusJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (startTime.present) {
+      map['start_time'] = Variable<int>(startTime.value);
+    }
+    if (endTime.present) {
+      map['end_time'] = Variable<int>(endTime.value);
+    }
+    if (sessionType.present) {
+      map['session_type'] = Variable<String>(sessionType.value);
+    }
+    if (workoutId.present) {
+      map['workout_id'] = Variable<String>(workoutId.value);
+    }
+    if (routeId.present) {
+      map['route_id'] = Variable<String>(routeId.value);
+    }
+    if (statsDurationMs.present) {
+      map['stats_duration_ms'] = Variable<int>(statsDurationMs.value);
+    }
+    if (statsAvgPower.present) {
+      map['stats_avg_power'] = Variable<int>(statsAvgPower.value);
+    }
+    if (statsMaxPower.present) {
+      map['stats_max_power'] = Variable<int>(statsMaxPower.value);
+    }
+    if (statsNormalizedPower.present) {
+      map['stats_normalized_power'] = Variable<int>(statsNormalizedPower.value);
+    }
+    if (statsIntensityFactor.present) {
+      map['stats_intensity_factor'] =
+          Variable<double>(statsIntensityFactor.value);
+    }
+    if (statsTss.present) {
+      map['stats_tss'] = Variable<int>(statsTss.value);
+    }
+    if (statsTotalWork.present) {
+      map['stats_total_work'] = Variable<int>(statsTotalWork.value);
+    }
+    if (statsAvgCadence.present) {
+      map['stats_avg_cadence'] = Variable<int>(statsAvgCadence.value);
+    }
+    if (statsMaxCadence.present) {
+      map['stats_max_cadence'] = Variable<int>(statsMaxCadence.value);
+    }
+    if (statsAvgHeartRate.present) {
+      map['stats_avg_heart_rate'] = Variable<int>(statsAvgHeartRate.value);
+    }
+    if (statsMaxHeartRate.present) {
+      map['stats_max_heart_rate'] = Variable<int>(statsMaxHeartRate.value);
+    }
+    if (statsCalories.present) {
+      map['stats_calories'] = Variable<int>(statsCalories.value);
+    }
+    if (statsDistance.present) {
+      map['stats_distance'] = Variable<double>(statsDistance.value);
+    }
+    if (syncStatusJson.present) {
+      map['sync_status_json'] = Variable<String>(syncStatusJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrainingSessionsCompanion(')
+          ..write('id: $id, ')
+          ..write('startTime: $startTime, ')
+          ..write('endTime: $endTime, ')
+          ..write('sessionType: $sessionType, ')
+          ..write('workoutId: $workoutId, ')
+          ..write('routeId: $routeId, ')
+          ..write('statsDurationMs: $statsDurationMs, ')
+          ..write('statsAvgPower: $statsAvgPower, ')
+          ..write('statsMaxPower: $statsMaxPower, ')
+          ..write('statsNormalizedPower: $statsNormalizedPower, ')
+          ..write('statsIntensityFactor: $statsIntensityFactor, ')
+          ..write('statsTss: $statsTss, ')
+          ..write('statsTotalWork: $statsTotalWork, ')
+          ..write('statsAvgCadence: $statsAvgCadence, ')
+          ..write('statsMaxCadence: $statsMaxCadence, ')
+          ..write('statsAvgHeartRate: $statsAvgHeartRate, ')
+          ..write('statsMaxHeartRate: $statsMaxHeartRate, ')
+          ..write('statsCalories: $statsCalories, ')
+          ..write('statsDistance: $statsDistance, ')
+          ..write('syncStatusJson: $syncStatusJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DataPointsTable extends DataPoints
+    with TableInfo<$DataPointsTable, DataPointEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DataPointsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _sessionIdMeta =
+      const VerificationMeta('sessionId');
+  @override
+  late final GeneratedColumn<String> sessionId = GeneratedColumn<String>(
+      'session_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES training_sessions (id) ON DELETE CASCADE'));
+  static const VerificationMeta _timestampMsMeta =
+      const VerificationMeta('timestampMs');
+  @override
+  late final GeneratedColumn<int> timestampMs = GeneratedColumn<int>(
+      'timestamp_ms', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _powerMeta = const VerificationMeta('power');
+  @override
+  late final GeneratedColumn<int> power = GeneratedColumn<int>(
+      'power', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _cadenceMeta =
+      const VerificationMeta('cadence');
+  @override
+  late final GeneratedColumn<int> cadence = GeneratedColumn<int>(
+      'cadence', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _heartRateMeta =
+      const VerificationMeta('heartRate');
+  @override
+  late final GeneratedColumn<int> heartRate = GeneratedColumn<int>(
+      'heart_rate', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _speedMeta = const VerificationMeta('speed');
+  @override
+  late final GeneratedColumn<double> speed = GeneratedColumn<double>(
+      'speed', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
+  static const VerificationMeta _distanceMeta =
+      const VerificationMeta('distance');
+  @override
+  late final GeneratedColumn<int> distance = GeneratedColumn<int>(
+      'distance', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _gradeMeta = const VerificationMeta('grade');
+  @override
+  late final GeneratedColumn<double> grade = GeneratedColumn<double>(
+      'grade', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
+  static const VerificationMeta _targetPowerMeta =
+      const VerificationMeta('targetPower');
+  @override
+  late final GeneratedColumn<int> targetPower = GeneratedColumn<int>(
+      'target_power', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        sessionId,
+        timestampMs,
+        power,
+        cadence,
+        heartRate,
+        speed,
+        distance,
+        grade,
+        targetPower
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'data_points';
+  @override
+  VerificationContext validateIntegrity(Insertable<DataPointEntity> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('session_id')) {
+      context.handle(_sessionIdMeta,
+          sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta));
+    } else if (isInserting) {
+      context.missing(_sessionIdMeta);
+    }
+    if (data.containsKey('timestamp_ms')) {
+      context.handle(
+          _timestampMsMeta,
+          timestampMs.isAcceptableOrUnknown(
+              data['timestamp_ms']!, _timestampMsMeta));
+    } else if (isInserting) {
+      context.missing(_timestampMsMeta);
+    }
+    if (data.containsKey('power')) {
+      context.handle(
+          _powerMeta, power.isAcceptableOrUnknown(data['power']!, _powerMeta));
+    } else if (isInserting) {
+      context.missing(_powerMeta);
+    }
+    if (data.containsKey('cadence')) {
+      context.handle(_cadenceMeta,
+          cadence.isAcceptableOrUnknown(data['cadence']!, _cadenceMeta));
+    }
+    if (data.containsKey('heart_rate')) {
+      context.handle(_heartRateMeta,
+          heartRate.isAcceptableOrUnknown(data['heart_rate']!, _heartRateMeta));
+    }
+    if (data.containsKey('speed')) {
+      context.handle(
+          _speedMeta, speed.isAcceptableOrUnknown(data['speed']!, _speedMeta));
+    }
+    if (data.containsKey('distance')) {
+      context.handle(_distanceMeta,
+          distance.isAcceptableOrUnknown(data['distance']!, _distanceMeta));
+    }
+    if (data.containsKey('grade')) {
+      context.handle(
+          _gradeMeta, grade.isAcceptableOrUnknown(data['grade']!, _gradeMeta));
+    }
+    if (data.containsKey('target_power')) {
+      context.handle(
+          _targetPowerMeta,
+          targetPower.isAcceptableOrUnknown(
+              data['target_power']!, _targetPowerMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DataPointEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DataPointEntity(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      sessionId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}session_id'])!,
+      timestampMs: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}timestamp_ms'])!,
+      power: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}power'])!,
+      cadence: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}cadence']),
+      heartRate: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}heart_rate']),
+      speed: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}speed']),
+      distance: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}distance']),
+      grade: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}grade']),
+      targetPower: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}target_power']),
+    );
+  }
+
+  @override
+  $DataPointsTable createAlias(String alias) {
+    return $DataPointsTable(attachedDatabase, alias);
+  }
+}
+
+class DataPointEntity extends DataClass implements Insertable<DataPointEntity> {
+  final int id;
+  final String sessionId;
+  final int timestampMs;
+  final int power;
+  final int? cadence;
+  final int? heartRate;
+  final double? speed;
+  final int? distance;
+  final double? grade;
+  final int? targetPower;
+  const DataPointEntity(
+      {required this.id,
+      required this.sessionId,
+      required this.timestampMs,
+      required this.power,
+      this.cadence,
+      this.heartRate,
+      this.speed,
+      this.distance,
+      this.grade,
+      this.targetPower});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['session_id'] = Variable<String>(sessionId);
+    map['timestamp_ms'] = Variable<int>(timestampMs);
+    map['power'] = Variable<int>(power);
+    if (!nullToAbsent || cadence != null) {
+      map['cadence'] = Variable<int>(cadence);
+    }
+    if (!nullToAbsent || heartRate != null) {
+      map['heart_rate'] = Variable<int>(heartRate);
+    }
+    if (!nullToAbsent || speed != null) {
+      map['speed'] = Variable<double>(speed);
+    }
+    if (!nullToAbsent || distance != null) {
+      map['distance'] = Variable<int>(distance);
+    }
+    if (!nullToAbsent || grade != null) {
+      map['grade'] = Variable<double>(grade);
+    }
+    if (!nullToAbsent || targetPower != null) {
+      map['target_power'] = Variable<int>(targetPower);
+    }
+    return map;
+  }
+
+  DataPointsCompanion toCompanion(bool nullToAbsent) {
+    return DataPointsCompanion(
+      id: Value(id),
+      sessionId: Value(sessionId),
+      timestampMs: Value(timestampMs),
+      power: Value(power),
+      cadence: cadence == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cadence),
+      heartRate: heartRate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(heartRate),
+      speed:
+          speed == null && nullToAbsent ? const Value.absent() : Value(speed),
+      distance: distance == null && nullToAbsent
+          ? const Value.absent()
+          : Value(distance),
+      grade:
+          grade == null && nullToAbsent ? const Value.absent() : Value(grade),
+      targetPower: targetPower == null && nullToAbsent
+          ? const Value.absent()
+          : Value(targetPower),
+    );
+  }
+
+  factory DataPointEntity.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DataPointEntity(
+      id: serializer.fromJson<int>(json['id']),
+      sessionId: serializer.fromJson<String>(json['sessionId']),
+      timestampMs: serializer.fromJson<int>(json['timestampMs']),
+      power: serializer.fromJson<int>(json['power']),
+      cadence: serializer.fromJson<int?>(json['cadence']),
+      heartRate: serializer.fromJson<int?>(json['heartRate']),
+      speed: serializer.fromJson<double?>(json['speed']),
+      distance: serializer.fromJson<int?>(json['distance']),
+      grade: serializer.fromJson<double?>(json['grade']),
+      targetPower: serializer.fromJson<int?>(json['targetPower']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'sessionId': serializer.toJson<String>(sessionId),
+      'timestampMs': serializer.toJson<int>(timestampMs),
+      'power': serializer.toJson<int>(power),
+      'cadence': serializer.toJson<int?>(cadence),
+      'heartRate': serializer.toJson<int?>(heartRate),
+      'speed': serializer.toJson<double?>(speed),
+      'distance': serializer.toJson<int?>(distance),
+      'grade': serializer.toJson<double?>(grade),
+      'targetPower': serializer.toJson<int?>(targetPower),
+    };
+  }
+
+  DataPointEntity copyWith(
+          {int? id,
+          String? sessionId,
+          int? timestampMs,
+          int? power,
+          Value<int?> cadence = const Value.absent(),
+          Value<int?> heartRate = const Value.absent(),
+          Value<double?> speed = const Value.absent(),
+          Value<int?> distance = const Value.absent(),
+          Value<double?> grade = const Value.absent(),
+          Value<int?> targetPower = const Value.absent()}) =>
+      DataPointEntity(
+        id: id ?? this.id,
+        sessionId: sessionId ?? this.sessionId,
+        timestampMs: timestampMs ?? this.timestampMs,
+        power: power ?? this.power,
+        cadence: cadence.present ? cadence.value : this.cadence,
+        heartRate: heartRate.present ? heartRate.value : this.heartRate,
+        speed: speed.present ? speed.value : this.speed,
+        distance: distance.present ? distance.value : this.distance,
+        grade: grade.present ? grade.value : this.grade,
+        targetPower: targetPower.present ? targetPower.value : this.targetPower,
+      );
+  DataPointEntity copyWithCompanion(DataPointsCompanion data) {
+    return DataPointEntity(
+      id: data.id.present ? data.id.value : this.id,
+      sessionId: data.sessionId.present ? data.sessionId.value : this.sessionId,
+      timestampMs:
+          data.timestampMs.present ? data.timestampMs.value : this.timestampMs,
+      power: data.power.present ? data.power.value : this.power,
+      cadence: data.cadence.present ? data.cadence.value : this.cadence,
+      heartRate: data.heartRate.present ? data.heartRate.value : this.heartRate,
+      speed: data.speed.present ? data.speed.value : this.speed,
+      distance: data.distance.present ? data.distance.value : this.distance,
+      grade: data.grade.present ? data.grade.value : this.grade,
+      targetPower:
+          data.targetPower.present ? data.targetPower.value : this.targetPower,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DataPointEntity(')
+          ..write('id: $id, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('timestampMs: $timestampMs, ')
+          ..write('power: $power, ')
+          ..write('cadence: $cadence, ')
+          ..write('heartRate: $heartRate, ')
+          ..write('speed: $speed, ')
+          ..write('distance: $distance, ')
+          ..write('grade: $grade, ')
+          ..write('targetPower: $targetPower')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, sessionId, timestampMs, power, cadence,
+      heartRate, speed, distance, grade, targetPower);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DataPointEntity &&
+          other.id == this.id &&
+          other.sessionId == this.sessionId &&
+          other.timestampMs == this.timestampMs &&
+          other.power == this.power &&
+          other.cadence == this.cadence &&
+          other.heartRate == this.heartRate &&
+          other.speed == this.speed &&
+          other.distance == this.distance &&
+          other.grade == this.grade &&
+          other.targetPower == this.targetPower);
+}
+
+class DataPointsCompanion extends UpdateCompanion<DataPointEntity> {
+  final Value<int> id;
+  final Value<String> sessionId;
+  final Value<int> timestampMs;
+  final Value<int> power;
+  final Value<int?> cadence;
+  final Value<int?> heartRate;
+  final Value<double?> speed;
+  final Value<int?> distance;
+  final Value<double?> grade;
+  final Value<int?> targetPower;
+  const DataPointsCompanion({
+    this.id = const Value.absent(),
+    this.sessionId = const Value.absent(),
+    this.timestampMs = const Value.absent(),
+    this.power = const Value.absent(),
+    this.cadence = const Value.absent(),
+    this.heartRate = const Value.absent(),
+    this.speed = const Value.absent(),
+    this.distance = const Value.absent(),
+    this.grade = const Value.absent(),
+    this.targetPower = const Value.absent(),
+  });
+  DataPointsCompanion.insert({
+    this.id = const Value.absent(),
+    required String sessionId,
+    required int timestampMs,
+    required int power,
+    this.cadence = const Value.absent(),
+    this.heartRate = const Value.absent(),
+    this.speed = const Value.absent(),
+    this.distance = const Value.absent(),
+    this.grade = const Value.absent(),
+    this.targetPower = const Value.absent(),
+  })  : sessionId = Value(sessionId),
+        timestampMs = Value(timestampMs),
+        power = Value(power);
+  static Insertable<DataPointEntity> custom({
+    Expression<int>? id,
+    Expression<String>? sessionId,
+    Expression<int>? timestampMs,
+    Expression<int>? power,
+    Expression<int>? cadence,
+    Expression<int>? heartRate,
+    Expression<double>? speed,
+    Expression<int>? distance,
+    Expression<double>? grade,
+    Expression<int>? targetPower,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sessionId != null) 'session_id': sessionId,
+      if (timestampMs != null) 'timestamp_ms': timestampMs,
+      if (power != null) 'power': power,
+      if (cadence != null) 'cadence': cadence,
+      if (heartRate != null) 'heart_rate': heartRate,
+      if (speed != null) 'speed': speed,
+      if (distance != null) 'distance': distance,
+      if (grade != null) 'grade': grade,
+      if (targetPower != null) 'target_power': targetPower,
+    });
+  }
+
+  DataPointsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? sessionId,
+      Value<int>? timestampMs,
+      Value<int>? power,
+      Value<int?>? cadence,
+      Value<int?>? heartRate,
+      Value<double?>? speed,
+      Value<int?>? distance,
+      Value<double?>? grade,
+      Value<int?>? targetPower}) {
+    return DataPointsCompanion(
+      id: id ?? this.id,
+      sessionId: sessionId ?? this.sessionId,
+      timestampMs: timestampMs ?? this.timestampMs,
+      power: power ?? this.power,
+      cadence: cadence ?? this.cadence,
+      heartRate: heartRate ?? this.heartRate,
+      speed: speed ?? this.speed,
+      distance: distance ?? this.distance,
+      grade: grade ?? this.grade,
+      targetPower: targetPower ?? this.targetPower,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (sessionId.present) {
+      map['session_id'] = Variable<String>(sessionId.value);
+    }
+    if (timestampMs.present) {
+      map['timestamp_ms'] = Variable<int>(timestampMs.value);
+    }
+    if (power.present) {
+      map['power'] = Variable<int>(power.value);
+    }
+    if (cadence.present) {
+      map['cadence'] = Variable<int>(cadence.value);
+    }
+    if (heartRate.present) {
+      map['heart_rate'] = Variable<int>(heartRate.value);
+    }
+    if (speed.present) {
+      map['speed'] = Variable<double>(speed.value);
+    }
+    if (distance.present) {
+      map['distance'] = Variable<int>(distance.value);
+    }
+    if (grade.present) {
+      map['grade'] = Variable<double>(grade.value);
+    }
+    if (targetPower.present) {
+      map['target_power'] = Variable<int>(targetPower.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DataPointsCompanion(')
+          ..write('id: $id, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('timestampMs: $timestampMs, ')
+          ..write('power: $power, ')
+          ..write('cadence: $cadence, ')
+          ..write('heartRate: $heartRate, ')
+          ..write('speed: $speed, ')
+          ..write('distance: $distance, ')
+          ..write('grade: $grade, ')
+          ..write('targetPower: $targetPower')
+          ..write(')'))
+        .toString();
+  }
+}
+
+abstract class _$AppDatabase extends GeneratedDatabase {
+  _$AppDatabase(QueryExecutor e) : super(e);
+  $AppDatabaseManager get managers => $AppDatabaseManager(this);
+  late final $TrainingSessionsTable trainingSessions =
+      $TrainingSessionsTable(this);
+  late final $DataPointsTable dataPoints = $DataPointsTable(this);
+  @override
+  Iterable<TableInfo<Table, Object?>> get allTables =>
+      allSchemaEntities.whereType<TableInfo<Table, Object?>>();
+  @override
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [trainingSessions, dataPoints];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
+        [
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('training_sessions',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('data_points', kind: UpdateKind.delete),
+            ],
+          ),
+        ],
+      );
+}
+
+typedef $$TrainingSessionsTableCreateCompanionBuilder
+    = TrainingSessionsCompanion Function({
+  required String id,
+  required int startTime,
+  Value<int?> endTime,
+  required String sessionType,
+  Value<String?> workoutId,
+  Value<String?> routeId,
+  Value<int> statsDurationMs,
+  Value<int> statsAvgPower,
+  Value<int> statsMaxPower,
+  Value<int> statsNormalizedPower,
+  Value<double> statsIntensityFactor,
+  Value<int> statsTss,
+  Value<int> statsTotalWork,
+  Value<int?> statsAvgCadence,
+  Value<int?> statsMaxCadence,
+  Value<int?> statsAvgHeartRate,
+  Value<int?> statsMaxHeartRate,
+  Value<int?> statsCalories,
+  Value<double?> statsDistance,
+  Value<String> syncStatusJson,
+  Value<int> rowid,
+});
+typedef $$TrainingSessionsTableUpdateCompanionBuilder
+    = TrainingSessionsCompanion Function({
+  Value<String> id,
+  Value<int> startTime,
+  Value<int?> endTime,
+  Value<String> sessionType,
+  Value<String?> workoutId,
+  Value<String?> routeId,
+  Value<int> statsDurationMs,
+  Value<int> statsAvgPower,
+  Value<int> statsMaxPower,
+  Value<int> statsNormalizedPower,
+  Value<double> statsIntensityFactor,
+  Value<int> statsTss,
+  Value<int> statsTotalWork,
+  Value<int?> statsAvgCadence,
+  Value<int?> statsMaxCadence,
+  Value<int?> statsAvgHeartRate,
+  Value<int?> statsMaxHeartRate,
+  Value<int?> statsCalories,
+  Value<double?> statsDistance,
+  Value<String> syncStatusJson,
+  Value<int> rowid,
+});
+
+class $$TrainingSessionsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TrainingSessionsTable,
+    TrainingSessionEntity,
+    $$TrainingSessionsTableFilterComposer,
+    $$TrainingSessionsTableOrderingComposer,
+    $$TrainingSessionsTableCreateCompanionBuilder,
+    $$TrainingSessionsTableUpdateCompanionBuilder> {
+  $$TrainingSessionsTableTableManager(
+      _$AppDatabase db, $TrainingSessionsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$TrainingSessionsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$TrainingSessionsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<int> startTime = const Value.absent(),
+            Value<int?> endTime = const Value.absent(),
+            Value<String> sessionType = const Value.absent(),
+            Value<String?> workoutId = const Value.absent(),
+            Value<String?> routeId = const Value.absent(),
+            Value<int> statsDurationMs = const Value.absent(),
+            Value<int> statsAvgPower = const Value.absent(),
+            Value<int> statsMaxPower = const Value.absent(),
+            Value<int> statsNormalizedPower = const Value.absent(),
+            Value<double> statsIntensityFactor = const Value.absent(),
+            Value<int> statsTss = const Value.absent(),
+            Value<int> statsTotalWork = const Value.absent(),
+            Value<int?> statsAvgCadence = const Value.absent(),
+            Value<int?> statsMaxCadence = const Value.absent(),
+            Value<int?> statsAvgHeartRate = const Value.absent(),
+            Value<int?> statsMaxHeartRate = const Value.absent(),
+            Value<int?> statsCalories = const Value.absent(),
+            Value<double?> statsDistance = const Value.absent(),
+            Value<String> syncStatusJson = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TrainingSessionsCompanion(
+            id: id,
+            startTime: startTime,
+            endTime: endTime,
+            sessionType: sessionType,
+            workoutId: workoutId,
+            routeId: routeId,
+            statsDurationMs: statsDurationMs,
+            statsAvgPower: statsAvgPower,
+            statsMaxPower: statsMaxPower,
+            statsNormalizedPower: statsNormalizedPower,
+            statsIntensityFactor: statsIntensityFactor,
+            statsTss: statsTss,
+            statsTotalWork: statsTotalWork,
+            statsAvgCadence: statsAvgCadence,
+            statsMaxCadence: statsMaxCadence,
+            statsAvgHeartRate: statsAvgHeartRate,
+            statsMaxHeartRate: statsMaxHeartRate,
+            statsCalories: statsCalories,
+            statsDistance: statsDistance,
+            syncStatusJson: syncStatusJson,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required int startTime,
+            Value<int?> endTime = const Value.absent(),
+            required String sessionType,
+            Value<String?> workoutId = const Value.absent(),
+            Value<String?> routeId = const Value.absent(),
+            Value<int> statsDurationMs = const Value.absent(),
+            Value<int> statsAvgPower = const Value.absent(),
+            Value<int> statsMaxPower = const Value.absent(),
+            Value<int> statsNormalizedPower = const Value.absent(),
+            Value<double> statsIntensityFactor = const Value.absent(),
+            Value<int> statsTss = const Value.absent(),
+            Value<int> statsTotalWork = const Value.absent(),
+            Value<int?> statsAvgCadence = const Value.absent(),
+            Value<int?> statsMaxCadence = const Value.absent(),
+            Value<int?> statsAvgHeartRate = const Value.absent(),
+            Value<int?> statsMaxHeartRate = const Value.absent(),
+            Value<int?> statsCalories = const Value.absent(),
+            Value<double?> statsDistance = const Value.absent(),
+            Value<String> syncStatusJson = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TrainingSessionsCompanion.insert(
+            id: id,
+            startTime: startTime,
+            endTime: endTime,
+            sessionType: sessionType,
+            workoutId: workoutId,
+            routeId: routeId,
+            statsDurationMs: statsDurationMs,
+            statsAvgPower: statsAvgPower,
+            statsMaxPower: statsMaxPower,
+            statsNormalizedPower: statsNormalizedPower,
+            statsIntensityFactor: statsIntensityFactor,
+            statsTss: statsTss,
+            statsTotalWork: statsTotalWork,
+            statsAvgCadence: statsAvgCadence,
+            statsMaxCadence: statsMaxCadence,
+            statsAvgHeartRate: statsAvgHeartRate,
+            statsMaxHeartRate: statsMaxHeartRate,
+            statsCalories: statsCalories,
+            statsDistance: statsDistance,
+            syncStatusJson: syncStatusJson,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$TrainingSessionsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $TrainingSessionsTable> {
+  $$TrainingSessionsTableFilterComposer(super.$state);
+  ColumnFilters<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get startTime => $state.composableBuilder(
+      column: $state.table.startTime,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get endTime => $state.composableBuilder(
+      column: $state.table.endTime,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get sessionType => $state.composableBuilder(
+      column: $state.table.sessionType,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get workoutId => $state.composableBuilder(
+      column: $state.table.workoutId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get routeId => $state.composableBuilder(
+      column: $state.table.routeId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsDurationMs => $state.composableBuilder(
+      column: $state.table.statsDurationMs,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsAvgPower => $state.composableBuilder(
+      column: $state.table.statsAvgPower,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsMaxPower => $state.composableBuilder(
+      column: $state.table.statsMaxPower,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsNormalizedPower => $state.composableBuilder(
+      column: $state.table.statsNormalizedPower,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get statsIntensityFactor => $state.composableBuilder(
+      column: $state.table.statsIntensityFactor,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsTss => $state.composableBuilder(
+      column: $state.table.statsTss,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsTotalWork => $state.composableBuilder(
+      column: $state.table.statsTotalWork,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsAvgCadence => $state.composableBuilder(
+      column: $state.table.statsAvgCadence,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsMaxCadence => $state.composableBuilder(
+      column: $state.table.statsMaxCadence,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsAvgHeartRate => $state.composableBuilder(
+      column: $state.table.statsAvgHeartRate,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsMaxHeartRate => $state.composableBuilder(
+      column: $state.table.statsMaxHeartRate,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsCalories => $state.composableBuilder(
+      column: $state.table.statsCalories,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get statsDistance => $state.composableBuilder(
+      column: $state.table.statsDistance,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get syncStatusJson => $state.composableBuilder(
+      column: $state.table.syncStatusJson,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ComposableFilter dataPointsRefs(
+      ComposableFilter Function($$DataPointsTableFilterComposer f) f) {
+    final $$DataPointsTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $state.db.dataPoints,
+        getReferencedColumn: (t) => t.sessionId,
+        builder: (joinBuilder, parentComposers) =>
+            $$DataPointsTableFilterComposer(ComposerState($state.db,
+                $state.db.dataPoints, joinBuilder, parentComposers)));
+    return f(composer);
+  }
+}
+
+class $$TrainingSessionsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $TrainingSessionsTable> {
+  $$TrainingSessionsTableOrderingComposer(super.$state);
+  ColumnOrderings<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get startTime => $state.composableBuilder(
+      column: $state.table.startTime,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get endTime => $state.composableBuilder(
+      column: $state.table.endTime,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get sessionType => $state.composableBuilder(
+      column: $state.table.sessionType,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get workoutId => $state.composableBuilder(
+      column: $state.table.workoutId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get routeId => $state.composableBuilder(
+      column: $state.table.routeId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsDurationMs => $state.composableBuilder(
+      column: $state.table.statsDurationMs,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsAvgPower => $state.composableBuilder(
+      column: $state.table.statsAvgPower,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsMaxPower => $state.composableBuilder(
+      column: $state.table.statsMaxPower,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsNormalizedPower => $state.composableBuilder(
+      column: $state.table.statsNormalizedPower,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get statsIntensityFactor => $state.composableBuilder(
+      column: $state.table.statsIntensityFactor,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsTss => $state.composableBuilder(
+      column: $state.table.statsTss,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsTotalWork => $state.composableBuilder(
+      column: $state.table.statsTotalWork,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsAvgCadence => $state.composableBuilder(
+      column: $state.table.statsAvgCadence,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsMaxCadence => $state.composableBuilder(
+      column: $state.table.statsMaxCadence,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsAvgHeartRate => $state.composableBuilder(
+      column: $state.table.statsAvgHeartRate,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsMaxHeartRate => $state.composableBuilder(
+      column: $state.table.statsMaxHeartRate,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsCalories => $state.composableBuilder(
+      column: $state.table.statsCalories,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get statsDistance => $state.composableBuilder(
+      column: $state.table.statsDistance,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get syncStatusJson => $state.composableBuilder(
+      column: $state.table.syncStatusJson,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$DataPointsTableCreateCompanionBuilder = DataPointsCompanion Function({
+  Value<int> id,
+  required String sessionId,
+  required int timestampMs,
+  required int power,
+  Value<int?> cadence,
+  Value<int?> heartRate,
+  Value<double?> speed,
+  Value<int?> distance,
+  Value<double?> grade,
+  Value<int?> targetPower,
+});
+typedef $$DataPointsTableUpdateCompanionBuilder = DataPointsCompanion Function({
+  Value<int> id,
+  Value<String> sessionId,
+  Value<int> timestampMs,
+  Value<int> power,
+  Value<int?> cadence,
+  Value<int?> heartRate,
+  Value<double?> speed,
+  Value<int?> distance,
+  Value<double?> grade,
+  Value<int?> targetPower,
+});
+
+class $$DataPointsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $DataPointsTable,
+    DataPointEntity,
+    $$DataPointsTableFilterComposer,
+    $$DataPointsTableOrderingComposer,
+    $$DataPointsTableCreateCompanionBuilder,
+    $$DataPointsTableUpdateCompanionBuilder> {
+  $$DataPointsTableTableManager(_$AppDatabase db, $DataPointsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$DataPointsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$DataPointsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> sessionId = const Value.absent(),
+            Value<int> timestampMs = const Value.absent(),
+            Value<int> power = const Value.absent(),
+            Value<int?> cadence = const Value.absent(),
+            Value<int?> heartRate = const Value.absent(),
+            Value<double?> speed = const Value.absent(),
+            Value<int?> distance = const Value.absent(),
+            Value<double?> grade = const Value.absent(),
+            Value<int?> targetPower = const Value.absent(),
+          }) =>
+              DataPointsCompanion(
+            id: id,
+            sessionId: sessionId,
+            timestampMs: timestampMs,
+            power: power,
+            cadence: cadence,
+            heartRate: heartRate,
+            speed: speed,
+            distance: distance,
+            grade: grade,
+            targetPower: targetPower,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String sessionId,
+            required int timestampMs,
+            required int power,
+            Value<int?> cadence = const Value.absent(),
+            Value<int?> heartRate = const Value.absent(),
+            Value<double?> speed = const Value.absent(),
+            Value<int?> distance = const Value.absent(),
+            Value<double?> grade = const Value.absent(),
+            Value<int?> targetPower = const Value.absent(),
+          }) =>
+              DataPointsCompanion.insert(
+            id: id,
+            sessionId: sessionId,
+            timestampMs: timestampMs,
+            power: power,
+            cadence: cadence,
+            heartRate: heartRate,
+            speed: speed,
+            distance: distance,
+            grade: grade,
+            targetPower: targetPower,
+          ),
+        ));
+}
+
+class $$DataPointsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $DataPointsTable> {
+  $$DataPointsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get timestampMs => $state.composableBuilder(
+      column: $state.table.timestampMs,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get power => $state.composableBuilder(
+      column: $state.table.power,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get cadence => $state.composableBuilder(
+      column: $state.table.cadence,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get heartRate => $state.composableBuilder(
+      column: $state.table.heartRate,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get speed => $state.composableBuilder(
+      column: $state.table.speed,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get distance => $state.composableBuilder(
+      column: $state.table.distance,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get grade => $state.composableBuilder(
+      column: $state.table.grade,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get targetPower => $state.composableBuilder(
+      column: $state.table.targetPower,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  $$TrainingSessionsTableFilterComposer get sessionId {
+    final $$TrainingSessionsTableFilterComposer composer =
+        $state.composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.sessionId,
+            referencedTable: $state.db.trainingSessions,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder, parentComposers) =>
+                $$TrainingSessionsTableFilterComposer(ComposerState($state.db,
+                    $state.db.trainingSessions, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
+class $$DataPointsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $DataPointsTable> {
+  $$DataPointsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get timestampMs => $state.composableBuilder(
+      column: $state.table.timestampMs,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get power => $state.composableBuilder(
+      column: $state.table.power,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get cadence => $state.composableBuilder(
+      column: $state.table.cadence,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get heartRate => $state.composableBuilder(
+      column: $state.table.heartRate,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get speed => $state.composableBuilder(
+      column: $state.table.speed,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get distance => $state.composableBuilder(
+      column: $state.table.distance,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get grade => $state.composableBuilder(
+      column: $state.table.grade,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get targetPower => $state.composableBuilder(
+      column: $state.table.targetPower,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  $$TrainingSessionsTableOrderingComposer get sessionId {
+    final $$TrainingSessionsTableOrderingComposer composer = $state
+        .composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.sessionId,
+            referencedTable: $state.db.trainingSessions,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder, parentComposers) =>
+                $$TrainingSessionsTableOrderingComposer(ComposerState($state.db,
+                    $state.db.trainingSessions, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
+class $AppDatabaseManager {
+  final _$AppDatabase _db;
+  $AppDatabaseManager(this._db);
+  $$TrainingSessionsTableTableManager get trainingSessions =>
+      $$TrainingSessionsTableTableManager(_db, _db.trainingSessions);
+  $$DataPointsTableTableManager get dataPoints =>
+      $$DataPointsTableTableManager(_db, _db.dataPoints);
+}
