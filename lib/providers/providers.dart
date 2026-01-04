@@ -10,15 +10,19 @@ import '../core/ble/models/ftms_data.dart';
 import '../core/database/app_database.dart';
 import '../core/database/daos/personal_record_dao.dart';
 import '../core/services/personal_record_service.dart';
+import '../core/services/training_load_service.dart';
 import '../data/repositories/session_repository_impl.dart';
 import '../domain/entities/athlete_profile.dart';
+import '../domain/entities/training_load.dart';
 import '../domain/entities/training_session.dart';
 import '../domain/repositories/session_repository.dart';
 
-// Re-export PersonalRecord for convenience
+// Re-export for convenience
 export '../core/database/daos/personal_record_dao.dart' show PersonalRecord;
 export '../core/database/tables/personal_record_table.dart' show RecordType;
 export '../core/services/personal_record_service.dart';
+export '../core/services/training_load_service.dart';
+export '../domain/entities/training_load.dart';
 
 /// Ergebnis einer beendeten Session
 class SessionFinishResult {
@@ -490,3 +494,60 @@ final autoConnectProvider = StateProvider<bool>((ref) => true);
 
 /// ERG Mode vs Simulation Mode
 final ergModeProvider = StateProvider<bool>((ref) => true);
+
+// ============================================================================
+// Training Load Providers
+// ============================================================================
+
+/// Training Load Service
+final trainingLoadServiceProvider = Provider<TrainingLoadService>((ref) {
+  final sessionRepo = ref.watch(sessionRepositoryProvider);
+  return TrainingLoadService(sessionRepo);
+});
+
+/// Performance Management Chart Daten
+final pmcDataProvider = FutureProvider<PerformanceManagementData>((ref) async {
+  final service = ref.watch(trainingLoadServiceProvider);
+
+  // Versuche zuerst Cache zu laden
+  final cached = await service.loadFromCache();
+  if (cached != null) {
+    // Aktualisiere im Hintergrund
+    service.calculatePMC().then((fresh) => service.cacheData(fresh));
+    return cached;
+  }
+
+  // Berechne neu
+  final data = await service.calculatePMC();
+  await service.cacheData(data);
+  return data;
+});
+
+/// Aktueller Trainings-Status (kompakt)
+final trainingStatusProvider = Provider<TrainingStatus>((ref) {
+  final pmcAsync = ref.watch(pmcDataProvider);
+
+  return pmcAsync.when(
+    data: (pmc) => TrainingStatus(
+      ctl: pmc.currentCtl,
+      atl: pmc.currentAtl,
+      tsb: pmc.currentTsb,
+      weeklyTss: pmc.weeklyTss,
+      trend: pmc.fitnessTrend,
+    ),
+    loading: () => const TrainingStatus(
+      ctl: 0,
+      atl: 0,
+      tsb: 0,
+      weeklyTss: 0,
+      trend: FitnessTrend.stable,
+    ),
+    error: (_, __) => const TrainingStatus(
+      ctl: 0,
+      atl: 0,
+      tsb: 0,
+      weeklyTss: 0,
+      trend: FitnessTrend.stable,
+    ),
+  );
+});

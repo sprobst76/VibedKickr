@@ -8,6 +8,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../providers/providers.dart';
 import '../../../../routing/app_router.dart';
 import '../../../comeback/presentation/widgets/comeback_status_card.dart';
+import '../../../training_load/presentation/widgets/training_load_card.dart';
 import '../widgets/connection_status_bar.dart';
 import '../widgets/live_chart.dart';
 import '../widgets/personal_records_card.dart';
@@ -154,6 +155,13 @@ class _MobileLayout extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 24),
+
+          // Training Load
+          GestureDetector(
+            onTap: () => context.push(AppRoutes.trainingLoad),
+            child: const TrainingLoadCard(),
+          ),
+          const SizedBox(height: 16),
 
           // Comeback Mode Status
           const ComebackStatusCard(),

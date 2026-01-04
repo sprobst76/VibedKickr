@@ -9,6 +9,7 @@ import '../features/history/presentation/pages/session_history_page.dart';
 import '../features/comeback/presentation/pages/comeback_setup_page.dart';
 import '../features/routes/presentation/pages/route_list_page.dart';
 import '../features/routes/presentation/pages/route_player_page.dart';
+import '../features/training_load/presentation/pages/training_load_page.dart';
 import '../features/workouts/presentation/pages/workout_builder_page.dart';
 import '../features/workouts/presentation/pages/workout_list_page.dart';
 import '../features/workouts/presentation/pages/workout_player_page.dart';
@@ -24,6 +25,7 @@ class AppRoutes {
   static const routes = '/routes';
   static const routePlayer = '/routes/player';
   static const comebackSetup = '/comeback';
+  static const trainingLoad = '/training-load';
   static const history = '/history';
   static const settings = '/settings';
 }
@@ -100,6 +102,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.comebackSetup,
         builder: (context, state) => const ComebackSetupPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.trainingLoad,
+        builder: (context, state) => const TrainingLoadPage(),
       ),
       GoRoute(
         path: '${AppRoutes.history}/:sessionId',
