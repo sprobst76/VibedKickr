@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/duration_formatter.dart';
 import '../../../../domain/entities/workout.dart';
 import '../../../../domain/entities/training_session.dart';
 import '../../../../providers/providers.dart';
@@ -198,7 +199,7 @@ class _WorkoutCard extends StatelessWidget {
                 children: [
                   _StatChip(
                     icon: Icons.timer_outlined,
-                    label: _formatDuration(duration),
+                    label: duration.toDisplayString(),
                   ),
                   const SizedBox(width: 12),
                   _StatChip(
@@ -221,14 +222,6 @@ class _WorkoutCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _formatDuration(Duration duration) {
-    final minutes = duration.inMinutes;
-    if (minutes < 60) return '$minutes min';
-    final hours = minutes ~/ 60;
-    final remainingMinutes = minutes % 60;
-    return '$hours:${remainingMinutes.toString().padLeft(2, '0')} h';
   }
 }
 

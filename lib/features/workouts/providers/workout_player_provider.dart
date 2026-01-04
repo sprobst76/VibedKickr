@@ -79,7 +79,9 @@ class WorkoutPlayerData {
 
 final workoutPlayerProvider =
     StateNotifierProvider<WorkoutPlayerNotifier, WorkoutPlayerData>((ref) {
-  return WorkoutPlayerNotifier(ref);
+  final notifier = WorkoutPlayerNotifier(ref);
+  ref.onDispose(() => notifier.dispose());
+  return notifier;
 });
 
 class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {

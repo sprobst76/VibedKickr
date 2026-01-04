@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/duration_formatter.dart';
 import '../../../../domain/entities/workout.dart';
 
 class IntervalProgressBar extends StatelessWidget {
@@ -68,7 +69,7 @@ class IntervalProgressBar extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    _formatDuration(remaining),
+                    remaining.toMinutesSeconds(),
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -120,7 +121,7 @@ class IntervalProgressBar extends StatelessWidget {
               // Duration
               _TargetChip(
                 icon: Icons.timer,
-                label: _formatDuration(interval.duration),
+                label: interval.duration.toMinutesSeconds(),
                 color: AppColors.textSecondary,
               ),
             ],
@@ -128,12 +129,6 @@ class IntervalProgressBar extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _formatDuration(Duration duration) {
-    final minutes = duration.inMinutes;
-    final seconds = duration.inSeconds.remainder(60);
-    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
   String _cadenceLabel(int? min, int? max) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/duration_formatter.dart';
 import '../../../../domain/entities/workout.dart';
 
 class WorkoutTimeline extends StatelessWidget {
@@ -215,7 +216,7 @@ class _IntervalListTile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  _formatDuration(interval.duration),
+                  interval.duration.toCompactString(),
                   style: TextStyle(
                     fontSize: 11,
                     color: isPast ? AppColors.textMuted : AppColors.textSecondary,
@@ -244,14 +245,6 @@ class _IntervalListTile extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _formatDuration(Duration duration) {
-    final minutes = duration.inMinutes;
-    final seconds = duration.inSeconds.remainder(60);
-    if (minutes == 0) return '${seconds}s';
-    if (seconds == 0) return '${minutes}min';
-    return '${minutes}:${seconds.toString().padLeft(2, '0')}';
   }
 
   Color _colorForIntensity(double intensity) {

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:equatable/equatable.dart';
 
 /// Ein einzelner Datenpunkt während des Trainings
@@ -179,7 +181,7 @@ class SessionStats extends Equatable {
       sum4th += avg * avg * avg * avg;
     }
 
-    return (sum4th / rollingAvg.length).sqrt().sqrt().round();
+    return math.sqrt(math.sqrt(sum4th / rollingAvg.length)).round();
   }
 
   static int _calculateTss(int np, Duration duration, int ftp) {
@@ -313,14 +315,3 @@ class TrainingSession extends Equatable {
       ];
 }
 
-extension on double {
-  double sqrt() => this < 0 ? 0 : this == 0 ? 0 : _sqrt(this);
-  
-  static double _sqrt(double x) {
-    double guess = x / 2;
-    for (int i = 0; i < 10; i++) {
-      guess = (guess + x / guess) / 2;
-    }
-    return guess;
-  }
-}

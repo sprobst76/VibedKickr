@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/ble/models/connection_state.dart';
+import '../../../../core/utils/duration_formatter.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../providers/providers.dart';
 import '../../../../routing/app_router.dart';
@@ -143,7 +144,7 @@ class _MobileLayout extends StatelessWidget {
               Expanded(
                 child: MetricCard(
                   label: 'Zeit',
-                  value: _formatDuration(liveData.elapsed),
+                  value: liveData.elapsed.toTimerString(),
                   unit: '',
                   icon: Icons.timer,
                 ),
@@ -243,7 +244,7 @@ class _DesktopLayout extends StatelessWidget {
                 const SizedBox(height: 12),
                 MetricCard(
                   label: 'Trainingszeit',
-                  value: _formatDuration(liveData.elapsed),
+                  value: liveData.elapsed.toTimerString(),
                   unit: '',
                   icon: Icons.timer,
                 ),
@@ -271,15 +272,4 @@ Color _hrColor(int hr, dynamic profile) {
   if (profile.hrZones == null) return AppColors.textPrimary;
   final zone = profile.hrZones!.zoneForHr(hr);
   return ZoneColors.forZone(zone);
-}
-
-String _formatDuration(Duration duration) {
-  final hours = duration.inHours;
-  final minutes = duration.inMinutes.remainder(60);
-  final seconds = duration.inSeconds.remainder(60);
-
-  if (hours > 0) {
-    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
-  }
-  return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
 }

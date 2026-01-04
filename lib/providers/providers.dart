@@ -60,6 +60,10 @@ class AthleteProfileNotifier extends StateNotifier<AthleteProfile> {
   AthleteProfileNotifier() : super(AthleteProfile.defaultProfile());
 
   void updateFtp(int newFtp) {
+    // Validierung: FTP muss zwischen 1 und 500 Watt liegen (realistischer Bereich)
+    if (newFtp < 1 || newFtp > 500) {
+      return;
+    }
     state = state.updateFtp(newFtp);
   }
 
@@ -247,7 +251,9 @@ class LiveTrainingDataNotifier extends StateNotifier<LiveTrainingData> {
 /// Aktive Trainingseinheit
 final activeSessionProvider =
     StateNotifierProvider<ActiveSessionNotifier, TrainingSession?>((ref) {
-  return ActiveSessionNotifier(ref);
+  final notifier = ActiveSessionNotifier(ref);
+  ref.onDispose(() => notifier.dispose());
+  return notifier;
 });
 
 class ActiveSessionNotifier extends StateNotifier<TrainingSession?> {
@@ -337,6 +343,12 @@ class ActiveSessionNotifier extends StateNotifier<TrainingSession?> {
     state = null;
     _dataPoints.clear();
     _sessionStart = null;
+  }
+
+  @override
+  void dispose() {
+    _recordingTimer?.cancel();
+    super.dispose();
   }
 }
 

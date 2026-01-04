@@ -32,6 +32,7 @@ class BleManager {
   FtmsService? _ftmsService;
   StreamSubscription<BluetoothConnectionState>? _connectionSubscription;
   StreamSubscription<List<ScanResult>>? _scanSubscription;
+  StreamSubscription<BluetoothAdapterState>? _adapterStateSubscription;
 
   // Für Auto-Reconnect
   String? _lastConnectedDeviceId;
@@ -70,7 +71,8 @@ class BleManager {
 
       // Auf Desktop: Adapter-Status überwachen
       if (Platform.isMacOS || Platform.isLinux) {
-        FlutterBluePlus.adapterState.listen((state) {
+        _adapterStateSubscription?.cancel();
+        _adapterStateSubscription = FlutterBluePlus.adapterState.listen((state) {
           logger.d('Adapter state: $state');
           if (state == BluetoothAdapterState.off) {
             _updateState(BleConnectionState.error('Bluetooth ist ausgeschaltet'));
@@ -306,6 +308,7 @@ class BleManager {
   void dispose() {
     _connectionSubscription?.cancel();
     _scanSubscription?.cancel();
+    _adapterStateSubscription?.cancel();
     _connectionStateController.close();
     _discoveredDevicesController.close();
     _scanningController.close();

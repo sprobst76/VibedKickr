@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/duration_formatter.dart';
 import '../../../../domain/entities/workout.dart';
 import '../../../../providers/providers.dart';
 import '../../providers/workout_player_provider.dart';
@@ -281,7 +282,7 @@ class _MobileLayout extends StatelessWidget {
               Expanded(
                 child: _MetricTile(
                   label: 'Zeit',
-                  value: _formatDuration(liveData.elapsed),
+                  value: liveData.elapsed.toTimerString(),
                   unit: '',
                 ),
               ),
@@ -374,7 +375,7 @@ class _DesktopLayout extends StatelessWidget {
                 const SizedBox(height: 12),
                 _MetricTile(
                   label: 'Trainingszeit',
-                  value: _formatDuration(liveData.elapsed),
+                  value: liveData.elapsed.toTimerString(),
                   unit: '',
                 ),
                 const Spacer(),
@@ -640,15 +641,4 @@ class _PlayerControls extends StatelessWidget {
       ),
     );
   }
-}
-
-String _formatDuration(Duration duration) {
-  final hours = duration.inHours;
-  final minutes = duration.inMinutes.remainder(60);
-  final seconds = duration.inSeconds.remainder(60);
-
-  if (hours > 0) {
-    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
-  }
-  return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
 }
