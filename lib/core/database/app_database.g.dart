@@ -2262,6 +2262,424 @@ class PersonalRecordsCompanion extends UpdateCompanion<PersonalRecordEntity> {
   }
 }
 
+class $GpxRoutesTable extends GpxRoutes
+    with TableInfo<$GpxRoutesTable, GpxRouteEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $GpxRoutesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _pointsJsonMeta =
+      const VerificationMeta('pointsJson');
+  @override
+  late final GeneratedColumn<String> pointsJson = GeneratedColumn<String>(
+      'points_json', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _totalDistanceMeta =
+      const VerificationMeta('totalDistance');
+  @override
+  late final GeneratedColumn<double> totalDistance = GeneratedColumn<double>(
+      'total_distance', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
+  static const VerificationMeta _elevationGainMeta =
+      const VerificationMeta('elevationGain');
+  @override
+  late final GeneratedColumn<double> elevationGain = GeneratedColumn<double>(
+      'elevation_gain', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        description,
+        pointsJson,
+        totalDistance,
+        elevationGain,
+        createdAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'gpx_routes';
+  @override
+  VerificationContext validateIntegrity(Insertable<GpxRouteEntity> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    }
+    if (data.containsKey('points_json')) {
+      context.handle(
+          _pointsJsonMeta,
+          pointsJson.isAcceptableOrUnknown(
+              data['points_json']!, _pointsJsonMeta));
+    } else if (isInserting) {
+      context.missing(_pointsJsonMeta);
+    }
+    if (data.containsKey('total_distance')) {
+      context.handle(
+          _totalDistanceMeta,
+          totalDistance.isAcceptableOrUnknown(
+              data['total_distance']!, _totalDistanceMeta));
+    } else if (isInserting) {
+      context.missing(_totalDistanceMeta);
+    }
+    if (data.containsKey('elevation_gain')) {
+      context.handle(
+          _elevationGainMeta,
+          elevationGain.isAcceptableOrUnknown(
+              data['elevation_gain']!, _elevationGainMeta));
+    } else if (isInserting) {
+      context.missing(_elevationGainMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  GpxRouteEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return GpxRouteEntity(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
+      pointsJson: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}points_json'])!,
+      totalDistance: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}total_distance'])!,
+      elevationGain: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}elevation_gain'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $GpxRoutesTable createAlias(String alias) {
+    return $GpxRoutesTable(attachedDatabase, alias);
+  }
+}
+
+class GpxRouteEntity extends DataClass implements Insertable<GpxRouteEntity> {
+  /// Route ID (UUID)
+  final String id;
+
+  /// Name der Route
+  final String name;
+
+  /// Beschreibung
+  final String? description;
+
+  /// Punkte als JSON
+  final String pointsJson;
+
+  /// Gesamtdistanz in Metern
+  final double totalDistance;
+
+  /// Höhenmeter aufwärts
+  final double elevationGain;
+
+  /// Erstellungsdatum
+  final DateTime createdAt;
+  const GpxRouteEntity(
+      {required this.id,
+      required this.name,
+      this.description,
+      required this.pointsJson,
+      required this.totalDistance,
+      required this.elevationGain,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['points_json'] = Variable<String>(pointsJson);
+    map['total_distance'] = Variable<double>(totalDistance);
+    map['elevation_gain'] = Variable<double>(elevationGain);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  GpxRoutesCompanion toCompanion(bool nullToAbsent) {
+    return GpxRoutesCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      pointsJson: Value(pointsJson),
+      totalDistance: Value(totalDistance),
+      elevationGain: Value(elevationGain),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory GpxRouteEntity.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return GpxRouteEntity(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String?>(json['description']),
+      pointsJson: serializer.fromJson<String>(json['pointsJson']),
+      totalDistance: serializer.fromJson<double>(json['totalDistance']),
+      elevationGain: serializer.fromJson<double>(json['elevationGain']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String?>(description),
+      'pointsJson': serializer.toJson<String>(pointsJson),
+      'totalDistance': serializer.toJson<double>(totalDistance),
+      'elevationGain': serializer.toJson<double>(elevationGain),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  GpxRouteEntity copyWith(
+          {String? id,
+          String? name,
+          Value<String?> description = const Value.absent(),
+          String? pointsJson,
+          double? totalDistance,
+          double? elevationGain,
+          DateTime? createdAt}) =>
+      GpxRouteEntity(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description.present ? description.value : this.description,
+        pointsJson: pointsJson ?? this.pointsJson,
+        totalDistance: totalDistance ?? this.totalDistance,
+        elevationGain: elevationGain ?? this.elevationGain,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  GpxRouteEntity copyWithCompanion(GpxRoutesCompanion data) {
+    return GpxRouteEntity(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description:
+          data.description.present ? data.description.value : this.description,
+      pointsJson:
+          data.pointsJson.present ? data.pointsJson.value : this.pointsJson,
+      totalDistance: data.totalDistance.present
+          ? data.totalDistance.value
+          : this.totalDistance,
+      elevationGain: data.elevationGain.present
+          ? data.elevationGain.value
+          : this.elevationGain,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GpxRouteEntity(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('pointsJson: $pointsJson, ')
+          ..write('totalDistance: $totalDistance, ')
+          ..write('elevationGain: $elevationGain, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, description, pointsJson,
+      totalDistance, elevationGain, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is GpxRouteEntity &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.pointsJson == this.pointsJson &&
+          other.totalDistance == this.totalDistance &&
+          other.elevationGain == this.elevationGain &&
+          other.createdAt == this.createdAt);
+}
+
+class GpxRoutesCompanion extends UpdateCompanion<GpxRouteEntity> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String?> description;
+  final Value<String> pointsJson;
+  final Value<double> totalDistance;
+  final Value<double> elevationGain;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const GpxRoutesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.pointsJson = const Value.absent(),
+    this.totalDistance = const Value.absent(),
+    this.elevationGain = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  GpxRoutesCompanion.insert({
+    required String id,
+    required String name,
+    this.description = const Value.absent(),
+    required String pointsJson,
+    required double totalDistance,
+    required double elevationGain,
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        pointsJson = Value(pointsJson),
+        totalDistance = Value(totalDistance),
+        elevationGain = Value(elevationGain),
+        createdAt = Value(createdAt);
+  static Insertable<GpxRouteEntity> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? pointsJson,
+    Expression<double>? totalDistance,
+    Expression<double>? elevationGain,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (pointsJson != null) 'points_json': pointsJson,
+      if (totalDistance != null) 'total_distance': totalDistance,
+      if (elevationGain != null) 'elevation_gain': elevationGain,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  GpxRoutesCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? name,
+      Value<String?>? description,
+      Value<String>? pointsJson,
+      Value<double>? totalDistance,
+      Value<double>? elevationGain,
+      Value<DateTime>? createdAt,
+      Value<int>? rowid}) {
+    return GpxRoutesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      pointsJson: pointsJson ?? this.pointsJson,
+      totalDistance: totalDistance ?? this.totalDistance,
+      elevationGain: elevationGain ?? this.elevationGain,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (pointsJson.present) {
+      map['points_json'] = Variable<String>(pointsJson.value);
+    }
+    if (totalDistance.present) {
+      map['total_distance'] = Variable<double>(totalDistance.value);
+    }
+    if (elevationGain.present) {
+      map['elevation_gain'] = Variable<double>(elevationGain.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GpxRoutesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('pointsJson: $pointsJson, ')
+          ..write('totalDistance: $totalDistance, ')
+          ..write('elevationGain: $elevationGain, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2271,12 +2689,18 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $CustomWorkoutsTable customWorkouts = $CustomWorkoutsTable(this);
   late final $PersonalRecordsTable personalRecords =
       $PersonalRecordsTable(this);
+  late final $GpxRoutesTable gpxRoutes = $GpxRoutesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [trainingSessions, dataPoints, customWorkouts, personalRecords];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        trainingSessions,
+        dataPoints,
+        customWorkouts,
+        personalRecords,
+        gpxRoutes
+      ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
@@ -3189,6 +3613,164 @@ class $$PersonalRecordsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+typedef $$GpxRoutesTableCreateCompanionBuilder = GpxRoutesCompanion Function({
+  required String id,
+  required String name,
+  Value<String?> description,
+  required String pointsJson,
+  required double totalDistance,
+  required double elevationGain,
+  required DateTime createdAt,
+  Value<int> rowid,
+});
+typedef $$GpxRoutesTableUpdateCompanionBuilder = GpxRoutesCompanion Function({
+  Value<String> id,
+  Value<String> name,
+  Value<String?> description,
+  Value<String> pointsJson,
+  Value<double> totalDistance,
+  Value<double> elevationGain,
+  Value<DateTime> createdAt,
+  Value<int> rowid,
+});
+
+class $$GpxRoutesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $GpxRoutesTable,
+    GpxRouteEntity,
+    $$GpxRoutesTableFilterComposer,
+    $$GpxRoutesTableOrderingComposer,
+    $$GpxRoutesTableCreateCompanionBuilder,
+    $$GpxRoutesTableUpdateCompanionBuilder> {
+  $$GpxRoutesTableTableManager(_$AppDatabase db, $GpxRoutesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$GpxRoutesTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$GpxRoutesTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<String> pointsJson = const Value.absent(),
+            Value<double> totalDistance = const Value.absent(),
+            Value<double> elevationGain = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              GpxRoutesCompanion(
+            id: id,
+            name: name,
+            description: description,
+            pointsJson: pointsJson,
+            totalDistance: totalDistance,
+            elevationGain: elevationGain,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String name,
+            Value<String?> description = const Value.absent(),
+            required String pointsJson,
+            required double totalDistance,
+            required double elevationGain,
+            required DateTime createdAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              GpxRoutesCompanion.insert(
+            id: id,
+            name: name,
+            description: description,
+            pointsJson: pointsJson,
+            totalDistance: totalDistance,
+            elevationGain: elevationGain,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$GpxRoutesTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $GpxRoutesTable> {
+  $$GpxRoutesTableFilterComposer(super.$state);
+  ColumnFilters<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get pointsJson => $state.composableBuilder(
+      column: $state.table.pointsJson,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get totalDistance => $state.composableBuilder(
+      column: $state.table.totalDistance,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get elevationGain => $state.composableBuilder(
+      column: $state.table.elevationGain,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$GpxRoutesTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $GpxRoutesTable> {
+  $$GpxRoutesTableOrderingComposer(super.$state);
+  ColumnOrderings<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get pointsJson => $state.composableBuilder(
+      column: $state.table.pointsJson,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get totalDistance => $state.composableBuilder(
+      column: $state.table.totalDistance,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get elevationGain => $state.composableBuilder(
+      column: $state.table.elevationGain,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
@@ -3200,4 +3782,6 @@ class $AppDatabaseManager {
       $$CustomWorkoutsTableTableManager(_db, _db.customWorkouts);
   $$PersonalRecordsTableTableManager get personalRecords =>
       $$PersonalRecordsTableTableManager(_db, _db.personalRecords);
+  $$GpxRoutesTableTableManager get gpxRoutes =>
+      $$GpxRoutesTableTableManager(_db, _db.gpxRoutes);
 }

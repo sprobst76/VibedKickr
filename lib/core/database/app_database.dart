@@ -9,13 +9,15 @@ import 'tables/training_session_table.dart';
 import 'tables/data_point_table.dart';
 import 'tables/custom_workout_table.dart';
 import 'tables/personal_record_table.dart';
+import 'tables/gpx_route_table.dart';
 import 'daos/session_dao.dart';
 import 'daos/workout_dao.dart';
 import 'daos/personal_record_dao.dart';
+import 'daos/gpx_route_dao.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [TrainingSessions, DataPoints, CustomWorkouts, PersonalRecords])
+@DriftDatabase(tables: [TrainingSessions, DataPoints, CustomWorkouts, PersonalRecords, GpxRoutes])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
@@ -26,9 +28,10 @@ class AppDatabase extends _$AppDatabase {
   late final SessionDao sessionDao = SessionDao(this);
   late final WorkoutDao workoutDao = WorkoutDao(this);
   late final PersonalRecordDao personalRecordDao = PersonalRecordDao(this);
+  late final GpxRouteDao gpxRouteDao = GpxRouteDao(this);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -43,6 +46,10 @@ class AppDatabase extends _$AppDatabase {
           // Migration v2 -> v3: Personal Records Tabelle hinzufügen
           if (from < 3) {
             await m.createTable(personalRecords);
+          }
+          // Migration v3 -> v4: GPX Routes Tabelle hinzufügen
+          if (from < 4) {
+            await m.createTable(gpxRoutes);
           }
         },
       );
