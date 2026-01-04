@@ -7,6 +7,7 @@ import '../../../../core/utils/duration_formatter.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../providers/providers.dart';
 import '../../../../routing/app_router.dart';
+import '../../../comeback/presentation/widgets/comeback_status_card.dart';
 import '../widgets/connection_status_bar.dart';
 import '../widgets/live_chart.dart';
 import '../widgets/personal_records_card.dart';
@@ -153,6 +154,10 @@ class _MobileLayout extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 24),
+
+          // Comeback Mode Status
+          const ComebackStatusCard(),
+          const SizedBox(height: 16),
 
           // Personal Records
           const PersonalRecordsCard(),
