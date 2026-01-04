@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../features/device_connection/presentation/pages/device_scan_page.dart';
+import '../features/history/presentation/pages/session_detail_page.dart';
+import '../features/history/presentation/pages/session_history_page.dart';
 import '../features/workouts/presentation/pages/workout_list_page.dart';
 import '../features/workouts/presentation/pages/workout_player_page.dart';
 import '../features/settings/presentation/pages/settings_page.dart';
@@ -14,6 +16,7 @@ class AppRoutes {
   static const deviceScan = '/devices';
   static const workouts = '/workouts';
   static const workoutPlayer = '/workouts/player';
+  static const history = '/history';
   static const settings = '/settings';
 }
 
@@ -41,6 +44,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ),
           ),
           GoRoute(
+            path: AppRoutes.history,
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: SessionHistoryPage(),
+            ),
+          ),
+          GoRoute(
             path: AppRoutes.settings,
             pageBuilder: (context, state) => const NoTransitionPage(
               child: SettingsPage(),
@@ -58,6 +67,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final workoutId = state.uri.queryParameters['workoutId'];
           return WorkoutPlayerPage(workoutId: workoutId);
+        },
+      ),
+      GoRoute(
+        path: '${AppRoutes.history}/:sessionId',
+        builder: (context, state) {
+          final sessionId = state.pathParameters['sessionId']!;
+          return SessionDetailPage(sessionId: sessionId);
         },
       ),
     ],
@@ -89,8 +105,10 @@ class _BottomNavBar extends StatelessWidget {
     int currentIndex = 0;
     if (location.startsWith(AppRoutes.workouts)) {
       currentIndex = 1;
-    } else if (location == AppRoutes.settings) {
+    } else if (location.startsWith(AppRoutes.history)) {
       currentIndex = 2;
+    } else if (location == AppRoutes.settings) {
+      currentIndex = 3;
     }
 
     return NavigationBar(
@@ -104,6 +122,9 @@ class _BottomNavBar extends StatelessWidget {
             context.go(AppRoutes.workouts);
             break;
           case 2:
+            context.go(AppRoutes.history);
+            break;
+          case 3:
             context.go(AppRoutes.settings);
             break;
         }
@@ -118,6 +139,11 @@ class _BottomNavBar extends StatelessWidget {
           icon: Icon(Icons.fitness_center_outlined),
           selectedIcon: Icon(Icons.fitness_center),
           label: 'Workouts',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.history_outlined),
+          selectedIcon: Icon(Icons.history),
+          label: 'Verlauf',
         ),
         NavigationDestination(
           icon: Icon(Icons.settings_outlined),
