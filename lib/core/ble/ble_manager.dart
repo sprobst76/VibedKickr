@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../main.dart';
 import 'ftms_service.dart';
@@ -126,17 +127,24 @@ class BleManager {
         return;
       }
 
-      // Auf Desktop: Adapter-Status überwachen
-      if (Platform.isMacOS || Platform.isLinux) {
-        _adapterStateSubscription?.cancel();
-        _adapterStateSubscription = FlutterBluePlus.adapterState.listen((state) {
-          logger.d('Adapter state: $state');
-          if (state == BluetoothAdapterState.off) {
-            _updateTrainerState(BleConnectionState.error('Bluetooth ist ausgeschaltet'));
-            _updateHrState(BleConnectionState.error('Bluetooth ist ausgeschaltet'));
-          }
-        });
+      // Auf Android: Bluetooth einschalten wenn aus
+      if (Platform.isAndroid) {
+        final adapterState = await FlutterBluePlus.adapterState.first;
+        if (adapterState != BluetoothAdapterState.on) {
+          logger.i('Requesting to turn on Bluetooth');
+          await FlutterBluePlus.turnOn();
+        }
       }
+
+      // Adapter-Status überwachen
+      _adapterStateSubscription?.cancel();
+      _adapterStateSubscription = FlutterBluePlus.adapterState.listen((state) {
+        logger.d('Adapter state: $state');
+        if (state == BluetoothAdapterState.off) {
+          _updateTrainerState(BleConnectionState.error('Bluetooth ist ausgeschaltet'));
+          _updateHrState(BleConnectionState.error('Bluetooth ist ausgeschaltet'));
+        }
+      });
 
       logger.i('BLE Manager initialized successfully');
     } catch (e) {
@@ -146,10 +154,56 @@ class BleManager {
     }
   }
 
+  /// Fordert Bluetooth-Berechtigungen an (Android 12+)
+  Future<bool> requestPermissions() async {
+    if (!Platform.isAndroid) return true;
+
+    try {
+      logger.i('Requesting Bluetooth permissions...');
+
+      // Android 12+ (API 31+) braucht BLUETOOTH_SCAN und BLUETOOTH_CONNECT
+      final scanStatus = await Permission.bluetoothScan.request();
+      final connectStatus = await Permission.bluetoothConnect.request();
+
+      logger.d('Bluetooth Scan permission: $scanStatus');
+      logger.d('Bluetooth Connect permission: $connectStatus');
+
+      if (scanStatus.isDenied || connectStatus.isDenied) {
+        logger.w('Bluetooth permissions denied');
+        return false;
+      }
+
+      if (scanStatus.isPermanentlyDenied || connectStatus.isPermanentlyDenied) {
+        logger.w('Bluetooth permissions permanently denied - open settings');
+        await openAppSettings();
+        return false;
+      }
+
+      // Auf älteren Android-Versionen auch Location
+      final locationStatus = await Permission.locationWhenInUse.request();
+      logger.d('Location permission: $locationStatus');
+
+      return scanStatus.isGranted && connectStatus.isGranted;
+    } catch (e) {
+      logger.e('Permission request error: $e');
+      return false;
+    }
+  }
+
   /// Startet den BLE-Scan nach allen unterstützten Geräten
   Future<void> startScan({Duration timeout = const Duration(seconds: 10)}) async {
     if (!_isSupported) {
       logger.w('BLE not supported - scan skipped');
+      return;
+    }
+
+    // Berechtigungen anfordern (Android 12+)
+    final hasPermissions = await requestPermissions();
+    if (!hasPermissions) {
+      logger.e('Bluetooth permissions not granted');
+      _updateTrainerState(BleConnectionState.error(
+        'Bluetooth-Berechtigung benötigt.\nBitte in den Einstellungen erlauben.'
+      ));
       return;
     }
 
@@ -251,20 +305,47 @@ class BleManager {
       logger.d('Discovering trainer services...');
       final services = await device.bluetoothDevice.discoverServices();
 
-      // FTMS Service finden und initialisieren
+      // Alle Services loggen für Debugging
+      logger.i('Found ${services.length} services:');
       for (final service in services) {
-        if (service.uuid.toString().toLowerCase() == '00001826-0000-1000-8000-00805f9b34fb') {
-          logger.i('Found FTMS service');
+        logger.d('  Service: ${service.uuid}');
+        for (final char in service.characteristics) {
+          logger.d('    Characteristic: ${char.uuid}');
+        }
+      }
+
+      // FTMS Service finden und initialisieren
+      // Standard FTMS UUID: 00001826-0000-1000-8000-00805f9b34fb
+      for (final service in services) {
+        final uuid = service.uuid.toString().toLowerCase();
+        if (uuid == '00001826-0000-1000-8000-00805f9b34fb' || uuid.contains('1826')) {
+          logger.i('Found FTMS service: $uuid');
           _ftmsService = FtmsService(service);
           await _ftmsService!.initialize();
           break;
         }
       }
 
+      // Fallback: Wahoo proprietärer Service oder Cycling Power
       if (_ftmsService == null) {
-        logger.e('No FTMS service found');
+        for (final service in services) {
+          final uuid = service.uuid.toString().toLowerCase();
+          // Cycling Power Service (0x1818)
+          if (uuid.contains('1818')) {
+            logger.i('Found Cycling Power service (no FTMS): $uuid');
+            // TODO: Implement Cycling Power Service support
+          }
+          // Wahoo proprietär
+          if (uuid.contains('a026')) {
+            logger.i('Found Wahoo proprietary service: $uuid');
+          }
+        }
+      }
+
+      if (_ftmsService == null) {
+        logger.e('No FTMS service found on device');
         await device.bluetoothDevice.disconnect();
-        _updateTrainerState(BleConnectionState.error('Kein FTMS-Dienst gefunden'));
+        _updateTrainerState(BleConnectionState.error('Kein FTMS-Dienst gefunden.\nIst der Trainer im richtigen Modus?'));
         return false;
       }
 

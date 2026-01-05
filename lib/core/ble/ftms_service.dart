@@ -79,9 +79,18 @@ class FtmsService {
 
     // Notifications für Bike Data aktivieren
     if (_indoorBikeDataChar != null) {
-      await _indoorBikeDataChar!.setNotifyValue(true);
-      _dataSubscription = _indoorBikeDataChar!.onValueReceived.listen(_parseIndoorBikeData);
-      logger.i('Indoor Bike Data notifications enabled');
+      try {
+        await _indoorBikeDataChar!.setNotifyValue(true);
+        _dataSubscription = _indoorBikeDataChar!.onValueReceived.listen((data) {
+          logger.d('Received Indoor Bike Data: ${data.length} bytes: $data');
+          _parseIndoorBikeData(data);
+        });
+        logger.i('Indoor Bike Data notifications enabled');
+      } catch (e) {
+        logger.e('Failed to enable Indoor Bike Data notifications: $e');
+      }
+    } else {
+      logger.e('Indoor Bike Data characteristic NOT found!');
     }
 
     // Notifications für Status aktivieren
@@ -213,6 +222,7 @@ class FtmsService {
       calories: calories,
     );
 
+    logger.d('Parsed FTMS: power=$power, cadence=$cadence, speed=$speed (flags=0x${flags.toRadixString(16)})');
     _dataController.add(ftmsData);
   }
 
