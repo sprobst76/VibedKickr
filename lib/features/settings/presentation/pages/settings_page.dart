@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../providers/providers.dart';
+import '../../../../routing/app_router.dart';
 import '../widgets/strava_settings_card.dart';
 
 class SettingsPage extends ConsumerWidget {
@@ -155,6 +157,23 @@ class SettingsPage extends ConsumerWidget {
           const StravaSettingsCard(),
           const SizedBox(height: 24),
 
+          // Debug / Entwickler
+          _SectionHeader(title: 'Entwickler'),
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.bug_report, color: AppColors.warning),
+                  title: const Text('BLE Diagnose'),
+                  subtitle: const Text('Bluetooth-Verbindung testen'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push(AppRoutes.bleDiagnostic),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+
           // Info
           _SectionHeader(title: 'Info'),
           Card(
@@ -162,7 +181,7 @@ class SettingsPage extends ConsumerWidget {
               children: [
                 _SettingsTile(
                   title: 'Version',
-                  subtitle: '1.0.0',
+                  subtitle: '1.1.0',
                   icon: Icons.info_outline,
                 ),
                 const Divider(height: 1),
@@ -173,7 +192,7 @@ class SettingsPage extends ConsumerWidget {
                   onTap: () => showLicensePage(
                     context: context,
                     applicationName: 'Kickr Trainer',
-                    applicationVersion: '1.0.0',
+                    applicationVersion: '1.1.0',
                   ),
                 ),
               ],

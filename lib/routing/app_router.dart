@@ -14,6 +14,7 @@ import '../features/workouts/presentation/pages/workout_builder_page.dart';
 import '../features/workouts/presentation/pages/workout_list_page.dart';
 import '../features/workouts/presentation/pages/workout_player_page.dart';
 import '../features/settings/presentation/pages/settings_page.dart';
+import '../features/debug/presentation/pages/ble_diagnostic_page.dart';
 
 /// Route Namen
 class AppRoutes {
@@ -28,6 +29,7 @@ class AppRoutes {
   static const trainingLoad = '/training-load';
   static const history = '/history';
   static const settings = '/settings';
+  static const bleDiagnostic = '/ble-diagnostic';
 }
 
 /// GoRouter Provider
@@ -106,6 +108,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.trainingLoad,
         builder: (context, state) => const TrainingLoadPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.bleDiagnostic,
+        builder: (context, state) => const BleDiagnosticPage(),
       ),
       GoRoute(
         path: '${AppRoutes.history}/:sessionId',
