@@ -40,6 +40,11 @@ class BleConnectionState extends Equatable {
         errorMessage: message,
       );
 
+  /// Simulierter verbundener Status (für Mock-Trainer)
+  factory BleConnectionState.simulated() => const BleConnectionState._(
+        status: ConnectionStatus.connected,
+      );
+
   bool get isConnected => status == ConnectionStatus.connected;
   bool get isConnecting => status == ConnectionStatus.connecting;
   bool get isDisconnected => status == ConnectionStatus.disconnected;

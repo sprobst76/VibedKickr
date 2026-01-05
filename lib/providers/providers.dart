@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/ble/ble_manager.dart';
 import '../core/ble/heart_rate_service.dart';
+import '../core/ble/mock_ftms_service.dart';
 import '../core/ble/models/ble_device.dart';
 import '../core/ble/models/connection_state.dart';
 import '../core/ble/models/ftms_data.dart';
@@ -18,6 +19,7 @@ import '../domain/entities/training_session.dart';
 import '../domain/repositories/session_repository.dart';
 
 // Re-export for convenience
+export '../core/ble/mock_ftms_service.dart';
 export '../core/database/daos/personal_record_dao.dart' show PersonalRecord;
 export '../core/database/tables/personal_record_table.dart' show RecordType;
 export '../core/services/personal_record_service.dart';
@@ -47,8 +49,15 @@ final bleManagerProvider = Provider<BleManager>((ref) {
   return BleManager.instance;
 });
 
-/// BLE Connection State Stream
+/// BLE Connection State Stream (zeigt verbunden wenn Simulator aktiv)
 final bleConnectionStateProvider = StreamProvider<BleConnectionState>((ref) {
+  final simulatorMode = ref.watch(simulatorModeProvider);
+
+  if (simulatorMode) {
+    // Simulator Mode: Immer "verbunden" anzeigen
+    return Stream.value(BleConnectionState.simulated());
+  }
+
   final bleManager = ref.watch(bleManagerProvider);
   return bleManager.connectionState;
 });
@@ -65,8 +74,17 @@ final bleDevicesProvider = StreamProvider<List<BleDevice>>((ref) {
   return bleManager.discoveredDevices;
 });
 
-/// FTMS Daten Stream
+/// FTMS Daten Stream (nutzt Mock wenn Simulator aktiv)
 final ftmsDataProvider = StreamProvider<FtmsData>((ref) {
+  final simulatorMode = ref.watch(simulatorModeProvider);
+
+  if (simulatorMode) {
+    // Simulator Mode: Nutze MockFtmsService
+    final mockService = ref.watch(mockFtmsServiceProvider);
+    return mockService.dataStream;
+  }
+
+  // Normaler Modus: Nutze echten BLE Trainer
   final bleManager = ref.watch(bleManagerProvider);
   final ftmsService = bleManager.ftmsService;
   if (ftmsService == null) {
@@ -494,6 +512,40 @@ final autoConnectProvider = StateProvider<bool>((ref) => true);
 
 /// ERG Mode vs Simulation Mode
 final ergModeProvider = StateProvider<bool>((ref) => true);
+
+/// Trainer Simulator Modus (für Entwicklung ohne echten Trainer)
+final simulatorModeProvider = StateProvider<bool>((ref) => false);
+
+// ============================================================================
+// Mock Trainer Service
+// ============================================================================
+
+/// Mock FTMS Service für Simulator-Modus
+final mockFtmsServiceProvider = Provider<MockFtmsService>((ref) {
+  final profile = ref.watch(athleteProfileProvider);
+  final service = MockFtmsService();
+
+  // Konfiguriere mit Athleten-Daten
+  service.configure(
+    ftp: profile.ftp,
+    maxHr: profile.maxHr ?? 180,
+    weight: profile.weight?.toDouble() ?? 75.0,
+  );
+
+  ref.onDispose(() => service.dispose());
+  return service;
+});
+
+/// Mock FTMS Daten Stream
+final mockFtmsDataProvider = StreamProvider<FtmsData>((ref) {
+  final simulatorMode = ref.watch(simulatorModeProvider);
+  if (!simulatorMode) {
+    return const Stream.empty();
+  }
+
+  final mockService = ref.watch(mockFtmsServiceProvider);
+  return mockService.dataStream;
+});
 
 // ============================================================================
 // Training Load Providers

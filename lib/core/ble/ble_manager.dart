@@ -14,7 +14,13 @@ class BleManager {
   static final BleManager _instance = BleManager._internal();
   static BleManager get instance => _instance;
 
-  BleManager._internal();
+  BleManager._internal() {
+    // Emit initial states immediately
+    _connectionStateController.add(_currentState);
+    _hrConnectionStateController.add(_hrCurrentState);
+    _discoveredDevicesController.add([]);
+    _scanningController.add(false);
+  }
 
   // State - Trainer
   final _connectionStateController = StreamController<BleConnectionState>.broadcast();
@@ -25,12 +31,27 @@ class BleManager {
   final _hrConnectionStateController = StreamController<BleConnectionState>.broadcast();
   final _hrDataController = StreamController<HeartRateData>.broadcast();
 
-  Stream<BleConnectionState> get connectionState => _connectionStateController.stream;
-  Stream<List<BleDevice>> get discoveredDevices => _discoveredDevicesController.stream;
-  Stream<bool> get isScanning => _scanningController.stream;
+  Stream<BleConnectionState> get connectionState async* {
+    // Emit current state first, then stream updates
+    yield _currentState;
+    yield* _connectionStateController.stream;
+  }
+
+  Stream<List<BleDevice>> get discoveredDevices async* {
+    yield _devices;
+    yield* _discoveredDevicesController.stream;
+  }
+
+  Stream<bool> get isScanning async* {
+    yield false;
+    yield* _scanningController.stream;
+  }
 
   /// HR Monitor Connection State
-  Stream<BleConnectionState> get hrConnectionState => _hrConnectionStateController.stream;
+  Stream<BleConnectionState> get hrConnectionState async* {
+    yield _hrCurrentState;
+    yield* _hrConnectionStateController.stream;
+  }
 
   /// HR Daten Stream (von standalone HR Monitor)
   Stream<HeartRateData> get heartRateData => _hrDataController.stream;

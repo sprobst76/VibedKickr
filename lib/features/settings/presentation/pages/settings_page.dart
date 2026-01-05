@@ -14,6 +14,7 @@ class SettingsPage extends ConsumerWidget {
     final soundEnabled = ref.watch(soundEnabledProvider);
     final autoConnect = ref.watch(autoConnectProvider);
     final ergMode = ref.watch(ergModeProvider);
+    final simulatorMode = ref.watch(simulatorModeProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -92,6 +93,42 @@ class SettingsPage extends ConsumerWidget {
                   value: ergMode,
                   onChanged: (value) {
                     ref.read(ergModeProvider.notifier).state = value;
+                  },
+                ),
+                const Divider(height: 1),
+                SwitchListTile(
+                  title: Row(
+                    children: [
+                      const Text('Simulator Modus'),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppColors.warning.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: const Text(
+                          'DEV',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.warning,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  subtitle: const Text('Simulierter Trainer für Entwicklung'),
+                  value: simulatorMode,
+                  onChanged: (value) {
+                    ref.read(simulatorModeProvider.notifier).state = value;
+                    if (value) {
+                      // Starte Simulator wenn aktiviert
+                      ref.read(mockFtmsServiceProvider).start();
+                    } else {
+                      // Stoppe Simulator wenn deaktiviert
+                      ref.read(mockFtmsServiceProvider).stop();
+                    }
                   },
                 ),
               ],
