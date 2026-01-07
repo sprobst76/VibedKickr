@@ -16,10 +16,14 @@ class _BleDiagnosticPageState extends State<BleDiagnosticPage> {
   final List<String> _logs = [];
   final ScrollController _scrollController = ScrollController();
 
-  List<ScanResult> _scanResults = [];
+  // Map für zuverlässige Deduplizierung (ID -> ScanResult)
+  final Map<String, ScanResult> _scanResultsMap = {};
+  List<ScanResult> get _scanResults => _scanResultsMap.values.toList();
+
   BluetoothDevice? _connectedDevice;
   List<BluetoothService>? _services;
   StreamSubscription<List<int>>? _dataSubscription;
+  StreamSubscription<List<ScanResult>>? _scanSubscription;
 
   bool _isScanning = false;
   bool _isConnecting = false;
@@ -61,43 +65,73 @@ class _BleDiagnosticPageState extends State<BleDiagnosticPage> {
   Future<void> _startScan() async {
     if (_isScanning) return;
 
+    // Vorherige Subscription canceln
+    await _scanSubscription?.cancel();
+    _scanSubscription = null;
+
     setState(() {
       _isScanning = true;
-      _scanResults = [];
+      _scanResultsMap.clear();
     });
 
     _log('Starting scan...');
 
     try {
-      await FlutterBluePlus.startScan(timeout: const Duration(seconds: 10));
+      // Subscription ZUERST einrichten, DANN scannen
+      _scanSubscription = FlutterBluePlus.scanResults.listen((results) {
+        // Sammle neue Geräte OHNE setState aufzurufen
+        final newDevices = <String, ScanResult>{};
 
-      FlutterBluePlus.scanResults.listen((results) {
         for (final result in results) {
           final name = result.device.platformName;
           final id = result.device.remoteId.str;
-          final rssi = result.rssi;
           final services = result.advertisementData.serviceUuids;
 
           // Nur Geräte mit Namen oder relevanten Services
           if (name.isNotEmpty || services.isNotEmpty) {
-            final existing = _scanResults.indexWhere((r) => r.device.remoteId == result.device.remoteId);
-            if (existing < 0) {
-              _log('Found: $name ($id) RSSI: $rssi');
-              _log('  Services: ${services.map((s) => s.toString().substring(4, 8)).join(", ")}');
-              setState(() {
-                _scanResults.add(result);
-              });
+            // Prüfen ob neu (weder in Map noch in diesem Batch)
+            if (!_scanResultsMap.containsKey(id) && !newDevices.containsKey(id)) {
+              newDevices[id] = result;
             }
           }
         }
+
+        // Jetzt alle neuen Geräte auf einmal hinzufügen
+        if (newDevices.isNotEmpty) {
+          for (final entry in newDevices.entries) {
+            final result = entry.value;
+            final name = result.device.platformName;
+            final rssi = result.rssi;
+            final services = result.advertisementData.serviceUuids;
+
+            _scanResultsMap[entry.key] = result;
+
+            // Log NACH dem Hinzufügen (ohne setState in _log)
+            final timestamp = DateTime.now().toString().substring(11, 19);
+            _logs.add('[$timestamp] Found: $name (${entry.key}) RSSI: $rssi');
+            if (services.isNotEmpty) {
+              _logs.add('[$timestamp]   Services: ${services.map((s) { final str = s.toString(); return str.length >= 8 ? str.substring(4, 8) : str; }).join(", ")}');
+            }
+          }
+          _logs.add('[${DateTime.now().toString().substring(11, 19)}] Map size: ${_scanResultsMap.length}');
+
+          // EIN setState am Ende
+          if (mounted) setState(() {});
+        }
       });
 
+      // Jetzt scannen starten
+      await FlutterBluePlus.startScan(timeout: const Duration(seconds: 10));
+
+      // Warten bis Scan fertig
       await Future.delayed(const Duration(seconds: 10));
     } catch (e) {
       _log('Scan error: $e');
     } finally {
+      await _scanSubscription?.cancel();
+      _scanSubscription = null;
       setState(() => _isScanning = false);
-      _log('Scan complete. Found ${_scanResults.length} devices');
+      _log('Scan complete. Found ${_scanResultsMap.length} devices');
     }
   }
 
@@ -127,14 +161,14 @@ class _BleDiagnosticPageState extends State<BleDiagnosticPage> {
     } catch (e) {
       _log('✗ Connection failed: $e');
 
-      // Alternative Methode versuchen
-      _log('Trying alternative: autoConnect=true...');
+      // Alternative Methode versuchen - längerer Timeout
+      _log('Trying alternative: timeout=60s...');
       try {
         await device.connect(
-          timeout: const Duration(seconds: 30),
-          autoConnect: true,
+          timeout: const Duration(seconds: 60),
+          autoConnect: false,
         );
-        _log('✓ Connected with autoConnect!');
+        _log('✓ Connected with longer timeout!');
         setState(() => _connectedDevice = device);
         await _discoverServices();
       } catch (e2) {
@@ -158,7 +192,7 @@ class _BleDiagnosticPageState extends State<BleDiagnosticPage> {
 
       for (final service in services) {
         final uuid = service.uuid.toString();
-        final shortUuid = uuid.substring(4, 8).toUpperCase();
+        final shortUuid = uuid.length >= 8 ? uuid.substring(4, 8).toUpperCase() : uuid.toUpperCase();
         String serviceName = _getServiceName(shortUuid);
 
         _log('');
@@ -167,7 +201,7 @@ class _BleDiagnosticPageState extends State<BleDiagnosticPage> {
 
         for (final char in service.characteristics) {
           final charUuid = char.uuid.toString();
-          final shortCharUuid = charUuid.substring(4, 8).toUpperCase();
+          final shortCharUuid = charUuid.length >= 8 ? charUuid.substring(4, 8).toUpperCase() : charUuid.toUpperCase();
           String charName = _getCharacteristicName(shortCharUuid);
 
           _log('  CHAR: $shortCharUuid ($charName)');
@@ -204,7 +238,8 @@ class _BleDiagnosticPageState extends State<BleDiagnosticPage> {
       // Alternative Services suchen
       _log('Checking for alternative services...');
       for (final service in _services!) {
-        final uuid = service.uuid.toString().substring(4, 8).toUpperCase();
+        final uuidStr = service.uuid.toString();
+        final uuid = uuidStr.length >= 8 ? uuidStr.substring(4, 8).toUpperCase() : uuidStr.toUpperCase();
         if (uuid == '1818') {
           _log('  Found Cycling Power Service (1818)');
         } else if (uuid == '1816') {
@@ -372,6 +407,7 @@ class _BleDiagnosticPageState extends State<BleDiagnosticPage> {
 
   @override
   void dispose() {
+    _scanSubscription?.cancel();
     _dataSubscription?.cancel();
     _scrollController.dispose();
     super.dispose();

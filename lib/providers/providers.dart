@@ -85,12 +85,23 @@ final ftmsDataProvider = StreamProvider<FtmsData>((ref) {
   }
 
   // Normaler Modus: Nutze echten BLE Trainer
-  final bleManager = ref.watch(bleManagerProvider);
-  final ftmsService = bleManager.ftmsService;
-  if (ftmsService == null) {
-    return Stream.value(FtmsData.empty());
-  }
-  return ftmsService.dataStream;
+  // WICHTIG: Watch connectionState um Provider neu zu evaluieren bei Verbindungsänderung
+  final connectionState = ref.watch(bleConnectionStateProvider);
+
+  return connectionState.when(
+    data: (state) {
+      if (state.isConnected) {
+        final bleManager = ref.read(bleManagerProvider);
+        final ftmsService = bleManager.ftmsService;
+        if (ftmsService != null) {
+          return ftmsService.dataStream;
+        }
+      }
+      return Stream.value(FtmsData.empty());
+    },
+    loading: () => Stream.value(FtmsData.empty()),
+    error: (_, __) => Stream.value(FtmsData.empty()),
+  );
 });
 
 // ============================================================================

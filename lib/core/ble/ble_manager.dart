@@ -287,7 +287,7 @@ class BleManager {
       // Verbinde (längerer Timeout für stabilen Connect)
       await device.bluetoothDevice.connect(
         timeout: const Duration(seconds: 30),
-        autoConnect: true,
+        autoConnect: false,
       );
 
       // Connection State überwachen
