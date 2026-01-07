@@ -2,13 +2,80 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 
-import '../app_database.dart';
 import '../../../domain/entities/training_session.dart' as domain;
+import '../app_database.dart';
 
-/// Mapper zwischen Domain-Entities und Drift-Modellen
+/// Mapper zwischen Drift-Entitäten und Domain-Modellen
 class SessionMapper {
-  /// Domain TrainingSession → Drift Companion
+  // ============================================================================
+  // TrainingSession: DB -> Domain
+  // ============================================================================
+
+  static domain.TrainingSession toDomain(
+    TrainingSessionEntity dbSession, {
+    List<domain.DataPoint>? dataPoints,
+  }) {
+    return domain.TrainingSession(
+      id: dbSession.id,
+      startTime: DateTime.fromMillisecondsSinceEpoch(dbSession.startTime),
+      endTime: dbSession.endTime != null
+          ? DateTime.fromMillisecondsSinceEpoch(dbSession.endTime!)
+          : null,
+      type: _parseSessionType(dbSession.sessionType),
+      workoutId: dbSession.workoutId,
+      routeId: dbSession.routeId,
+      dataPoints: dataPoints ?? const [],
+      stats: _toStats(dbSession),
+      syncStatus: _parseSyncStatus(dbSession.syncStatusJson),
+    );
+  }
+
+  static domain.SessionStats _toStats(TrainingSessionEntity dbSession) {
+    return domain.SessionStats(
+      duration: Duration(milliseconds: dbSession.statsDurationMs),
+      avgPower: dbSession.statsAvgPower,
+      maxPower: dbSession.statsMaxPower,
+      normalizedPower: dbSession.statsNormalizedPower,
+      intensityFactor: dbSession.statsIntensityFactor,
+      tss: dbSession.statsTss,
+      totalWork: dbSession.statsTotalWork,
+      avgCadence: dbSession.statsAvgCadence,
+      maxCadence: dbSession.statsMaxCadence,
+      avgHeartRate: dbSession.statsAvgHeartRate,
+      maxHeartRate: dbSession.statsMaxHeartRate,
+      calories: dbSession.statsCalories,
+      distance: dbSession.statsDistance,
+    );
+  }
+
+  static domain.SessionType _parseSessionType(String type) {
+    return domain.SessionType.values.firstWhere(
+      (e) => e.name == type,
+      orElse: () => domain.SessionType.freeRide,
+    );
+  }
+
+  static Map<String, domain.SyncStatus> _parseSyncStatus(String json) {
+    try {
+      final Map<String, dynamic> decoded = jsonDecode(json);
+      return decoded.map((key, value) => MapEntry(
+            key,
+            domain.SyncStatus.values.firstWhere(
+              (e) => e.name == value,
+              orElse: () => domain.SyncStatus.notSynced,
+            ),
+          ));
+    } catch (_) {
+      return {};
+    }
+  }
+
+  // ============================================================================
+  // TrainingSession: Domain -> DB
+  // ============================================================================
+
   static TrainingSessionsCompanion toCompanion(domain.TrainingSession session) {
+    final stats = session.stats;
     return TrainingSessionsCompanion(
       id: Value(session.id),
       startTime: Value(session.startTime.millisecondsSinceEpoch),
@@ -16,91 +83,55 @@ class SessionMapper {
       sessionType: Value(session.type.name),
       workoutId: Value(session.workoutId),
       routeId: Value(session.routeId),
-      // SessionStats
-      statsDurationMs: Value(session.stats?.duration.inMilliseconds ?? 0),
-      statsAvgPower: Value(session.stats?.avgPower ?? 0),
-      statsMaxPower: Value(session.stats?.maxPower ?? 0),
-      statsNormalizedPower: Value(session.stats?.normalizedPower ?? 0),
-      statsIntensityFactor: Value(session.stats?.intensityFactor ?? 0.0),
-      statsTss: Value(session.stats?.tss ?? 0),
-      statsTotalWork: Value(session.stats?.totalWork ?? 0),
-      statsAvgCadence: Value(session.stats?.avgCadence),
-      statsMaxCadence: Value(session.stats?.maxCadence),
-      statsAvgHeartRate: Value(session.stats?.avgHeartRate),
-      statsMaxHeartRate: Value(session.stats?.maxHeartRate),
-      statsCalories: Value(session.stats?.calories),
-      statsDistance: Value(session.stats?.distance),
-      // Sync Status
-      syncStatusJson: Value(jsonEncode(
-        session.syncStatus.map((k, v) => MapEntry(k, v.name)),
-      )),
+      statsDurationMs: Value(stats?.duration.inMilliseconds ?? 0),
+      statsAvgPower: Value(stats?.avgPower ?? 0),
+      statsMaxPower: Value(stats?.maxPower ?? 0),
+      statsNormalizedPower: Value(stats?.normalizedPower ?? 0),
+      statsIntensityFactor: Value(stats?.intensityFactor ?? 0.0),
+      statsTss: Value(stats?.tss ?? 0),
+      statsTotalWork: Value(stats?.totalWork ?? 0),
+      statsAvgCadence: Value(stats?.avgCadence),
+      statsMaxCadence: Value(stats?.maxCadence),
+      statsAvgHeartRate: Value(stats?.avgHeartRate),
+      statsMaxHeartRate: Value(stats?.maxHeartRate),
+      statsCalories: Value(stats?.calories),
+      statsDistance: Value(stats?.distance),
+      syncStatusJson: Value(_encodeSyncStatus(session.syncStatus)),
     );
   }
 
-  /// Drift TrainingSessionEntity → Domain TrainingSession
-  static domain.TrainingSession fromDbSession(
-    TrainingSessionEntity dbSession, {
-    List<domain.DataPoint> dataPoints = const [],
-  }) {
-    // Parse sync status
-    final syncStatusMap = <String, domain.SyncStatus>{};
-    try {
-      final decoded = jsonDecode(dbSession.syncStatusJson) as Map<String, dynamic>;
-      for (final entry in decoded.entries) {
-        syncStatusMap[entry.key] = domain.SyncStatus.values.firstWhere(
-          (s) => s.name == entry.value,
-          orElse: () => domain.SyncStatus.notSynced,
-        );
-      }
-    } catch (_) {
-      // Ignore JSON parsing errors
-    }
+  static String _encodeSyncStatus(Map<String, domain.SyncStatus> status) {
+    return jsonEncode(status.map((k, v) => MapEntry(k, v.name)));
+  }
 
-    // Parse session type
-    final sessionType = domain.SessionType.values.firstWhere(
-      (t) => t.name == dbSession.sessionType,
-      orElse: () => domain.SessionType.freeRide,
-    );
+  // ============================================================================
+  // DataPoint: DB -> Domain
+  // ============================================================================
 
-    // Build stats if present
-    domain.SessionStats? stats;
-    if (dbSession.statsDurationMs > 0 || dbSession.statsAvgPower > 0) {
-      stats = domain.SessionStats(
-        duration: Duration(milliseconds: dbSession.statsDurationMs),
-        avgPower: dbSession.statsAvgPower,
-        maxPower: dbSession.statsMaxPower,
-        normalizedPower: dbSession.statsNormalizedPower,
-        intensityFactor: dbSession.statsIntensityFactor,
-        tss: dbSession.statsTss,
-        totalWork: dbSession.statsTotalWork,
-        avgCadence: dbSession.statsAvgCadence,
-        maxCadence: dbSession.statsMaxCadence,
-        avgHeartRate: dbSession.statsAvgHeartRate,
-        maxHeartRate: dbSession.statsMaxHeartRate,
-        calories: dbSession.statsCalories,
-        distance: dbSession.statsDistance,
-      );
-    }
-
-    return domain.TrainingSession(
-      id: dbSession.id,
-      startTime: DateTime.fromMillisecondsSinceEpoch(dbSession.startTime),
-      endTime: dbSession.endTime != null
-          ? DateTime.fromMillisecondsSinceEpoch(dbSession.endTime!)
-          : null,
-      type: sessionType,
-      workoutId: dbSession.workoutId,
-      routeId: dbSession.routeId,
-      dataPoints: dataPoints,
-      stats: stats,
-      syncStatus: syncStatusMap,
+  static domain.DataPoint dataPointToDomain(DataPointEntity dbPoint) {
+    return domain.DataPoint(
+      timestamp: dbPoint.timestampMs,
+      power: dbPoint.power,
+      cadence: dbPoint.cadence,
+      heartRate: dbPoint.heartRate,
+      speed: dbPoint.speed,
+      distance: dbPoint.distance,
+      grade: dbPoint.grade,
+      targetPower: dbPoint.targetPower,
     );
   }
 
-  /// Domain DataPoint → Drift Companion
+  static List<domain.DataPoint> dataPointsToDomain(List<DataPointEntity> dbPoints) {
+    return dbPoints.map(dataPointToDomain).toList();
+  }
+
+  // ============================================================================
+  // DataPoint: Domain -> DB
+  // ============================================================================
+
   static DataPointsCompanion dataPointToCompanion(
-    String sessionId,
     domain.DataPoint point,
+    String sessionId,
   ) {
     return DataPointsCompanion(
       sessionId: Value(sessionId),
@@ -115,30 +146,10 @@ class SessionMapper {
     );
   }
 
-  /// Drift DataPointEntity → Domain DataPoint
-  static domain.DataPoint fromDbDataPoint(DataPointEntity dbPoint) {
-    return domain.DataPoint(
-      timestamp: dbPoint.timestampMs,
-      power: dbPoint.power,
-      cadence: dbPoint.cadence,
-      heartRate: dbPoint.heartRate,
-      speed: dbPoint.speed,
-      distance: dbPoint.distance,
-      grade: dbPoint.grade,
-      targetPower: dbPoint.targetPower,
-    );
-  }
-
-  /// Liste von Domain DataPoints → Liste von Drift Companions
   static List<DataPointsCompanion> dataPointsToCompanions(
-    String sessionId,
     List<domain.DataPoint> points,
+    String sessionId,
   ) {
-    return points.map((p) => dataPointToCompanion(sessionId, p)).toList();
-  }
-
-  /// Liste von Drift DataPointEntities → Liste von Domain DataPoints
-  static List<domain.DataPoint> fromDbDataPoints(List<DataPointEntity> dbPoints) {
-    return dbPoints.map(fromDbDataPoint).toList();
+    return points.map((p) => dataPointToCompanion(p, sessionId)).toList();
   }
 }

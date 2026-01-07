@@ -3,14 +3,14 @@ import 'package:drift/drift.dart';
 /// Tabelle für Training Sessions
 @DataClassName('TrainingSessionEntity')
 class TrainingSessions extends Table {
-  // Primary Key - UUID
+  // Primary Key
   TextColumn get id => text()();
 
-  // Timestamps
-  IntColumn get startTime => integer()(); // Unix timestamp ms
-  IntColumn get endTime => integer().nullable()(); // Unix timestamp ms
+  // Zeitstempel
+  IntColumn get startTime => integer()(); // Unix ms
+  IntColumn get endTime => integer().nullable()();
 
-  // Session Info
+  // Session-Typ und Referenzen
   TextColumn get sessionType => text()(); // 'workout', 'freeRide', etc.
   TextColumn get workoutId => text().nullable()();
   TextColumn get routeId => text().nullable()();
@@ -19,10 +19,8 @@ class TrainingSessions extends Table {
   IntColumn get statsDurationMs => integer().withDefault(const Constant(0))();
   IntColumn get statsAvgPower => integer().withDefault(const Constant(0))();
   IntColumn get statsMaxPower => integer().withDefault(const Constant(0))();
-  IntColumn get statsNormalizedPower =>
-      integer().withDefault(const Constant(0))();
-  RealColumn get statsIntensityFactor =>
-      real().withDefault(const Constant(0.0))();
+  IntColumn get statsNormalizedPower => integer().withDefault(const Constant(0))();
+  RealColumn get statsIntensityFactor => real().withDefault(const Constant(0.0))();
   IntColumn get statsTss => integer().withDefault(const Constant(0))();
   IntColumn get statsTotalWork => integer().withDefault(const Constant(0))();
   IntColumn get statsAvgCadence => integer().nullable()();
@@ -33,8 +31,7 @@ class TrainingSessions extends Table {
   RealColumn get statsDistance => real().nullable()();
 
   // Sync Status (JSON encoded)
-  TextColumn get syncStatusJson =>
-      text().withDefault(const Constant('{}'))();
+  TextColumn get syncStatusJson => text().withDefault(const Constant('{}'))();
 
   @override
   Set<Column> get primaryKey => {id};

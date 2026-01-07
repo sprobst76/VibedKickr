@@ -1,119 +1,153 @@
 import 'package:drift/drift.dart';
 
 import '../app_database.dart';
+import '../tables/training_session_table.dart';
+import '../tables/data_point_table.dart';
 
-/// Data Access Object für Training Sessions
-class SessionDao {
-  final AppDatabase _db;
+part 'session_dao.g.dart';
 
-  SessionDao(this._db);
+@DriftAccessor(tables: [TrainingSessions, DataPoints])
+class SessionDao extends DatabaseAccessor<AppDatabase> with _$SessionDaoMixin {
+  SessionDao(super.db);
 
-  // === Sessions ===
+  // ============================================================================
+  // Training Sessions CRUD
+  // ============================================================================
 
-  /// Alle Sessions abrufen, neueste zuerst
-  Future<List<TrainingSessionEntity>> getAllSessions() async {
-    return (_db.select(_db.trainingSessions)
+  /// Alle Sessions abrufen (sortiert nach Startzeit, neueste zuerst)
+  Future<List<TrainingSessionEntity>> getAllSessions() {
+    return (select(trainingSessions)
           ..orderBy([(t) => OrderingTerm.desc(t.startTime)]))
         .get();
   }
 
-  /// Session nach ID abrufen
-  Future<TrainingSessionEntity?> getSessionById(String id) async {
-    return (_db.select(_db.trainingSessions)..where((t) => t.id.equals(id)))
+  /// Watch alle Sessions (reaktiv)
+  Stream<List<TrainingSessionEntity>> watchAllSessions() {
+    return (select(trainingSessions)
+          ..orderBy([(t) => OrderingTerm.desc(t.startTime)]))
+        .watch();
+  }
+
+  /// Sessions mit Limit und Offset (für Pagination)
+  Future<List<TrainingSessionEntity>> getSessionsPaginated({
+    required int limit,
+    required int offset,
+  }) {
+    return (select(trainingSessions)
+          ..orderBy([(t) => OrderingTerm.desc(t.startTime)])
+          ..limit(limit, offset: offset))
+        .get();
+  }
+
+  /// Einzelne Session abrufen
+  Future<TrainingSessionEntity?> getSessionById(String id) {
+    return (select(trainingSessions)..where((t) => t.id.equals(id)))
         .getSingleOrNull();
   }
 
-  /// Sessions innerhalb eines Zeitraums
+  /// Session erstellen
+  Future<void> insertSession(TrainingSessionsCompanion session) {
+    return into(trainingSessions).insert(session);
+  }
+
+  /// Session aktualisieren
+  Future<bool> updateSession(TrainingSessionsCompanion session) {
+    return update(trainingSessions).replace(session);
+  }
+
+  /// Session löschen (mit zugehörigen DataPoints)
+  Future<void> deleteSession(String id) async {
+    // Erst DataPoints löschen
+    await (delete(dataPoints)..where((t) => t.sessionId.equals(id))).go();
+    // Dann Session löschen
+    await (delete(trainingSessions)..where((t) => t.id.equals(id))).go();
+  }
+
+  /// Sessions nach Zeitraum abrufen
   Future<List<TrainingSessionEntity>> getSessionsInRange(
     DateTime start,
     DateTime end,
-  ) async {
-    return (_db.select(_db.trainingSessions)
-          ..where((t) => t.startTime.isBetweenValues(
-                start.millisecondsSinceEpoch,
-                end.millisecondsSinceEpoch,
-              ))
+  ) {
+    return (select(trainingSessions)
+          ..where((t) => t.startTime.isBiggerOrEqualValue(start.millisecondsSinceEpoch))
+          ..where((t) => t.startTime.isSmallerOrEqualValue(end.millisecondsSinceEpoch))
           ..orderBy([(t) => OrderingTerm.desc(t.startTime)]))
         .get();
   }
 
-  /// Session einfügen
-  Future<void> insertSession(TrainingSessionsCompanion session) async {
-    await _db.into(_db.trainingSessions).insert(session);
-  }
+  // ============================================================================
+  // Data Points CRUD
+  // ============================================================================
 
-  /// Session aktualisieren
-  Future<void> updateSession(TrainingSessionsCompanion session) async {
-    await (_db.update(_db.trainingSessions)
-          ..where((t) => t.id.equals(session.id.value)))
-        .write(session);
-  }
-
-  /// Session löschen (DataPoints werden durch CASCADE gelöscht)
-  Future<void> deleteSession(String id) async {
-    await (_db.delete(_db.trainingSessions)..where((t) => t.id.equals(id))).go();
-  }
-
-  // === DataPoints ===
-
-  /// Alle DataPoints einer Session
-  Future<List<DataPointEntity>> getDataPointsForSession(String sessionId) async {
-    return (_db.select(_db.dataPoints)
+  /// Alle DataPoints einer Session abrufen
+  Future<List<DataPointEntity>> getDataPointsForSession(String sessionId) {
+    return (select(dataPoints)
           ..where((t) => t.sessionId.equals(sessionId))
           ..orderBy([(t) => OrderingTerm.asc(t.timestampMs)]))
         .get();
   }
 
-  /// Batch-Insert für DataPoints (effizient für viele Punkte)
-  Future<void> insertDataPoints(List<DataPointsCompanion> points) async {
-    await _db.batch((b) {
-      b.insertAll(_db.dataPoints, points);
+  /// Einzelnen DataPoint einfügen
+  Future<int> insertDataPoint(DataPointsCompanion dataPoint) {
+    return into(dataPoints).insert(dataPoint);
+  }
+
+  /// Batch-Insert für DataPoints (viel effizienter)
+  Future<void> insertDataPointsBatch(List<DataPointsCompanion> points) {
+    return batch((batch) {
+      batch.insertAll(dataPoints, points);
     });
   }
 
   /// DataPoints einer Session löschen
-  Future<void> deleteDataPointsForSession(String sessionId) async {
-    await (_db.delete(_db.dataPoints)..where((t) => t.sessionId.equals(sessionId)))
-        .go();
+  Future<int> deleteDataPointsForSession(String sessionId) {
+    return (delete(dataPoints)..where((t) => t.sessionId.equals(sessionId))).go();
   }
 
-  // === Kombinierte Operationen ===
+  // ============================================================================
+  // Statistik-Abfragen
+  // ============================================================================
 
-  /// Session mit allen DataPoints speichern (Transaktion)
-  Future<void> saveSessionWithDataPoints(
-    TrainingSessionsCompanion session,
-    List<DataPointsCompanion> points,
-  ) async {
-    await _db.transaction(() async {
-      await _db.into(_db.trainingSessions).insert(session);
-      if (points.isNotEmpty) {
-        await _db.batch((b) {
-          b.insertAll(_db.dataPoints, points);
-        });
-      }
-    });
-  }
-
-  /// Anzahl der Sessions
+  /// Anzahl aller Sessions
   Future<int> getSessionCount() async {
-    final count = _db.trainingSessions.id.count();
-    final query = _db.selectOnly(_db.trainingSessions)..addColumns([count]);
+    final countExp = trainingSessions.id.count();
+    final query = selectOnly(trainingSessions)..addColumns([countExp]);
     final result = await query.getSingle();
-    return result.read(count) ?? 0;
+    return result.read(countExp) ?? 0;
   }
 
-  /// Gesamte Trainingszeit
-  Future<int> getTotalTrainingTimeMs() async {
-    final sum = _db.trainingSessions.statsDurationMs.sum();
-    final query = _db.selectOnly(_db.trainingSessions)..addColumns([sum]);
+  /// Gesamt-TSS der letzten X Tage
+  Future<int> getTotalTssLastDays(int days) async {
+    final cutoff = DateTime.now().subtract(Duration(days: days)).millisecondsSinceEpoch;
+    final tssSum = trainingSessions.statsTss.sum();
+    final query = selectOnly(trainingSessions)
+      ..addColumns([tssSum])
+      ..where(trainingSessions.startTime.isBiggerOrEqualValue(cutoff));
     final result = await query.getSingle();
-    return result.read(sum) ?? 0;
+    return result.read(tssSum)?.toInt() ?? 0;
   }
 
-  /// Sessions als Stream (für Live-Updates)
-  Stream<List<TrainingSessionEntity>> watchAllSessions() {
-    return (_db.select(_db.trainingSessions)
-          ..orderBy([(t) => OrderingTerm.desc(t.startTime)]))
-        .watch();
+  /// Gesamt-Trainingszeit der letzten X Tage
+  Future<Duration> getTotalDurationLastDays(int days) async {
+    final cutoff = DateTime.now().subtract(Duration(days: days)).millisecondsSinceEpoch;
+    final durationSum = trainingSessions.statsDurationMs.sum();
+    final query = selectOnly(trainingSessions)
+      ..addColumns([durationSum])
+      ..where(trainingSessions.startTime.isBiggerOrEqualValue(cutoff));
+    final result = await query.getSingle();
+    return Duration(milliseconds: result.read(durationSum)?.toInt() ?? 0);
+  }
+
+  /// Sessions nach Typ zählen
+  Future<Map<String, int>> getSessionCountByType() async {
+    final query = selectOnly(trainingSessions)
+      ..addColumns([trainingSessions.sessionType, trainingSessions.id.count()]);
+    query.groupBy([trainingSessions.sessionType]);
+
+    final results = await query.get();
+    return {
+      for (final row in results)
+        row.read(trainingSessions.sessionType)!: row.read(trainingSessions.id.count()) ?? 0,
+    };
   }
 }

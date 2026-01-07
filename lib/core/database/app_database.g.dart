@@ -1004,7 +1004,7 @@ class $DataPointsTable extends DataPoints
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES training_sessions (id) ON DELETE CASCADE'));
+          'REFERENCES training_sessions (id)'));
   static const VerificationMeta _timestampMsMeta =
       const VerificationMeta('timestampMs');
   @override
@@ -1894,374 +1894,6 @@ class CustomWorkoutsCompanion extends UpdateCompanion<CustomWorkoutEntity> {
   }
 }
 
-class $PersonalRecordsTable extends PersonalRecords
-    with TableInfo<$PersonalRecordsTable, PersonalRecordEntity> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $PersonalRecordsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _recordTypeMeta =
-      const VerificationMeta('recordType');
-  @override
-  late final GeneratedColumn<String> recordType = GeneratedColumn<String>(
-      'record_type', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _powerWattsMeta =
-      const VerificationMeta('powerWatts');
-  @override
-  late final GeneratedColumn<int> powerWatts = GeneratedColumn<int>(
-      'power_watts', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _achievedAtMeta =
-      const VerificationMeta('achievedAt');
-  @override
-  late final GeneratedColumn<DateTime> achievedAt = GeneratedColumn<DateTime>(
-      'achieved_at', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _sessionIdMeta =
-      const VerificationMeta('sessionId');
-  @override
-  late final GeneratedColumn<String> sessionId = GeneratedColumn<String>(
-      'session_id', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _previousPowerWattsMeta =
-      const VerificationMeta('previousPowerWatts');
-  @override
-  late final GeneratedColumn<int> previousPowerWatts = GeneratedColumn<int>(
-      'previous_power_watts', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  @override
-  List<GeneratedColumn> get $columns =>
-      [id, recordType, powerWatts, achievedAt, sessionId, previousPowerWatts];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'personal_records';
-  @override
-  VerificationContext validateIntegrity(
-      Insertable<PersonalRecordEntity> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('record_type')) {
-      context.handle(
-          _recordTypeMeta,
-          recordType.isAcceptableOrUnknown(
-              data['record_type']!, _recordTypeMeta));
-    } else if (isInserting) {
-      context.missing(_recordTypeMeta);
-    }
-    if (data.containsKey('power_watts')) {
-      context.handle(
-          _powerWattsMeta,
-          powerWatts.isAcceptableOrUnknown(
-              data['power_watts']!, _powerWattsMeta));
-    } else if (isInserting) {
-      context.missing(_powerWattsMeta);
-    }
-    if (data.containsKey('achieved_at')) {
-      context.handle(
-          _achievedAtMeta,
-          achievedAt.isAcceptableOrUnknown(
-              data['achieved_at']!, _achievedAtMeta));
-    } else if (isInserting) {
-      context.missing(_achievedAtMeta);
-    }
-    if (data.containsKey('session_id')) {
-      context.handle(_sessionIdMeta,
-          sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta));
-    }
-    if (data.containsKey('previous_power_watts')) {
-      context.handle(
-          _previousPowerWattsMeta,
-          previousPowerWatts.isAcceptableOrUnknown(
-              data['previous_power_watts']!, _previousPowerWattsMeta));
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  PersonalRecordEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return PersonalRecordEntity(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      recordType: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}record_type'])!,
-      powerWatts: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}power_watts'])!,
-      achievedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}achieved_at'])!,
-      sessionId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}session_id']),
-      previousPowerWatts: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}previous_power_watts']),
-    );
-  }
-
-  @override
-  $PersonalRecordsTable createAlias(String alias) {
-    return $PersonalRecordsTable(attachedDatabase, alias);
-  }
-}
-
-class PersonalRecordEntity extends DataClass
-    implements Insertable<PersonalRecordEntity> {
-  /// Auto-increment ID
-  final int id;
-
-  /// Typ des PR (5s, 1min, 5min, 20min, etc.)
-  final String recordType;
-
-  /// Power in Watt
-  final int powerWatts;
-
-  /// Datum des PR
-  final DateTime achievedAt;
-
-  /// Session ID (optional, für Verlinkung)
-  final String? sessionId;
-
-  /// Vorheriger PR (für History)
-  final int? previousPowerWatts;
-  const PersonalRecordEntity(
-      {required this.id,
-      required this.recordType,
-      required this.powerWatts,
-      required this.achievedAt,
-      this.sessionId,
-      this.previousPowerWatts});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['record_type'] = Variable<String>(recordType);
-    map['power_watts'] = Variable<int>(powerWatts);
-    map['achieved_at'] = Variable<DateTime>(achievedAt);
-    if (!nullToAbsent || sessionId != null) {
-      map['session_id'] = Variable<String>(sessionId);
-    }
-    if (!nullToAbsent || previousPowerWatts != null) {
-      map['previous_power_watts'] = Variable<int>(previousPowerWatts);
-    }
-    return map;
-  }
-
-  PersonalRecordsCompanion toCompanion(bool nullToAbsent) {
-    return PersonalRecordsCompanion(
-      id: Value(id),
-      recordType: Value(recordType),
-      powerWatts: Value(powerWatts),
-      achievedAt: Value(achievedAt),
-      sessionId: sessionId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(sessionId),
-      previousPowerWatts: previousPowerWatts == null && nullToAbsent
-          ? const Value.absent()
-          : Value(previousPowerWatts),
-    );
-  }
-
-  factory PersonalRecordEntity.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return PersonalRecordEntity(
-      id: serializer.fromJson<int>(json['id']),
-      recordType: serializer.fromJson<String>(json['recordType']),
-      powerWatts: serializer.fromJson<int>(json['powerWatts']),
-      achievedAt: serializer.fromJson<DateTime>(json['achievedAt']),
-      sessionId: serializer.fromJson<String?>(json['sessionId']),
-      previousPowerWatts: serializer.fromJson<int?>(json['previousPowerWatts']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'recordType': serializer.toJson<String>(recordType),
-      'powerWatts': serializer.toJson<int>(powerWatts),
-      'achievedAt': serializer.toJson<DateTime>(achievedAt),
-      'sessionId': serializer.toJson<String?>(sessionId),
-      'previousPowerWatts': serializer.toJson<int?>(previousPowerWatts),
-    };
-  }
-
-  PersonalRecordEntity copyWith(
-          {int? id,
-          String? recordType,
-          int? powerWatts,
-          DateTime? achievedAt,
-          Value<String?> sessionId = const Value.absent(),
-          Value<int?> previousPowerWatts = const Value.absent()}) =>
-      PersonalRecordEntity(
-        id: id ?? this.id,
-        recordType: recordType ?? this.recordType,
-        powerWatts: powerWatts ?? this.powerWatts,
-        achievedAt: achievedAt ?? this.achievedAt,
-        sessionId: sessionId.present ? sessionId.value : this.sessionId,
-        previousPowerWatts: previousPowerWatts.present
-            ? previousPowerWatts.value
-            : this.previousPowerWatts,
-      );
-  PersonalRecordEntity copyWithCompanion(PersonalRecordsCompanion data) {
-    return PersonalRecordEntity(
-      id: data.id.present ? data.id.value : this.id,
-      recordType:
-          data.recordType.present ? data.recordType.value : this.recordType,
-      powerWatts:
-          data.powerWatts.present ? data.powerWatts.value : this.powerWatts,
-      achievedAt:
-          data.achievedAt.present ? data.achievedAt.value : this.achievedAt,
-      sessionId: data.sessionId.present ? data.sessionId.value : this.sessionId,
-      previousPowerWatts: data.previousPowerWatts.present
-          ? data.previousPowerWatts.value
-          : this.previousPowerWatts,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PersonalRecordEntity(')
-          ..write('id: $id, ')
-          ..write('recordType: $recordType, ')
-          ..write('powerWatts: $powerWatts, ')
-          ..write('achievedAt: $achievedAt, ')
-          ..write('sessionId: $sessionId, ')
-          ..write('previousPowerWatts: $previousPowerWatts')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      id, recordType, powerWatts, achievedAt, sessionId, previousPowerWatts);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is PersonalRecordEntity &&
-          other.id == this.id &&
-          other.recordType == this.recordType &&
-          other.powerWatts == this.powerWatts &&
-          other.achievedAt == this.achievedAt &&
-          other.sessionId == this.sessionId &&
-          other.previousPowerWatts == this.previousPowerWatts);
-}
-
-class PersonalRecordsCompanion extends UpdateCompanion<PersonalRecordEntity> {
-  final Value<int> id;
-  final Value<String> recordType;
-  final Value<int> powerWatts;
-  final Value<DateTime> achievedAt;
-  final Value<String?> sessionId;
-  final Value<int?> previousPowerWatts;
-  const PersonalRecordsCompanion({
-    this.id = const Value.absent(),
-    this.recordType = const Value.absent(),
-    this.powerWatts = const Value.absent(),
-    this.achievedAt = const Value.absent(),
-    this.sessionId = const Value.absent(),
-    this.previousPowerWatts = const Value.absent(),
-  });
-  PersonalRecordsCompanion.insert({
-    this.id = const Value.absent(),
-    required String recordType,
-    required int powerWatts,
-    required DateTime achievedAt,
-    this.sessionId = const Value.absent(),
-    this.previousPowerWatts = const Value.absent(),
-  })  : recordType = Value(recordType),
-        powerWatts = Value(powerWatts),
-        achievedAt = Value(achievedAt);
-  static Insertable<PersonalRecordEntity> custom({
-    Expression<int>? id,
-    Expression<String>? recordType,
-    Expression<int>? powerWatts,
-    Expression<DateTime>? achievedAt,
-    Expression<String>? sessionId,
-    Expression<int>? previousPowerWatts,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (recordType != null) 'record_type': recordType,
-      if (powerWatts != null) 'power_watts': powerWatts,
-      if (achievedAt != null) 'achieved_at': achievedAt,
-      if (sessionId != null) 'session_id': sessionId,
-      if (previousPowerWatts != null)
-        'previous_power_watts': previousPowerWatts,
-    });
-  }
-
-  PersonalRecordsCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? recordType,
-      Value<int>? powerWatts,
-      Value<DateTime>? achievedAt,
-      Value<String?>? sessionId,
-      Value<int?>? previousPowerWatts}) {
-    return PersonalRecordsCompanion(
-      id: id ?? this.id,
-      recordType: recordType ?? this.recordType,
-      powerWatts: powerWatts ?? this.powerWatts,
-      achievedAt: achievedAt ?? this.achievedAt,
-      sessionId: sessionId ?? this.sessionId,
-      previousPowerWatts: previousPowerWatts ?? this.previousPowerWatts,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (recordType.present) {
-      map['record_type'] = Variable<String>(recordType.value);
-    }
-    if (powerWatts.present) {
-      map['power_watts'] = Variable<int>(powerWatts.value);
-    }
-    if (achievedAt.present) {
-      map['achieved_at'] = Variable<DateTime>(achievedAt.value);
-    }
-    if (sessionId.present) {
-      map['session_id'] = Variable<String>(sessionId.value);
-    }
-    if (previousPowerWatts.present) {
-      map['previous_power_watts'] = Variable<int>(previousPowerWatts.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PersonalRecordsCompanion(')
-          ..write('id: $id, ')
-          ..write('recordType: $recordType, ')
-          ..write('powerWatts: $powerWatts, ')
-          ..write('achievedAt: $achievedAt, ')
-          ..write('sessionId: $sessionId, ')
-          ..write('previousPowerWatts: $previousPowerWatts')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $GpxRoutesTable extends GpxRoutes
     with TableInfo<$GpxRoutesTable, GpxRouteEntity> {
   @override
@@ -2680,6 +2312,374 @@ class GpxRoutesCompanion extends UpdateCompanion<GpxRouteEntity> {
   }
 }
 
+class $PersonalRecordsTable extends PersonalRecords
+    with TableInfo<$PersonalRecordsTable, PersonalRecordEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PersonalRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _recordTypeMeta =
+      const VerificationMeta('recordType');
+  @override
+  late final GeneratedColumn<String> recordType = GeneratedColumn<String>(
+      'record_type', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _powerWattsMeta =
+      const VerificationMeta('powerWatts');
+  @override
+  late final GeneratedColumn<int> powerWatts = GeneratedColumn<int>(
+      'power_watts', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _achievedAtMeta =
+      const VerificationMeta('achievedAt');
+  @override
+  late final GeneratedColumn<DateTime> achievedAt = GeneratedColumn<DateTime>(
+      'achieved_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _sessionIdMeta =
+      const VerificationMeta('sessionId');
+  @override
+  late final GeneratedColumn<String> sessionId = GeneratedColumn<String>(
+      'session_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _previousPowerWattsMeta =
+      const VerificationMeta('previousPowerWatts');
+  @override
+  late final GeneratedColumn<int> previousPowerWatts = GeneratedColumn<int>(
+      'previous_power_watts', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, recordType, powerWatts, achievedAt, sessionId, previousPowerWatts];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'personal_records';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<PersonalRecordEntity> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('record_type')) {
+      context.handle(
+          _recordTypeMeta,
+          recordType.isAcceptableOrUnknown(
+              data['record_type']!, _recordTypeMeta));
+    } else if (isInserting) {
+      context.missing(_recordTypeMeta);
+    }
+    if (data.containsKey('power_watts')) {
+      context.handle(
+          _powerWattsMeta,
+          powerWatts.isAcceptableOrUnknown(
+              data['power_watts']!, _powerWattsMeta));
+    } else if (isInserting) {
+      context.missing(_powerWattsMeta);
+    }
+    if (data.containsKey('achieved_at')) {
+      context.handle(
+          _achievedAtMeta,
+          achievedAt.isAcceptableOrUnknown(
+              data['achieved_at']!, _achievedAtMeta));
+    } else if (isInserting) {
+      context.missing(_achievedAtMeta);
+    }
+    if (data.containsKey('session_id')) {
+      context.handle(_sessionIdMeta,
+          sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta));
+    }
+    if (data.containsKey('previous_power_watts')) {
+      context.handle(
+          _previousPowerWattsMeta,
+          previousPowerWatts.isAcceptableOrUnknown(
+              data['previous_power_watts']!, _previousPowerWattsMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PersonalRecordEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PersonalRecordEntity(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      recordType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}record_type'])!,
+      powerWatts: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}power_watts'])!,
+      achievedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}achieved_at'])!,
+      sessionId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}session_id']),
+      previousPowerWatts: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}previous_power_watts']),
+    );
+  }
+
+  @override
+  $PersonalRecordsTable createAlias(String alias) {
+    return $PersonalRecordsTable(attachedDatabase, alias);
+  }
+}
+
+class PersonalRecordEntity extends DataClass
+    implements Insertable<PersonalRecordEntity> {
+  /// Auto-increment ID
+  final int id;
+
+  /// Typ des PR (5s, 1min, 5min, 20min, etc.)
+  final String recordType;
+
+  /// Power in Watt
+  final int powerWatts;
+
+  /// Datum des PR
+  final DateTime achievedAt;
+
+  /// Session ID (optional, für Verlinkung)
+  final String? sessionId;
+
+  /// Vorheriger PR (für History)
+  final int? previousPowerWatts;
+  const PersonalRecordEntity(
+      {required this.id,
+      required this.recordType,
+      required this.powerWatts,
+      required this.achievedAt,
+      this.sessionId,
+      this.previousPowerWatts});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['record_type'] = Variable<String>(recordType);
+    map['power_watts'] = Variable<int>(powerWatts);
+    map['achieved_at'] = Variable<DateTime>(achievedAt);
+    if (!nullToAbsent || sessionId != null) {
+      map['session_id'] = Variable<String>(sessionId);
+    }
+    if (!nullToAbsent || previousPowerWatts != null) {
+      map['previous_power_watts'] = Variable<int>(previousPowerWatts);
+    }
+    return map;
+  }
+
+  PersonalRecordsCompanion toCompanion(bool nullToAbsent) {
+    return PersonalRecordsCompanion(
+      id: Value(id),
+      recordType: Value(recordType),
+      powerWatts: Value(powerWatts),
+      achievedAt: Value(achievedAt),
+      sessionId: sessionId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sessionId),
+      previousPowerWatts: previousPowerWatts == null && nullToAbsent
+          ? const Value.absent()
+          : Value(previousPowerWatts),
+    );
+  }
+
+  factory PersonalRecordEntity.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PersonalRecordEntity(
+      id: serializer.fromJson<int>(json['id']),
+      recordType: serializer.fromJson<String>(json['recordType']),
+      powerWatts: serializer.fromJson<int>(json['powerWatts']),
+      achievedAt: serializer.fromJson<DateTime>(json['achievedAt']),
+      sessionId: serializer.fromJson<String?>(json['sessionId']),
+      previousPowerWatts: serializer.fromJson<int?>(json['previousPowerWatts']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'recordType': serializer.toJson<String>(recordType),
+      'powerWatts': serializer.toJson<int>(powerWatts),
+      'achievedAt': serializer.toJson<DateTime>(achievedAt),
+      'sessionId': serializer.toJson<String?>(sessionId),
+      'previousPowerWatts': serializer.toJson<int?>(previousPowerWatts),
+    };
+  }
+
+  PersonalRecordEntity copyWith(
+          {int? id,
+          String? recordType,
+          int? powerWatts,
+          DateTime? achievedAt,
+          Value<String?> sessionId = const Value.absent(),
+          Value<int?> previousPowerWatts = const Value.absent()}) =>
+      PersonalRecordEntity(
+        id: id ?? this.id,
+        recordType: recordType ?? this.recordType,
+        powerWatts: powerWatts ?? this.powerWatts,
+        achievedAt: achievedAt ?? this.achievedAt,
+        sessionId: sessionId.present ? sessionId.value : this.sessionId,
+        previousPowerWatts: previousPowerWatts.present
+            ? previousPowerWatts.value
+            : this.previousPowerWatts,
+      );
+  PersonalRecordEntity copyWithCompanion(PersonalRecordsCompanion data) {
+    return PersonalRecordEntity(
+      id: data.id.present ? data.id.value : this.id,
+      recordType:
+          data.recordType.present ? data.recordType.value : this.recordType,
+      powerWatts:
+          data.powerWatts.present ? data.powerWatts.value : this.powerWatts,
+      achievedAt:
+          data.achievedAt.present ? data.achievedAt.value : this.achievedAt,
+      sessionId: data.sessionId.present ? data.sessionId.value : this.sessionId,
+      previousPowerWatts: data.previousPowerWatts.present
+          ? data.previousPowerWatts.value
+          : this.previousPowerWatts,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PersonalRecordEntity(')
+          ..write('id: $id, ')
+          ..write('recordType: $recordType, ')
+          ..write('powerWatts: $powerWatts, ')
+          ..write('achievedAt: $achievedAt, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('previousPowerWatts: $previousPowerWatts')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, recordType, powerWatts, achievedAt, sessionId, previousPowerWatts);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PersonalRecordEntity &&
+          other.id == this.id &&
+          other.recordType == this.recordType &&
+          other.powerWatts == this.powerWatts &&
+          other.achievedAt == this.achievedAt &&
+          other.sessionId == this.sessionId &&
+          other.previousPowerWatts == this.previousPowerWatts);
+}
+
+class PersonalRecordsCompanion extends UpdateCompanion<PersonalRecordEntity> {
+  final Value<int> id;
+  final Value<String> recordType;
+  final Value<int> powerWatts;
+  final Value<DateTime> achievedAt;
+  final Value<String?> sessionId;
+  final Value<int?> previousPowerWatts;
+  const PersonalRecordsCompanion({
+    this.id = const Value.absent(),
+    this.recordType = const Value.absent(),
+    this.powerWatts = const Value.absent(),
+    this.achievedAt = const Value.absent(),
+    this.sessionId = const Value.absent(),
+    this.previousPowerWatts = const Value.absent(),
+  });
+  PersonalRecordsCompanion.insert({
+    this.id = const Value.absent(),
+    required String recordType,
+    required int powerWatts,
+    required DateTime achievedAt,
+    this.sessionId = const Value.absent(),
+    this.previousPowerWatts = const Value.absent(),
+  })  : recordType = Value(recordType),
+        powerWatts = Value(powerWatts),
+        achievedAt = Value(achievedAt);
+  static Insertable<PersonalRecordEntity> custom({
+    Expression<int>? id,
+    Expression<String>? recordType,
+    Expression<int>? powerWatts,
+    Expression<DateTime>? achievedAt,
+    Expression<String>? sessionId,
+    Expression<int>? previousPowerWatts,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (recordType != null) 'record_type': recordType,
+      if (powerWatts != null) 'power_watts': powerWatts,
+      if (achievedAt != null) 'achieved_at': achievedAt,
+      if (sessionId != null) 'session_id': sessionId,
+      if (previousPowerWatts != null)
+        'previous_power_watts': previousPowerWatts,
+    });
+  }
+
+  PersonalRecordsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? recordType,
+      Value<int>? powerWatts,
+      Value<DateTime>? achievedAt,
+      Value<String?>? sessionId,
+      Value<int?>? previousPowerWatts}) {
+    return PersonalRecordsCompanion(
+      id: id ?? this.id,
+      recordType: recordType ?? this.recordType,
+      powerWatts: powerWatts ?? this.powerWatts,
+      achievedAt: achievedAt ?? this.achievedAt,
+      sessionId: sessionId ?? this.sessionId,
+      previousPowerWatts: previousPowerWatts ?? this.previousPowerWatts,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (recordType.present) {
+      map['record_type'] = Variable<String>(recordType.value);
+    }
+    if (powerWatts.present) {
+      map['power_watts'] = Variable<int>(powerWatts.value);
+    }
+    if (achievedAt.present) {
+      map['achieved_at'] = Variable<DateTime>(achievedAt.value);
+    }
+    if (sessionId.present) {
+      map['session_id'] = Variable<String>(sessionId.value);
+    }
+    if (previousPowerWatts.present) {
+      map['previous_power_watts'] = Variable<int>(previousPowerWatts.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PersonalRecordsCompanion(')
+          ..write('id: $id, ')
+          ..write('recordType: $recordType, ')
+          ..write('powerWatts: $powerWatts, ')
+          ..write('achievedAt: $achievedAt, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('previousPowerWatts: $previousPowerWatts')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2687,9 +2687,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $TrainingSessionsTable(this);
   late final $DataPointsTable dataPoints = $DataPointsTable(this);
   late final $CustomWorkoutsTable customWorkouts = $CustomWorkoutsTable(this);
+  late final $GpxRoutesTable gpxRoutes = $GpxRoutesTable(this);
   late final $PersonalRecordsTable personalRecords =
       $PersonalRecordsTable(this);
-  late final $GpxRoutesTable gpxRoutes = $GpxRoutesTable(this);
+  late final SessionDao sessionDao = SessionDao(this as AppDatabase);
+  late final WorkoutDao workoutDao = WorkoutDao(this as AppDatabase);
+  late final GpxRouteDao gpxRouteDao = GpxRouteDao(this as AppDatabase);
+  late final PersonalRecordDao personalRecordDao =
+      PersonalRecordDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2698,21 +2703,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         trainingSessions,
         dataPoints,
         customWorkouts,
-        personalRecords,
-        gpxRoutes
+        gpxRoutes,
+        personalRecords
       ];
-  @override
-  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
-        [
-          WritePropagation(
-            on: TableUpdateQuery.onTableName('training_sessions',
-                limitUpdateKind: UpdateKind.delete),
-            result: [
-              TableUpdate('data_points', kind: UpdateKind.delete),
-            ],
-          ),
-        ],
-      );
 }
 
 typedef $$TrainingSessionsTableCreateCompanionBuilder
@@ -3474,145 +3467,6 @@ class $$CustomWorkoutsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$PersonalRecordsTableCreateCompanionBuilder = PersonalRecordsCompanion
-    Function({
-  Value<int> id,
-  required String recordType,
-  required int powerWatts,
-  required DateTime achievedAt,
-  Value<String?> sessionId,
-  Value<int?> previousPowerWatts,
-});
-typedef $$PersonalRecordsTableUpdateCompanionBuilder = PersonalRecordsCompanion
-    Function({
-  Value<int> id,
-  Value<String> recordType,
-  Value<int> powerWatts,
-  Value<DateTime> achievedAt,
-  Value<String?> sessionId,
-  Value<int?> previousPowerWatts,
-});
-
-class $$PersonalRecordsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $PersonalRecordsTable,
-    PersonalRecordEntity,
-    $$PersonalRecordsTableFilterComposer,
-    $$PersonalRecordsTableOrderingComposer,
-    $$PersonalRecordsTableCreateCompanionBuilder,
-    $$PersonalRecordsTableUpdateCompanionBuilder> {
-  $$PersonalRecordsTableTableManager(
-      _$AppDatabase db, $PersonalRecordsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$PersonalRecordsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$PersonalRecordsTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> recordType = const Value.absent(),
-            Value<int> powerWatts = const Value.absent(),
-            Value<DateTime> achievedAt = const Value.absent(),
-            Value<String?> sessionId = const Value.absent(),
-            Value<int?> previousPowerWatts = const Value.absent(),
-          }) =>
-              PersonalRecordsCompanion(
-            id: id,
-            recordType: recordType,
-            powerWatts: powerWatts,
-            achievedAt: achievedAt,
-            sessionId: sessionId,
-            previousPowerWatts: previousPowerWatts,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String recordType,
-            required int powerWatts,
-            required DateTime achievedAt,
-            Value<String?> sessionId = const Value.absent(),
-            Value<int?> previousPowerWatts = const Value.absent(),
-          }) =>
-              PersonalRecordsCompanion.insert(
-            id: id,
-            recordType: recordType,
-            powerWatts: powerWatts,
-            achievedAt: achievedAt,
-            sessionId: sessionId,
-            previousPowerWatts: previousPowerWatts,
-          ),
-        ));
-}
-
-class $$PersonalRecordsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $PersonalRecordsTable> {
-  $$PersonalRecordsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get recordType => $state.composableBuilder(
-      column: $state.table.recordType,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get powerWatts => $state.composableBuilder(
-      column: $state.table.powerWatts,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<DateTime> get achievedAt => $state.composableBuilder(
-      column: $state.table.achievedAt,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get sessionId => $state.composableBuilder(
-      column: $state.table.sessionId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get previousPowerWatts => $state.composableBuilder(
-      column: $state.table.previousPowerWatts,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-}
-
-class $$PersonalRecordsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $PersonalRecordsTable> {
-  $$PersonalRecordsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get recordType => $state.composableBuilder(
-      column: $state.table.recordType,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get powerWatts => $state.composableBuilder(
-      column: $state.table.powerWatts,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<DateTime> get achievedAt => $state.composableBuilder(
-      column: $state.table.achievedAt,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get sessionId => $state.composableBuilder(
-      column: $state.table.sessionId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get previousPowerWatts => $state.composableBuilder(
-      column: $state.table.previousPowerWatts,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
 typedef $$GpxRoutesTableCreateCompanionBuilder = GpxRoutesCompanion Function({
   required String id,
   required String name,
@@ -3771,6 +3625,145 @@ class $$GpxRoutesTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+typedef $$PersonalRecordsTableCreateCompanionBuilder = PersonalRecordsCompanion
+    Function({
+  Value<int> id,
+  required String recordType,
+  required int powerWatts,
+  required DateTime achievedAt,
+  Value<String?> sessionId,
+  Value<int?> previousPowerWatts,
+});
+typedef $$PersonalRecordsTableUpdateCompanionBuilder = PersonalRecordsCompanion
+    Function({
+  Value<int> id,
+  Value<String> recordType,
+  Value<int> powerWatts,
+  Value<DateTime> achievedAt,
+  Value<String?> sessionId,
+  Value<int?> previousPowerWatts,
+});
+
+class $$PersonalRecordsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $PersonalRecordsTable,
+    PersonalRecordEntity,
+    $$PersonalRecordsTableFilterComposer,
+    $$PersonalRecordsTableOrderingComposer,
+    $$PersonalRecordsTableCreateCompanionBuilder,
+    $$PersonalRecordsTableUpdateCompanionBuilder> {
+  $$PersonalRecordsTableTableManager(
+      _$AppDatabase db, $PersonalRecordsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$PersonalRecordsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$PersonalRecordsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> recordType = const Value.absent(),
+            Value<int> powerWatts = const Value.absent(),
+            Value<DateTime> achievedAt = const Value.absent(),
+            Value<String?> sessionId = const Value.absent(),
+            Value<int?> previousPowerWatts = const Value.absent(),
+          }) =>
+              PersonalRecordsCompanion(
+            id: id,
+            recordType: recordType,
+            powerWatts: powerWatts,
+            achievedAt: achievedAt,
+            sessionId: sessionId,
+            previousPowerWatts: previousPowerWatts,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String recordType,
+            required int powerWatts,
+            required DateTime achievedAt,
+            Value<String?> sessionId = const Value.absent(),
+            Value<int?> previousPowerWatts = const Value.absent(),
+          }) =>
+              PersonalRecordsCompanion.insert(
+            id: id,
+            recordType: recordType,
+            powerWatts: powerWatts,
+            achievedAt: achievedAt,
+            sessionId: sessionId,
+            previousPowerWatts: previousPowerWatts,
+          ),
+        ));
+}
+
+class $$PersonalRecordsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $PersonalRecordsTable> {
+  $$PersonalRecordsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get recordType => $state.composableBuilder(
+      column: $state.table.recordType,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get powerWatts => $state.composableBuilder(
+      column: $state.table.powerWatts,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get achievedAt => $state.composableBuilder(
+      column: $state.table.achievedAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get sessionId => $state.composableBuilder(
+      column: $state.table.sessionId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get previousPowerWatts => $state.composableBuilder(
+      column: $state.table.previousPowerWatts,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$PersonalRecordsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $PersonalRecordsTable> {
+  $$PersonalRecordsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get recordType => $state.composableBuilder(
+      column: $state.table.recordType,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get powerWatts => $state.composableBuilder(
+      column: $state.table.powerWatts,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get achievedAt => $state.composableBuilder(
+      column: $state.table.achievedAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get sessionId => $state.composableBuilder(
+      column: $state.table.sessionId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get previousPowerWatts => $state.composableBuilder(
+      column: $state.table.previousPowerWatts,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
@@ -3780,8 +3773,8 @@ class $AppDatabaseManager {
       $$DataPointsTableTableManager(_db, _db.dataPoints);
   $$CustomWorkoutsTableTableManager get customWorkouts =>
       $$CustomWorkoutsTableTableManager(_db, _db.customWorkouts);
-  $$PersonalRecordsTableTableManager get personalRecords =>
-      $$PersonalRecordsTableTableManager(_db, _db.personalRecords);
   $$GpxRoutesTableTableManager get gpxRoutes =>
       $$GpxRoutesTableTableManager(_db, _db.gpxRoutes);
+  $$PersonalRecordsTableTableManager get personalRecords =>
+      $$PersonalRecordsTableTableManager(_db, _db.personalRecords);
 }
