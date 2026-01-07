@@ -393,7 +393,7 @@ class _LiveDataBar extends ConsumerWidget {
         children: [
           _LiveStat(
             label: 'Power',
-            value: '${liveData.power ?? 0}',
+            value: '${liveData.power}',
             unit: 'W',
             targetValue: playerData.currentTargetPower,
           ),

@@ -376,7 +376,7 @@ class _ActiveComebackView extends ConsumerWidget {
                     leading: const Icon(Icons.fitness_center,
                         color: AppColors.primary),
                     title: Text(workout.name),
-                    subtitle: Text(workout.description ?? ''),
+                    subtitle: Text(workout.description),
                     trailing: Text(
                       '${workout.totalDuration.inMinutes} min',
                       style: const TextStyle(

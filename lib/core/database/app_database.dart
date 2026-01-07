@@ -39,9 +39,13 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   // DAO Getter
+  @override
   SessionDao get sessionDao => SessionDao(this);
+  @override
   WorkoutDao get workoutDao => WorkoutDao(this);
+  @override
   GpxRouteDao get gpxRouteDao => GpxRouteDao(this);
+  @override
   PersonalRecordDao get personalRecordDao => PersonalRecordDao(this);
 
   @override
