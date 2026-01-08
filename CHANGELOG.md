@@ -15,6 +15,23 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [1.2.0] - 2026-01-08
+
+### Added
+- **App Icon** - Neues VibedKickr Icon mit Zahnrad und Power-Blitz Design
+- **Play Store Vorbereitung**
+  - Release Signing Konfiguration
+  - ProGuard Rules für Code-Optimierung
+  - Store Listing Dokumentation (PLAY_STORE.md)
+
+### Changed
+- **App umbenannt** zu "VibedKickr"
+- **Application ID** geändert zu `de.stefan.vibedkickr`
+- Adaptive Icons für Android 8+
+- Minify und Shrink Resources aktiviert für Release-Builds
+
+---
+
 ## [1.1.1] - 2026-01-07
 
 ### Fixed

@@ -12,7 +12,7 @@ class KickrTrainerApp extends ConsumerWidget {
     final router = ref.watch(appRouterProvider);
 
     return MaterialApp.router(
-      title: 'Kickr Trainer',
+      title: 'VibedKickr',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark,
       routerConfig: router,

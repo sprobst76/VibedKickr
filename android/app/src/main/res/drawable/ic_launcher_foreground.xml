@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Gear/Cog outer ring -->
+    <path
+        android:pathData="M54,22 A32,32 0 1,1 53.99,22"
+        android:strokeWidth="4"
+        android:strokeColor="#FF6B00"
+        android:fillColor="#00000000"/>
+
+    <!-- Gear teeth -->
+    <path
+        android:pathData="M51,18 L57,18 L57,26 L51,26 Z"
+        android:fillColor="#FF6B00"/>
+    <path
+        android:pathData="M51,82 L57,82 L57,90 L51,90 Z"
+        android:fillColor="#FF6B00"/>
+    <path
+        android:pathData="M18,51 L26,51 L26,57 L18,57 Z"
+        android:fillColor="#FF6B00"/>
+    <path
+        android:pathData="M82,51 L90,51 L90,57 L82,57 Z"
+        android:fillColor="#FF6B00"/>
+
+    <!-- Diagonal gear teeth -->
+    <path
+        android:pathData="M26.5,26.5 L32,21 L37,26 L31.5,31.5 Z"
+        android:fillColor="#FF6B00"/>
+    <path
+        android:pathData="M71,21 L76.5,26.5 L71,32 L65.5,26.5 Z"
+        android:fillColor="#FF6B00"/>
+    <path
+        android:pathData="M26.5,76.5 L32,82 L26.5,87.5 L21,82 Z"
+        android:fillColor="#FF6B00"/>
+    <path
+        android:pathData="M76.5,76.5 L82,82 L76.5,87.5 L71,82 Z"
+        android:fillColor="#FF6B00"/>
+
+    <!-- V shape with lightning bolt - main icon -->
+    <path
+        android:pathData="M34,36 L46,58 L54,44 L62,58 L74,36 L66,36 L58,52 L54,44 L50,52 L42,36 Z"
+        android:fillColor="#FFAA00"/>
+
+    <!-- Power bolt bottom accent -->
+    <path
+        android:pathData="M54,54 L48,70 L54,64 L60,70 Z"
+        android:fillColor="#FFCC00"/>
+
+    <!-- Inner glow/highlight on V -->
+    <path
+        android:pathData="M38,38 L48,56 L54,46 L60,56 L70,38 L64,38 L58,50 L54,44 L50,50 L44,38 Z"
+        android:fillColor="#FFCC00"
+        android:fillAlpha="0.3"/>
+
+</vector>

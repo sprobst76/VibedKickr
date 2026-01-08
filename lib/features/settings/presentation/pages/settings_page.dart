@@ -181,7 +181,7 @@ class SettingsPage extends ConsumerWidget {
               children: [
                 _SettingsTile(
                   title: 'Version',
-                  subtitle: '1.1.0',
+                  subtitle: '1.2.0',
                   icon: Icons.info_outline,
                 ),
                 const Divider(height: 1),
@@ -191,8 +191,8 @@ class SettingsPage extends ConsumerWidget {
                   icon: Icons.description_outlined,
                   onTap: () => showLicensePage(
                     context: context,
-                    applicationName: 'Kickr Trainer',
-                    applicationVersion: '1.1.0',
+                    applicationName: 'VibedKickr',
+                    applicationVersion: '1.2.0',
                   ),
                 ),
               ],

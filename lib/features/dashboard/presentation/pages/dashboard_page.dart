@@ -26,7 +26,7 @@ class DashboardPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kickr Trainer'),
+        title: const Text('VibedKickr'),
         actions: [
           // Connection Status Button
           connectionState.when(
