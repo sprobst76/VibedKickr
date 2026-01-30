@@ -15,7 +15,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
-## [1.2.0] - 2026-01-08
+## [0.9.0] - 2026-01-08 (Beta)
 
 ### Added
 - **App Icon** - Neues VibedKickr Icon mit Zahnrad und Power-Blitz Design
@@ -29,10 +29,11 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - **Application ID** geändert zu `de.stefan.vibedkickr`
 - Adaptive Icons für Android 8+
 - Minify und Shrink Resources aktiviert für Release-Builds
+- **Versionierung auf Beta umgestellt** (0.x.x)
 
 ---
 
-## [1.1.1] - 2026-01-07
+## [0.8.1] - 2026-01-07
 
 ### Fixed
 - Analyzer Warnings behoben (unused imports, dead null-aware operators)
@@ -41,20 +42,18 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
-## [1.1.0] - 2026-01-07
+## [0.8.0] - 2026-01-07
 
 ### Added
 - **GitHub Actions CI/CD**
   - Flutter CI Workflow für automatische Builds bei Push/PR
   - Release Workflow für automatische APK-Releases bei Version-Tags
   - APK Artifact Upload für jeden CI-Build
-
-### Changed
-- Version auf 1.1.0+2 aktualisiert
+- Umfangreiche Dokumentation (README, CHANGELOG, TODO, ARCHITECTURE, CONTRIBUTING)
 
 ---
 
-## [1.0.0] - 2026-01-07
+## [0.7.0] - 2026-01-07
 
 ### Added
 
