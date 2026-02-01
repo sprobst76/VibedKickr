@@ -18,6 +18,12 @@ enum AudioCueType {
 
   /// Doppelter Ton - Workout komplett
   workoutComplete,
+
+  /// Tiefe Warnung - Power zu niedrig
+  powerTooLow,
+
+  /// Hohe Warnung - Power zu hoch
+  powerTooHigh,
 }
 
 /// Audio Service für Training Cues
@@ -54,6 +60,20 @@ class AudioCueService {
         frequency2: 1320,
         durationMs: 200,
         pauseMs: 100,
+      );
+
+      _audioSources[AudioCueType.powerTooLow] = _createDoubleToneSource(
+        frequency1: 220, // A3 - tiefe Warnung
+        frequency2: 220,
+        durationMs: 150,
+        pauseMs: 50,
+      );
+
+      _audioSources[AudioCueType.powerTooHigh] = _createDoubleToneSource(
+        frequency1: 1760, // A6 - hohe Warnung
+        frequency2: 1760,
+        durationMs: 150,
+        pauseMs: 50,
       );
 
       _isInitialized = true;

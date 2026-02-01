@@ -15,6 +15,8 @@ class SettingsPage extends ConsumerWidget {
     final profile = ref.watch(athleteProfileProvider);
     final soundEnabled = ref.watch(soundEnabledProvider);
     final hapticsEnabled = ref.watch(hapticsEnabledProvider);
+    final powerDeviationAlerts = ref.watch(powerDeviationAlertsProvider);
+    final powerDeviationThreshold = ref.watch(powerDeviationThresholdProvider);
     final autoConnect = ref.watch(autoConnectProvider);
     final ergMode = ref.watch(ergModeProvider);
     final simulatorMode = ref.watch(simulatorModeProvider);
@@ -176,6 +178,61 @@ class SettingsPage extends ConsumerWidget {
                     ref.read(hapticsEnabledProvider.notifier).state = value;
                   },
                 ),
+                const Divider(height: 1),
+                SwitchListTile(
+                  title: const Text('Power-Abweichungs-Warnungen'),
+                  subtitle: const Text('Audio-Alert bei zu niedriger/hoher Leistung'),
+                  value: powerDeviationAlerts,
+                  onChanged: (value) {
+                    ref.read(powerDeviationAlertsProvider.notifier).state = value;
+                  },
+                ),
+                if (powerDeviationAlerts)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Abweichungs-Schwelle',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textMuted,
+                              ),
+                            ),
+                            Text(
+                              '$powerDeviationThreshold%',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Slider(
+                          value: powerDeviationThreshold.toDouble(),
+                          min: 10,
+                          max: 30,
+                          divisions: 4,
+                          label: '$powerDeviationThreshold%',
+                          onChanged: (value) {
+                            ref.read(powerDeviationThresholdProvider.notifier).state =
+                                value.toInt();
+                          },
+                        ),
+                        Text(
+                          'Warnung bei >$powerDeviationThreshold% Abweichung vom Ziel',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: AppColors.textMuted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
               ],
             ),
           ),

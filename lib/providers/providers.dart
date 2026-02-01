@@ -521,6 +521,12 @@ final soundEnabledProvider = StateProvider<bool>((ref) => true);
 /// Haptic Feedback (Vibration) an/aus
 final hapticsEnabledProvider = StateProvider<bool>((ref) => true);
 
+/// Power-Abweichungs-Warnungen an/aus
+final powerDeviationAlertsProvider = StateProvider<bool>((ref) => true);
+
+/// Power-Abweichungs-Schwelle in Prozent
+final powerDeviationThresholdProvider = StateProvider<int>((ref) => 15);
+
 /// Auto-Connect an/aus
 final autoConnectProvider = StateProvider<bool>((ref) => true);
 

@@ -105,6 +105,13 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
   DateTime? _sessionStartTime;
   int? _lastCountdownPlayed; // Verhindert doppelte Audio-Cues
 
+  // Power deviation tracking
+  DateTime? _lastPowerWarning;
+  int _consecutiveLowPowerTicks = 0;
+  int _consecutiveHighPowerTicks = 0;
+  static const int _warningCooldownSeconds = 10;
+  static const int _ticksBeforeWarning = 30; // 3 Sekunden bei 100ms Intervallen
+
   WorkoutPlayerNotifier(this._ref) : super(const WorkoutPlayerData()) {
     // Audio Service initialisieren
     _initAudio();
@@ -174,6 +181,10 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
     _timer?.cancel();
     _ref.read(activeSessionProvider.notifier).pauseSession();
 
+    // Reset power deviation tracking
+    _consecutiveLowPowerTicks = 0;
+    _consecutiveHighPowerTicks = 0;
+
     state = state.copyWith(state: WorkoutPlayerState.paused);
   }
 
@@ -189,6 +200,9 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
 
   void stop() {
     _timer?.cancel();
+    // Reset power deviation tracking
+    _consecutiveLowPowerTicks = 0;
+    _consecutiveHighPowerTicks = 0;
     state = state.copyWith(state: WorkoutPlayerState.finished);
   }
 
@@ -246,6 +260,9 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
     _ref.read(liveTrainingDataProvider.notifier).setTargetPower(
           state.currentTargetPower,
         );
+
+    // Check power deviation and alert if needed
+    _checkPowerDeviation();
 
     // Check if interval is complete
     if (interval != null && intervalElapsed >= interval.duration) {
@@ -341,6 +358,60 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
   }
 
   bool get _hapticsEnabled => _ref.read(hapticsEnabledProvider);
+
+  void _checkPowerDeviation() {
+    if (!_powerDeviationAlertsEnabled) return;
+    if (state.currentTargetPower == 0) {
+      // Kein Ziel gesetzt - Counter zurücksetzen
+      _consecutiveLowPowerTicks = 0;
+      _consecutiveHighPowerTicks = 0;
+      return;
+    }
+
+    final liveData = _ref.read(liveTrainingDataProvider);
+    final currentPower = liveData.avgPower3s; // Use 3s average to reduce noise
+    final targetPower = state.currentTargetPower;
+
+    // Berechne Abweichung in Prozent
+    final deviation = (currentPower - targetPower) / targetPower;
+    final threshold = _powerDeviationThreshold;
+
+    // Track consecutive deviation ticks
+    if (deviation < -threshold / 100) {
+      // Zu niedrig
+      _consecutiveLowPowerTicks++;
+      _consecutiveHighPowerTicks = 0;
+
+      if (_consecutiveLowPowerTicks >= _ticksBeforeWarning && _canPlayWarning()) {
+        _playAudioCue(AudioCueType.powerTooLow);
+        _lastPowerWarning = DateTime.now();
+        _consecutiveLowPowerTicks = 0; // Reset nach Warning
+      }
+    } else if (deviation > threshold / 100) {
+      // Zu hoch
+      _consecutiveHighPowerTicks++;
+      _consecutiveLowPowerTicks = 0;
+
+      if (_consecutiveHighPowerTicks >= _ticksBeforeWarning && _canPlayWarning()) {
+        _playAudioCue(AudioCueType.powerTooHigh);
+        _lastPowerWarning = DateTime.now();
+        _consecutiveHighPowerTicks = 0; // Reset nach Warning
+      }
+    } else {
+      // Im Bereich - Counter zurücksetzen
+      _consecutiveLowPowerTicks = 0;
+      _consecutiveHighPowerTicks = 0;
+    }
+  }
+
+  bool _canPlayWarning() {
+    if (_lastPowerWarning == null) return true;
+    final timeSinceWarning = DateTime.now().difference(_lastPowerWarning!);
+    return timeSinceWarning.inSeconds >= _warningCooldownSeconds;
+  }
+
+  bool get _powerDeviationAlertsEnabled => _ref.read(powerDeviationAlertsProvider);
+  int get _powerDeviationThreshold => _ref.read(powerDeviationThresholdProvider);
 
   @override
   void dispose() {
