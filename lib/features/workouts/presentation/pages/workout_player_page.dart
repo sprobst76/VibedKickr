@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/duration_formatter.dart';
@@ -25,6 +26,7 @@ class _WorkoutPlayerPageState extends ConsumerState<WorkoutPlayerPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeWorkout();
+      _setupWakelock();
     });
   }
 
@@ -37,6 +39,28 @@ class _WorkoutPlayerPageState extends ConsumerState<WorkoutPlayerPage> {
       );
       ref.read(workoutPlayerProvider.notifier).loadWorkout(workout);
     }
+  }
+
+  void _setupWakelock() {
+    final keepScreenOn = ref.read(keepScreenOnProvider);
+    if (keepScreenOn) {
+      WakelockPlus.enable();
+    }
+
+    // Listen to provider changes
+    ref.listen<bool>(keepScreenOnProvider, (previous, next) {
+      if (next) {
+        WakelockPlus.enable();
+      } else {
+        WakelockPlus.disable();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    WakelockPlus.disable();
+    super.dispose();
   }
 
   @override

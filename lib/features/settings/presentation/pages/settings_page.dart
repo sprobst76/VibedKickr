@@ -17,6 +17,7 @@ class SettingsPage extends ConsumerWidget {
     final autoConnect = ref.watch(autoConnectProvider);
     final ergMode = ref.watch(ergModeProvider);
     final simulatorMode = ref.watch(simulatorModeProvider);
+    final keepScreenOn = ref.watch(keepScreenOnProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -134,6 +135,20 @@ class SettingsPage extends ConsumerWidget {
                   },
                 ),
               ],
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // Display
+          _SectionHeader(title: 'Display'),
+          Card(
+            child: SwitchListTile(
+              title: const Text('Bildschirm aktiv halten'),
+              subtitle: const Text('Verhindert Sperre während Trainings'),
+              value: keepScreenOn,
+              onChanged: (value) {
+                ref.read(keepScreenOnProvider.notifier).state = value;
+              },
             ),
           ),
           const SizedBox(height: 24),

@@ -527,6 +527,9 @@ final ergModeProvider = StateProvider<bool>((ref) => true);
 /// Trainer Simulator Modus (für Entwicklung ohne echten Trainer)
 final simulatorModeProvider = StateProvider<bool>((ref) => false);
 
+/// Bildschirm aktiv halten während Training
+final keepScreenOnProvider = StateProvider<bool>((ref) => true);
+
 // ============================================================================
 // Mock Trainer Service
 // ============================================================================
