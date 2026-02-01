@@ -8,6 +8,7 @@ import '../../../../domain/entities/workout.dart';
 import '../../../../domain/entities/training_session.dart';
 import '../../../../providers/providers.dart';
 import '../../../../routing/app_router.dart';
+import '../../../workout_scheduler/presentation/widgets/schedule_workout_dialog.dart';
 
 /// Provider für benutzerdefinierte Workouts
 final customWorkoutsProvider = StreamProvider<List<Workout>>((ref) {
@@ -68,6 +69,11 @@ class WorkoutListPage extends ConsumerWidget {
                   onTap: () => context.push(
                     '${AppRoutes.workoutPlayer}?workoutId=${workout.id}',
                   ),
+                  onSchedule: () => showScheduleWorkoutDialog(
+                    context: context,
+                    ref: ref,
+                    cyclingWorkout: workout,
+                  ),
                   onEdit: () => context.push(
                     '${AppRoutes.workoutBuilder}?workoutId=${workout.id}',
                   ),
@@ -90,6 +96,11 @@ class WorkoutListPage extends ConsumerWidget {
                   ftp: profile.ftp,
                   onTap: () => context.push(
                     '${AppRoutes.workoutPlayer}?workoutId=${workout.id}',
+                  ),
+                  onSchedule: () => showScheduleWorkoutDialog(
+                    context: context,
+                    ref: ref,
+                    cyclingWorkout: workout,
                   ),
                 );
               }
@@ -237,6 +248,7 @@ class _WorkoutCard extends StatelessWidget {
   final int ftp;
   final VoidCallback onTap;
   final bool isCustom;
+  final VoidCallback? onSchedule;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
@@ -245,6 +257,7 @@ class _WorkoutCard extends StatelessWidget {
     required this.ftp,
     required this.onTap,
     this.isCustom = false,
+    this.onSchedule,
     this.onEdit,
     this.onDelete,
   });
@@ -282,6 +295,12 @@ class _WorkoutCard extends StatelessWidget {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.schedule, size: 18),
+                              onPressed: onSchedule,
+                              tooltip: 'Planen',
+                              visualDensity: VisualDensity.compact,
                             ),
                             if (isCustom) ...[
                               IconButton(

@@ -15,6 +15,7 @@ import '../widgets/live_chart.dart';
 import '../widgets/personal_records_card.dart';
 import '../widgets/power_gauge.dart';
 import '../widgets/metric_card.dart';
+import '../widgets/scheduled_workouts_card.dart';
 
 class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
@@ -170,6 +171,10 @@ class _MobileLayout extends StatelessWidget {
 
           // Comeback Mode Status
           const HealthModeStatusCard(),
+          const SizedBox(height: 16),
+
+          // Scheduled Workouts
+          const ScheduledWorkoutsCard(),
           const SizedBox(height: 16),
 
           // Personal Records

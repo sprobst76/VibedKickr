@@ -13,6 +13,7 @@ import '../features/training_load/presentation/pages/training_load_page.dart';
 import '../features/workouts/presentation/pages/workout_builder_page.dart';
 import '../features/workouts/presentation/pages/workout_list_page.dart';
 import '../features/workouts/presentation/pages/workout_player_page.dart';
+import '../features/workout_scheduler/presentation/pages/workout_scheduler_page.dart';
 import '../features/settings/presentation/pages/settings_page.dart';
 import '../features/health_training/presentation/pages/health_training_page.dart';
 import '../features/debug/presentation/pages/ble_diagnostic_page.dart';
@@ -24,6 +25,7 @@ class AppRoutes {
   static const workouts = '/workouts';
   static const workoutBuilder = '/workouts/builder';
   static const workoutPlayer = '/workouts/player';
+  static const workoutScheduler = '/workouts/scheduler';
   static const routes = '/routes';
   static const routePlayer = '/routes/player';
   static const healthModeSetup = '/health-mode';
@@ -117,6 +119,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.trainingLoad,
         builder: (context, state) => const TrainingLoadPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.workoutScheduler,
+        builder: (context, state) => const WorkoutSchedulerPage(),
       ),
       GoRoute(
         path: AppRoutes.programDetails,

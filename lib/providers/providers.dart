@@ -23,7 +23,11 @@ import '../domain/entities/health_warning.dart';
 import '../domain/entities/training_load.dart';
 import '../domain/entities/training_session.dart';
 import '../domain/entities/tss_threshold_settings.dart';
+import '../domain/entities/scheduled_workout.dart';
 import '../domain/repositories/session_repository.dart';
+import '../domain/repositories/scheduled_workout_repository.dart';
+import '../data/repositories/scheduled_workout_repository_impl.dart';
+import '../data/mappers/scheduled_workout_mapper.dart';
 
 // Re-export for convenience
 export '../core/ble/mock_ftms_service.dart';
@@ -716,6 +720,76 @@ final allActiveWarningsProvider =
   warnings.sort((a, b) => b.severity.index.compareTo(a.severity.index));
 
   return warnings;
+});
+
+// ============================================================================
+// Scheduled Workouts
+// ============================================================================
+
+/// Scheduled Workout Mapper
+final scheduledWorkoutMapperProvider = Provider<ScheduledWorkoutMapper>((ref) {
+  final db = ref.watch(appDatabaseProvider);
+  return ScheduledWorkoutMapper(db.workoutDao, db.strengthWorkoutDao);
+});
+
+/// Scheduled Workout Repository
+final scheduledWorkoutRepositoryProvider =
+    Provider<ScheduledWorkoutRepository>((ref) {
+  final db = ref.watch(appDatabaseProvider);
+  final mapper = ref.watch(scheduledWorkoutMapperProvider);
+  return ScheduledWorkoutRepositoryImpl(db, mapper);
+});
+
+/// All Scheduled Workouts Stream
+final scheduledWorkoutsProvider =
+    StreamProvider<List<ScheduledWorkout>>((ref) {
+  final repository = ref.watch(scheduledWorkoutRepositoryProvider);
+  return repository.watchAllScheduledWorkouts();
+});
+
+/// Pending Scheduled Workouts Stream
+final pendingScheduledWorkoutsProvider =
+    StreamProvider<List<ScheduledWorkout>>((ref) {
+  final repository = ref.watch(scheduledWorkoutRepositoryProvider);
+  return repository.watchPendingScheduledWorkouts();
+});
+
+/// Today's Scheduled Workouts (derived from pending)
+final todayScheduledWorkoutsProvider = Provider<List<ScheduledWorkout>>((ref) {
+  final pending = ref.watch(pendingScheduledWorkoutsProvider);
+
+  return pending.when(
+    data: (workouts) {
+      final now = DateTime.now();
+      return workouts.where((w) =>
+        w.scheduledDate.year == now.year &&
+        w.scheduledDate.month == now.month &&
+        w.scheduledDate.day == now.day
+      ).toList();
+    },
+    loading: () => [],
+    error: (_, __) => [],
+  );
+});
+
+/// This Week's Scheduled Workouts (for calendar view)
+final weekScheduledWorkoutsProvider = Provider<List<ScheduledWorkout>>((ref) {
+  final pending = ref.watch(pendingScheduledWorkoutsProvider);
+
+  return pending.when(
+    data: (workouts) {
+      final now = DateTime.now();
+      final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+      final endOfWeek = startOfWeek.add(const Duration(days: 7));
+
+      return workouts.where((w) =>
+        w.scheduledDate.isAfter(startOfWeek.subtract(const Duration(days: 1))) &&
+        w.scheduledDate.isBefore(endOfWeek)
+      ).toList();
+    },
+    loading: () => [],
+    error: (_, __) => [],
+  );
 });
 
 // ============================================================================
