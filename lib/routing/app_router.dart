@@ -6,7 +6,7 @@ import '../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../features/device_connection/presentation/pages/device_scan_page.dart';
 import '../features/history/presentation/pages/session_detail_page.dart';
 import '../features/history/presentation/pages/session_history_page.dart';
-import '../features/comeback/presentation/pages/comeback_setup_page.dart';
+import '../features/health_mode/presentation/pages/health_mode_setup_page.dart';
 import '../features/routes/presentation/pages/route_list_page.dart';
 import '../features/routes/presentation/pages/route_player_page.dart';
 import '../features/training_load/presentation/pages/training_load_page.dart';
@@ -25,7 +25,7 @@ class AppRoutes {
   static const workoutPlayer = '/workouts/player';
   static const routes = '/routes';
   static const routePlayer = '/routes/player';
-  static const comebackSetup = '/comeback';
+  static const healthModeSetup = '/health-mode';
   static const trainingLoad = '/training-load';
   static const history = '/history';
   static const settings = '/settings';
@@ -102,8 +102,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: AppRoutes.comebackSetup,
-        builder: (context, state) => const ComebackSetupPage(),
+        path: AppRoutes.healthModeSetup,
+        builder: (context, state) => const HealthModeSetupPage(),
       ),
       GoRoute(
         path: AppRoutes.trainingLoad,

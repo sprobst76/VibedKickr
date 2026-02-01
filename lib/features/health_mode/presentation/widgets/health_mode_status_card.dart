@@ -2,29 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/services/comeback_service.dart';
+import '../../../../core/services/health_mode_service.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../domain/entities/comeback_mode.dart';
+import '../../../../domain/entities/health_mode.dart';
 import '../../../../routing/app_router.dart';
 import 'wellness_check_in_dialog.dart';
 
-/// Comeback Status Card für das Dashboard
-class ComebackStatusCard extends ConsumerWidget {
-  const ComebackStatusCard({super.key});
+/// Gesundheitsmodus Status Card für das Dashboard
+class HealthModeStatusCard extends ConsumerWidget {
+  const HealthModeStatusCard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final comebackMode = ref.watch(comebackModeProvider);
+    final healthMode = ref.watch(healthModeProvider);
 
-    if (!comebackMode.isActive) {
-      return _InactiveComebackCard();
+    if (!healthMode.isActive) {
+      return _InactiveHealthModeCard();
     }
 
-    return _ActiveComebackCard(comebackMode: comebackMode);
+    return _ActiveHealthModeCard(healthMode: healthMode);
   }
 }
 
-class _InactiveComebackCard extends StatelessWidget {
+class _InactiveHealthModeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -42,7 +42,7 @@ class _InactiveComebackCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
-                  Icons.healing,
+                  Icons.health_and_safety,
                   color: AppColors.primary,
                   size: 24,
                 ),
@@ -53,7 +53,7 @@ class _InactiveComebackCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
                     Text(
-                      'Comeback Mode',
+                      'Gesundheitsmodus',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -61,7 +61,7 @@ class _InactiveComebackCard extends StatelessWidget {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      'Nach Krankheit oder Pause? Starte hier deinen sicheren Wiedereinstieg.',
+                      'Wellness-Tracking, Übertraining-Schutz & sichere Progression',
                       style: TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary,
@@ -82,15 +82,14 @@ class _InactiveComebackCard extends StatelessWidget {
   }
 }
 
-class _ActiveComebackCard extends ConsumerWidget {
-  final ComebackMode comebackMode;
+class _ActiveHealthModeCard extends ConsumerWidget {
+  final HealthMode healthMode;
 
-  const _ActiveComebackCard({required this.comebackMode});
+  const _ActiveHealthModeCard({required this.healthMode});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final phase = comebackMode.currentPhase;
-    final recommendation = comebackMode.todayRecommendation;
+    final recommendation = healthMode.todayRecommendation;
 
     return Card(
       child: Padding(
@@ -107,8 +106,8 @@ class _ActiveComebackCard extends ConsumerWidget {
                     color: AppColors.success.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(
-                    Icons.healing,
+                  child: Icon(
+                    _getUseCaseIcon(healthMode.useCase),
                     color: AppColors.success,
                     size: 20,
                   ),
@@ -118,15 +117,15 @@ class _ActiveComebackCard extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Comeback Mode aktiv',
-                        style: TextStyle(
+                      Text(
+                        healthMode.useCase.label,
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       Text(
-                        '${phase.label} - Tag ${comebackMode.dayInCurrentWeek}/7',
+                        _getStatusText(healthMode),
                         style: const TextStyle(
                           fontSize: 12,
                           color: AppColors.textSecondary,
@@ -144,65 +143,69 @@ class _ActiveComebackCard extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
 
-            // Progress Bar
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Fortschritt: ${comebackMode.progressPercent.round()}%',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textMuted,
+            // Progress Bar (nur für Comeback use case)
+            if (healthMode.useCase.hasPhases) ...[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Fortschritt: ${healthMode.progressPercent.round()}%',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textMuted,
+                        ),
                       ),
-                    ),
-                    Text(
-                      'Tag ${comebackMode.daysSinceStart + 1} von 28',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textMuted,
+                      Text(
+                        'Tag ${healthMode.daysSinceStart + 1} von 28',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textMuted,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: comebackMode.progressPercent / 100,
-                    minHeight: 8,
-                    backgroundColor: AppColors.surfaceLight,
-                    valueColor: const AlwaysStoppedAnimation(AppColors.success),
+                    ],
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: healthMode.progressPercent / 100,
+                      minHeight: 8,
+                      backgroundColor: AppColors.surfaceLight,
+                      valueColor: const AlwaysStoppedAnimation(AppColors.success),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+            ],
 
-            // Stats Row
-            Row(
-              children: [
-                _StatItem(
-                  icon: Icons.speed,
-                  label: 'Eff. FTP',
-                  value: '${comebackMode.effectiveFtp} W',
-                  subLabel:
-                      '${(phase.intensityFactor * 100).round()}% von ${comebackMode.originalFtp} W',
-                ),
-                const SizedBox(width: 16),
-                _StatItem(
-                  icon: Icons.timer,
-                  label: 'Max Dauer',
-                  value: '${phase.maxDurationMinutes} min',
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
+            // Stats Row (nur für Comeback use case)
+            if (healthMode.useCase.hasPhases && healthMode.currentPhase != null) ...[
+              Row(
+                children: [
+                  _StatItem(
+                    icon: Icons.speed,
+                    label: 'Eff. FTP',
+                    value: '${healthMode.effectiveFtp} W',
+                    subLabel:
+                        '${(healthMode.currentPhase!.intensityFactor * 100).round()}% von ${healthMode.originalFtp} W',
+                  ),
+                  const SizedBox(width: 16),
+                  _StatItem(
+                    icon: Icons.timer,
+                    label: 'Max Dauer',
+                    value: '${healthMode.currentPhase!.maxDurationMinutes} min',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+            ],
 
             // Wellness Check-In
-            if (!comebackMode.hasCheckedInToday)
+            if (!healthMode.hasCheckedInToday)
               _CheckInPrompt()
             else
               _TodayRecommendation(recommendation: recommendation),
@@ -210,6 +213,29 @@ class _ActiveComebackCard extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  String _getStatusText(HealthMode healthMode) {
+    switch (healthMode.useCase) {
+      case HealthModeUseCase.comebackAfterIllness:
+        final phase = healthMode.currentPhase;
+        return 'Phase: ${phase?.label ?? "Abgeschlossen"}';
+      case HealthModeUseCase.overtrainingPrevention:
+        return 'Wellness: ${healthMode.averageWellnessScore7d.round()}%';
+      case HealthModeUseCase.generalWellnessTracking:
+        return '${healthMode.checkIns.length} Check-Ins';
+    }
+  }
+
+  IconData _getUseCaseIcon(HealthModeUseCase useCase) {
+    switch (useCase) {
+      case HealthModeUseCase.comebackAfterIllness:
+        return Icons.healing;
+      case HealthModeUseCase.overtrainingPrevention:
+        return Icons.health_and_safety;
+      case HealthModeUseCase.generalWellnessTracking:
+        return Icons.monitor_heart;
+    }
   }
 }
 
