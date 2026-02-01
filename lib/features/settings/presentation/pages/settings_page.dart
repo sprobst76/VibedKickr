@@ -300,6 +300,11 @@ class SettingsPage extends ConsumerWidget {
           ),
           const SizedBox(height: 24),
 
+          // Training Load Schwellwerte
+          _SectionHeader(title: 'Training Load Schwellwerte'),
+          _TssThresholdSettingsCard(),
+          const SizedBox(height: 24),
+
           // Strava
           _SectionHeader(title: 'Verbindungen'),
           const StravaSettingsCard(),
@@ -885,6 +890,192 @@ class _HrZoneBadge extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// TSS Threshold Settings Card
+class _TssThresholdSettingsCard extends ConsumerWidget {
+  const _TssThresholdSettingsCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(tssThresholdSettingsProvider);
+    final trainingStatus = ref.watch(trainingStatusProvider);
+    final ctl = trainingStatus.ctl;
+
+    final warningThreshold = settings.getWarningThreshold(ctl);
+    final criticalThreshold = settings.getCriticalThreshold(ctl);
+
+    return Card(
+      child: Column(
+        children: [
+          // Toggle Switch
+          SwitchListTile(
+            title: const Text('CTL-basierte Schwellwerte verwenden'),
+            subtitle: Text(
+              settings.useCtlBased
+                  ? 'Automatisch basierend auf deiner Fitness (CTL)'
+                  : 'Manuelle Schwellwerte',
+            ),
+            value: settings.useCtlBased,
+            onChanged: (value) {
+              ref.read(tssThresholdSettingsProvider.notifier).toggleMode(value);
+            },
+          ),
+
+          // CTL Mode: Show calculated values
+          if (settings.useCtlBased) ...[
+            const Divider(height: 1),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Aktuelle Schwellwerte:',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textMuted,
+                        ),
+                      ),
+                      Text(
+                        'CTL: ${ctl.round()}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textMuted,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  _ThresholdInfoRow(
+                    label: 'Warnung',
+                    value: '$warningThreshold TSS',
+                    color: AppColors.warning,
+                  ),
+                  const SizedBox(height: 4),
+                  _ThresholdInfoRow(
+                    label: 'Kritisch',
+                    value: '$criticalThreshold TSS',
+                    color: AppColors.error,
+                  ),
+                ],
+              ),
+            ),
+          ],
+
+          // Manual Mode: Sliders
+          if (!settings.useCtlBased) ...[
+            const Divider(height: 1),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  // Warning Slider
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Warnung-Schwellwert'),
+                      Text(
+                        '${settings.manualWarningThreshold} TSS',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.warning,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Slider(
+                    value: settings.manualWarningThreshold.toDouble(),
+                    min: 300,
+                    max: 800,
+                    divisions: 10,
+                    label: '${settings.manualWarningThreshold} TSS',
+                    onChanged: (value) {
+                      ref
+                          .read(tssThresholdSettingsProvider.notifier)
+                          .updateManualThresholds(warning: value.toInt());
+                    },
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Critical Slider
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Kritisch-Schwellwert'),
+                      Text(
+                        '${settings.manualCriticalThreshold} TSS',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.error,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Slider(
+                    value: settings.manualCriticalThreshold.toDouble(),
+                    min: 400,
+                    max: 1000,
+                    divisions: 12,
+                    label: '${settings.manualCriticalThreshold} TSS',
+                    onChanged: (value) {
+                      ref
+                          .read(tssThresholdSettingsProvider.notifier)
+                          .updateManualThresholds(critical: value.toInt());
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Row to display threshold info with color-coded container
+class _ThresholdInfoRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+
+  const _ThresholdInfoRow({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 13),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -16,11 +16,13 @@ import '../core/services/training_load_service.dart';
 import '../core/services/training_load_warning_service.dart';
 import '../core/services/ftp_test_reminder_service.dart';
 import '../core/services/health_mode_service.dart';
+import '../core/services/tss_threshold_settings_service.dart';
 import '../data/repositories/session_repository_impl.dart';
 import '../domain/entities/athlete_profile.dart';
 import '../domain/entities/health_warning.dart';
 import '../domain/entities/training_load.dart';
 import '../domain/entities/training_session.dart';
+import '../domain/entities/tss_threshold_settings.dart';
 import '../domain/repositories/session_repository.dart';
 
 // Re-export for convenience
@@ -654,8 +656,13 @@ final trainingLoadWarningsProvider =
     Provider<List<HealthWarning>>((ref) {
   final service = ref.watch(trainingLoadWarningServiceProvider);
   final trainingStatus = ref.watch(trainingStatusProvider);
+  final settings = ref.watch(tssThresholdSettingsProvider);
 
-  return service.generateWarnings(trainingStatus.weeklyTss);
+  return service.generateWarnings(
+    trainingStatus.weeklyTss,
+    settings: settings,
+    ctl: trainingStatus.ctl,
+  );
 });
 
 /// FTP Test Reminder Service
@@ -671,6 +678,19 @@ final ftpTestReminderWarningsProvider =
   final profile = ref.watch(athleteProfileProvider);
 
   return service.generateWarnings(profile.ftpTestDate);
+});
+
+/// TSS Threshold Settings Service
+final tssThresholdSettingsServiceProvider =
+    Provider<TssThresholdSettingsService>((ref) {
+  return TssThresholdSettingsService();
+});
+
+/// TSS Threshold Settings State
+final tssThresholdSettingsProvider =
+    StateNotifierProvider<TssThresholdSettingsNotifier, TssThresholdSettings>((ref) {
+  final service = ref.watch(tssThresholdSettingsServiceProvider);
+  return TssThresholdSettingsNotifier(service);
 });
 
 /// Kombinierte Active Warnings (Health Mode + Training Load + FTP Reminder)
@@ -697,3 +717,50 @@ final allActiveWarningsProvider =
 
   return warnings;
 });
+
+// ============================================================================
+// TSS Threshold Settings State Notifier
+// ============================================================================
+
+/// State Notifier für TSS Threshold Settings
+///
+/// Verwaltet den Zustand von personalisierten TSS-Schwellwerten:
+/// - CTL-basierte Berechnung (automatisch) vs. manuelle Einstellung
+/// - Persistence über SharedPreferences
+class TssThresholdSettingsNotifier extends StateNotifier<TssThresholdSettings> {
+  final TssThresholdSettingsService _service;
+
+  TssThresholdSettingsNotifier(this._service)
+      : super(const TssThresholdSettings()) {
+    _load();
+  }
+
+  /// Lade Einstellungen aus SharedPreferences
+  Future<void> _load() async {
+    state = await _service.load();
+  }
+
+  /// Toggle zwischen CTL-basiert und manuellem Modus
+  Future<void> toggleMode(bool useCtlBased) async {
+    state = state.copyWith(useCtlBased: useCtlBased);
+    await _service.save(state);
+  }
+
+  /// Update manuelle Schwellwerte
+  Future<void> updateManualThresholds({
+    int? warning,
+    int? critical,
+  }) async {
+    state = state.copyWith(
+      manualWarningThreshold: warning ?? state.manualWarningThreshold,
+      manualCriticalThreshold: critical ?? state.manualCriticalThreshold,
+    );
+    await _service.save(state);
+  }
+
+  /// Setze Einstellungen auf Defaults zurück
+  Future<void> reset() async {
+    state = const TssThresholdSettings();
+    await _service.clear();
+  }
+}

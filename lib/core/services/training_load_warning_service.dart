@@ -1,27 +1,35 @@
 import '../../domain/entities/health_warning.dart';
+import '../../domain/entities/tss_threshold_settings.dart';
 
 /// Service zur Generierung von Trainingsbelastungs-Warnungen
 ///
 /// Warnt Benutzer, wenn ihre wöchentliche Trainingsbelastung (TSS)
-/// oberhalb empfohlener Schwellwerte liegt.
+/// oberhalb konfigurierter Schwellwerte liegt.
+///
+/// Unterstützt zwei Modi:
+/// - CTL-basiert: Schwellwerte werden basierend auf CTL berechnet (Standard)
+/// - Manuell: Benutzer-definierte feste Schwellwerte
 class TrainingLoadWarningService {
-  // TSS Schwellwerte basierend auf Coggan/Allen Research
-  static const int warningThreshold = 400;   // TSS/Woche - Hohe Belastung
-  static const int criticalThreshold = 500;  // TSS/Woche - Sehr hohe Belastung
-
-  /// Generiert Warnungen basierend auf wöchentlichem TSS
+  /// Generiert Warnungen basierend auf wöchentlichem TSS und Schwellwert-Einstellungen
   ///
   /// Parameter:
   /// - [weeklyTss]: Trainings Stress Score für die aktuelle Woche (rolling 7 days)
+  /// - [settings]: TSS Threshold Settings (optional, default: CTL-basiert)
+  /// - [ctl]: Aktueller CTL Wert für CTL-basierte Berechnung (optional)
   ///
   /// Rückgabe:
   /// - Liste von Warnungen (0-1 Warnungen pro Aufruf)
-  ///
-  /// Warnung-Schwellwerte:
-  /// - < 400 TSS: Keine Warnung
-  /// - 400-499 TSS: Warning (gelb)
-  /// - >= 500 TSS: Critical (rot)
-  List<HealthWarning> generateWarnings(int weeklyTss) {
+  List<HealthWarning> generateWarnings(
+    int weeklyTss, {
+    TssThresholdSettings? settings,
+    double? ctl,
+  }) {
+    final effectiveSettings = settings ?? const TssThresholdSettings();
+    final effectiveCTL = ctl ?? 0.0;
+
+    final warningThreshold = effectiveSettings.getWarningThreshold(effectiveCTL);
+    final criticalThreshold = effectiveSettings.getCriticalThreshold(effectiveCTL);
+
     final warnings = <HealthWarning>[];
 
     if (weeklyTss >= criticalThreshold) {
