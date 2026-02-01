@@ -46,6 +46,15 @@ VibedKickr verbindet sich via Bluetooth Low Energy (BLE) mit FTMS-kompatiblen Sm
 - 📉 **Progressive Load** - Automatische Anpassung der Trainingsbelastung
 - ⚠️ **Warnungen** - Hinweise bei zu hoher Belastung
 
+### Krafttraining (Strength Training)
+- 💪 **Exercise Library** - 19+ evidenzbasierte Übungen für 40-70 Jährige
+- 🏗️ **Workout Builder** - Erstelle eigene Krafttrainingsprogramme
+- ⏱️ **Rest Timer** - Intelligente Ruhepausenzähler mit Audio Cues
+- 📊 **Progress Tracking** - 1RM Schätzung und persönliche Rekorde (1RM, 3RM, 5RM, 10RM)
+- 📈 **Linear Progression** - Automatische Steigerung (+2,5kg) beim Erfolg
+- 🏥 **50+ Modifications** - Altersgerechte Variationen für ältere Athleten
+- 🔄 **Multi-Activity Programs** - Kombinierte Wochenpläne (Radfahren + Kraft)
+
 ### Integrationen
 - 🔄 **Strava Sync** - Automatischer Upload von Aktivitäten
 - 📱 **Multi-Platform** - Android, Windows, macOS, Linux

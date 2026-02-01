@@ -2680,6 +2680,2386 @@ class PersonalRecordsCompanion extends UpdateCompanion<PersonalRecordEntity> {
   }
 }
 
+class $StrengthExercisesTable extends StrengthExercises
+    with TableInfo<$StrengthExercisesTable, StrengthExerciseEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StrengthExercisesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _primaryMusclesJsonMeta =
+      const VerificationMeta('primaryMusclesJson');
+  @override
+  late final GeneratedColumn<String> primaryMusclesJson =
+      GeneratedColumn<String>('primary_muscles_json', aliasedName, false,
+          type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _secondaryMusclesJsonMeta =
+      const VerificationMeta('secondaryMusclesJson');
+  @override
+  late final GeneratedColumn<String> secondaryMusclesJson =
+      GeneratedColumn<String>('secondary_muscles_json', aliasedName, false,
+          type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _equipmentMeta =
+      const VerificationMeta('equipment');
+  @override
+  late final GeneratedColumn<String> equipment = GeneratedColumn<String>(
+      'equipment', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _formCuesMeta =
+      const VerificationMeta('formCues');
+  @override
+  late final GeneratedColumn<String> formCues = GeneratedColumn<String>(
+      'form_cues', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _videoUrlMeta =
+      const VerificationMeta('videoUrl');
+  @override
+  late final GeneratedColumn<String> videoUrl = GeneratedColumn<String>(
+      'video_url', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _difficultyMeta =
+      const VerificationMeta('difficulty');
+  @override
+  late final GeneratedColumn<String> difficulty = GeneratedColumn<String>(
+      'difficulty', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _isCompoundMeta =
+      const VerificationMeta('isCompound');
+  @override
+  late final GeneratedColumn<bool> isCompound = GeneratedColumn<bool>(
+      'is_compound', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_compound" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _minimumAgeMeta =
+      const VerificationMeta('minimumAge');
+  @override
+  late final GeneratedColumn<int> minimumAge = GeneratedColumn<int>(
+      'minimum_age', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(18));
+  static const VerificationMeta _maximumAgeMeta =
+      const VerificationMeta('maximumAge');
+  @override
+  late final GeneratedColumn<int> maximumAge = GeneratedColumn<int>(
+      'maximum_age', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _requiresModification50PlusMeta =
+      const VerificationMeta('requiresModification50Plus');
+  @override
+  late final GeneratedColumn<bool> requiresModification50Plus =
+      GeneratedColumn<bool>('requires_modification50_plus', aliasedName, false,
+          type: DriftSqlType.bool,
+          requiredDuringInsert: false,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'CHECK ("requires_modification50_plus" IN (0, 1))'),
+          defaultValue: const Constant(false));
+  static const VerificationMeta _modification50PlusNotesMeta =
+      const VerificationMeta('modification50PlusNotes');
+  @override
+  late final GeneratedColumn<String> modification50PlusNotes =
+      GeneratedColumn<String>('modification50_plus_notes', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        description,
+        primaryMusclesJson,
+        secondaryMusclesJson,
+        equipment,
+        formCues,
+        videoUrl,
+        difficulty,
+        isCompound,
+        minimumAge,
+        maximumAge,
+        requiresModification50Plus,
+        modification50PlusNotes
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'strength_exercises';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<StrengthExerciseEntity> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('primary_muscles_json')) {
+      context.handle(
+          _primaryMusclesJsonMeta,
+          primaryMusclesJson.isAcceptableOrUnknown(
+              data['primary_muscles_json']!, _primaryMusclesJsonMeta));
+    } else if (isInserting) {
+      context.missing(_primaryMusclesJsonMeta);
+    }
+    if (data.containsKey('secondary_muscles_json')) {
+      context.handle(
+          _secondaryMusclesJsonMeta,
+          secondaryMusclesJson.isAcceptableOrUnknown(
+              data['secondary_muscles_json']!, _secondaryMusclesJsonMeta));
+    } else if (isInserting) {
+      context.missing(_secondaryMusclesJsonMeta);
+    }
+    if (data.containsKey('equipment')) {
+      context.handle(_equipmentMeta,
+          equipment.isAcceptableOrUnknown(data['equipment']!, _equipmentMeta));
+    } else if (isInserting) {
+      context.missing(_equipmentMeta);
+    }
+    if (data.containsKey('form_cues')) {
+      context.handle(_formCuesMeta,
+          formCues.isAcceptableOrUnknown(data['form_cues']!, _formCuesMeta));
+    } else if (isInserting) {
+      context.missing(_formCuesMeta);
+    }
+    if (data.containsKey('video_url')) {
+      context.handle(_videoUrlMeta,
+          videoUrl.isAcceptableOrUnknown(data['video_url']!, _videoUrlMeta));
+    }
+    if (data.containsKey('difficulty')) {
+      context.handle(
+          _difficultyMeta,
+          difficulty.isAcceptableOrUnknown(
+              data['difficulty']!, _difficultyMeta));
+    } else if (isInserting) {
+      context.missing(_difficultyMeta);
+    }
+    if (data.containsKey('is_compound')) {
+      context.handle(
+          _isCompoundMeta,
+          isCompound.isAcceptableOrUnknown(
+              data['is_compound']!, _isCompoundMeta));
+    }
+    if (data.containsKey('minimum_age')) {
+      context.handle(
+          _minimumAgeMeta,
+          minimumAge.isAcceptableOrUnknown(
+              data['minimum_age']!, _minimumAgeMeta));
+    }
+    if (data.containsKey('maximum_age')) {
+      context.handle(
+          _maximumAgeMeta,
+          maximumAge.isAcceptableOrUnknown(
+              data['maximum_age']!, _maximumAgeMeta));
+    }
+    if (data.containsKey('requires_modification50_plus')) {
+      context.handle(
+          _requiresModification50PlusMeta,
+          requiresModification50Plus.isAcceptableOrUnknown(
+              data['requires_modification50_plus']!,
+              _requiresModification50PlusMeta));
+    }
+    if (data.containsKey('modification50_plus_notes')) {
+      context.handle(
+          _modification50PlusNotesMeta,
+          modification50PlusNotes.isAcceptableOrUnknown(
+              data['modification50_plus_notes']!,
+              _modification50PlusNotesMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StrengthExerciseEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StrengthExerciseEntity(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      primaryMusclesJson: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}primary_muscles_json'])!,
+      secondaryMusclesJson: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}secondary_muscles_json'])!,
+      equipment: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}equipment'])!,
+      formCues: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}form_cues'])!,
+      videoUrl: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}video_url']),
+      difficulty: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}difficulty'])!,
+      isCompound: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_compound'])!,
+      minimumAge: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}minimum_age'])!,
+      maximumAge: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}maximum_age']),
+      requiresModification50Plus: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool,
+          data['${effectivePrefix}requires_modification50_plus'])!,
+      modification50PlusNotes: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}modification50_plus_notes']),
+    );
+  }
+
+  @override
+  $StrengthExercisesTable createAlias(String alias) {
+    return $StrengthExercisesTable(attachedDatabase, alias);
+  }
+}
+
+class StrengthExerciseEntity extends DataClass
+    implements Insertable<StrengthExerciseEntity> {
+  /// Eindeutige ID
+  final String id;
+
+  /// Name der Übung
+  final String name;
+
+  /// Beschreibung
+  final String description;
+
+  /// Primäre Muskelgruppen als JSON Array
+  final String primaryMusclesJson;
+
+  /// Sekundäre Muskelgruppen als JSON Array
+  final String secondaryMusclesJson;
+
+  /// Equipment-Typ
+  final String equipment;
+
+  /// Form-Hinweise
+  final String formCues;
+
+  /// Video URL (optional)
+  final String? videoUrl;
+
+  /// Schwierigkeitsgrad
+  final String difficulty;
+
+  /// Ist es eine Compound-Übung?
+  final bool isCompound;
+
+  /// Minimum Alter für diese Übung
+  final int minimumAge;
+
+  /// Maximum Alter (optional)
+  final int? maximumAge;
+
+  /// Benötigt Modifikation für 50+?
+  final bool requiresModification50Plus;
+
+  /// Modifikations-Notizen für 50+
+  final String? modification50PlusNotes;
+  const StrengthExerciseEntity(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.primaryMusclesJson,
+      required this.secondaryMusclesJson,
+      required this.equipment,
+      required this.formCues,
+      this.videoUrl,
+      required this.difficulty,
+      required this.isCompound,
+      required this.minimumAge,
+      this.maximumAge,
+      required this.requiresModification50Plus,
+      this.modification50PlusNotes});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['primary_muscles_json'] = Variable<String>(primaryMusclesJson);
+    map['secondary_muscles_json'] = Variable<String>(secondaryMusclesJson);
+    map['equipment'] = Variable<String>(equipment);
+    map['form_cues'] = Variable<String>(formCues);
+    if (!nullToAbsent || videoUrl != null) {
+      map['video_url'] = Variable<String>(videoUrl);
+    }
+    map['difficulty'] = Variable<String>(difficulty);
+    map['is_compound'] = Variable<bool>(isCompound);
+    map['minimum_age'] = Variable<int>(minimumAge);
+    if (!nullToAbsent || maximumAge != null) {
+      map['maximum_age'] = Variable<int>(maximumAge);
+    }
+    map['requires_modification50_plus'] =
+        Variable<bool>(requiresModification50Plus);
+    if (!nullToAbsent || modification50PlusNotes != null) {
+      map['modification50_plus_notes'] =
+          Variable<String>(modification50PlusNotes);
+    }
+    return map;
+  }
+
+  StrengthExercisesCompanion toCompanion(bool nullToAbsent) {
+    return StrengthExercisesCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: Value(description),
+      primaryMusclesJson: Value(primaryMusclesJson),
+      secondaryMusclesJson: Value(secondaryMusclesJson),
+      equipment: Value(equipment),
+      formCues: Value(formCues),
+      videoUrl: videoUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(videoUrl),
+      difficulty: Value(difficulty),
+      isCompound: Value(isCompound),
+      minimumAge: Value(minimumAge),
+      maximumAge: maximumAge == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maximumAge),
+      requiresModification50Plus: Value(requiresModification50Plus),
+      modification50PlusNotes: modification50PlusNotes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(modification50PlusNotes),
+    );
+  }
+
+  factory StrengthExerciseEntity.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StrengthExerciseEntity(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      primaryMusclesJson:
+          serializer.fromJson<String>(json['primaryMusclesJson']),
+      secondaryMusclesJson:
+          serializer.fromJson<String>(json['secondaryMusclesJson']),
+      equipment: serializer.fromJson<String>(json['equipment']),
+      formCues: serializer.fromJson<String>(json['formCues']),
+      videoUrl: serializer.fromJson<String?>(json['videoUrl']),
+      difficulty: serializer.fromJson<String>(json['difficulty']),
+      isCompound: serializer.fromJson<bool>(json['isCompound']),
+      minimumAge: serializer.fromJson<int>(json['minimumAge']),
+      maximumAge: serializer.fromJson<int?>(json['maximumAge']),
+      requiresModification50Plus:
+          serializer.fromJson<bool>(json['requiresModification50Plus']),
+      modification50PlusNotes:
+          serializer.fromJson<String?>(json['modification50PlusNotes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'primaryMusclesJson': serializer.toJson<String>(primaryMusclesJson),
+      'secondaryMusclesJson': serializer.toJson<String>(secondaryMusclesJson),
+      'equipment': serializer.toJson<String>(equipment),
+      'formCues': serializer.toJson<String>(formCues),
+      'videoUrl': serializer.toJson<String?>(videoUrl),
+      'difficulty': serializer.toJson<String>(difficulty),
+      'isCompound': serializer.toJson<bool>(isCompound),
+      'minimumAge': serializer.toJson<int>(minimumAge),
+      'maximumAge': serializer.toJson<int?>(maximumAge),
+      'requiresModification50Plus':
+          serializer.toJson<bool>(requiresModification50Plus),
+      'modification50PlusNotes':
+          serializer.toJson<String?>(modification50PlusNotes),
+    };
+  }
+
+  StrengthExerciseEntity copyWith(
+          {String? id,
+          String? name,
+          String? description,
+          String? primaryMusclesJson,
+          String? secondaryMusclesJson,
+          String? equipment,
+          String? formCues,
+          Value<String?> videoUrl = const Value.absent(),
+          String? difficulty,
+          bool? isCompound,
+          int? minimumAge,
+          Value<int?> maximumAge = const Value.absent(),
+          bool? requiresModification50Plus,
+          Value<String?> modification50PlusNotes = const Value.absent()}) =>
+      StrengthExerciseEntity(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        primaryMusclesJson: primaryMusclesJson ?? this.primaryMusclesJson,
+        secondaryMusclesJson: secondaryMusclesJson ?? this.secondaryMusclesJson,
+        equipment: equipment ?? this.equipment,
+        formCues: formCues ?? this.formCues,
+        videoUrl: videoUrl.present ? videoUrl.value : this.videoUrl,
+        difficulty: difficulty ?? this.difficulty,
+        isCompound: isCompound ?? this.isCompound,
+        minimumAge: minimumAge ?? this.minimumAge,
+        maximumAge: maximumAge.present ? maximumAge.value : this.maximumAge,
+        requiresModification50Plus:
+            requiresModification50Plus ?? this.requiresModification50Plus,
+        modification50PlusNotes: modification50PlusNotes.present
+            ? modification50PlusNotes.value
+            : this.modification50PlusNotes,
+      );
+  StrengthExerciseEntity copyWithCompanion(StrengthExercisesCompanion data) {
+    return StrengthExerciseEntity(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description:
+          data.description.present ? data.description.value : this.description,
+      primaryMusclesJson: data.primaryMusclesJson.present
+          ? data.primaryMusclesJson.value
+          : this.primaryMusclesJson,
+      secondaryMusclesJson: data.secondaryMusclesJson.present
+          ? data.secondaryMusclesJson.value
+          : this.secondaryMusclesJson,
+      equipment: data.equipment.present ? data.equipment.value : this.equipment,
+      formCues: data.formCues.present ? data.formCues.value : this.formCues,
+      videoUrl: data.videoUrl.present ? data.videoUrl.value : this.videoUrl,
+      difficulty:
+          data.difficulty.present ? data.difficulty.value : this.difficulty,
+      isCompound:
+          data.isCompound.present ? data.isCompound.value : this.isCompound,
+      minimumAge:
+          data.minimumAge.present ? data.minimumAge.value : this.minimumAge,
+      maximumAge:
+          data.maximumAge.present ? data.maximumAge.value : this.maximumAge,
+      requiresModification50Plus: data.requiresModification50Plus.present
+          ? data.requiresModification50Plus.value
+          : this.requiresModification50Plus,
+      modification50PlusNotes: data.modification50PlusNotes.present
+          ? data.modification50PlusNotes.value
+          : this.modification50PlusNotes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StrengthExerciseEntity(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('primaryMusclesJson: $primaryMusclesJson, ')
+          ..write('secondaryMusclesJson: $secondaryMusclesJson, ')
+          ..write('equipment: $equipment, ')
+          ..write('formCues: $formCues, ')
+          ..write('videoUrl: $videoUrl, ')
+          ..write('difficulty: $difficulty, ')
+          ..write('isCompound: $isCompound, ')
+          ..write('minimumAge: $minimumAge, ')
+          ..write('maximumAge: $maximumAge, ')
+          ..write('requiresModification50Plus: $requiresModification50Plus, ')
+          ..write('modification50PlusNotes: $modification50PlusNotes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      name,
+      description,
+      primaryMusclesJson,
+      secondaryMusclesJson,
+      equipment,
+      formCues,
+      videoUrl,
+      difficulty,
+      isCompound,
+      minimumAge,
+      maximumAge,
+      requiresModification50Plus,
+      modification50PlusNotes);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StrengthExerciseEntity &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.primaryMusclesJson == this.primaryMusclesJson &&
+          other.secondaryMusclesJson == this.secondaryMusclesJson &&
+          other.equipment == this.equipment &&
+          other.formCues == this.formCues &&
+          other.videoUrl == this.videoUrl &&
+          other.difficulty == this.difficulty &&
+          other.isCompound == this.isCompound &&
+          other.minimumAge == this.minimumAge &&
+          other.maximumAge == this.maximumAge &&
+          other.requiresModification50Plus == this.requiresModification50Plus &&
+          other.modification50PlusNotes == this.modification50PlusNotes);
+}
+
+class StrengthExercisesCompanion
+    extends UpdateCompanion<StrengthExerciseEntity> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<String> primaryMusclesJson;
+  final Value<String> secondaryMusclesJson;
+  final Value<String> equipment;
+  final Value<String> formCues;
+  final Value<String?> videoUrl;
+  final Value<String> difficulty;
+  final Value<bool> isCompound;
+  final Value<int> minimumAge;
+  final Value<int?> maximumAge;
+  final Value<bool> requiresModification50Plus;
+  final Value<String?> modification50PlusNotes;
+  final Value<int> rowid;
+  const StrengthExercisesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.primaryMusclesJson = const Value.absent(),
+    this.secondaryMusclesJson = const Value.absent(),
+    this.equipment = const Value.absent(),
+    this.formCues = const Value.absent(),
+    this.videoUrl = const Value.absent(),
+    this.difficulty = const Value.absent(),
+    this.isCompound = const Value.absent(),
+    this.minimumAge = const Value.absent(),
+    this.maximumAge = const Value.absent(),
+    this.requiresModification50Plus = const Value.absent(),
+    this.modification50PlusNotes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StrengthExercisesCompanion.insert({
+    required String id,
+    required String name,
+    required String description,
+    required String primaryMusclesJson,
+    required String secondaryMusclesJson,
+    required String equipment,
+    required String formCues,
+    this.videoUrl = const Value.absent(),
+    required String difficulty,
+    this.isCompound = const Value.absent(),
+    this.minimumAge = const Value.absent(),
+    this.maximumAge = const Value.absent(),
+    this.requiresModification50Plus = const Value.absent(),
+    this.modification50PlusNotes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        description = Value(description),
+        primaryMusclesJson = Value(primaryMusclesJson),
+        secondaryMusclesJson = Value(secondaryMusclesJson),
+        equipment = Value(equipment),
+        formCues = Value(formCues),
+        difficulty = Value(difficulty);
+  static Insertable<StrengthExerciseEntity> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? primaryMusclesJson,
+    Expression<String>? secondaryMusclesJson,
+    Expression<String>? equipment,
+    Expression<String>? formCues,
+    Expression<String>? videoUrl,
+    Expression<String>? difficulty,
+    Expression<bool>? isCompound,
+    Expression<int>? minimumAge,
+    Expression<int>? maximumAge,
+    Expression<bool>? requiresModification50Plus,
+    Expression<String>? modification50PlusNotes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (primaryMusclesJson != null)
+        'primary_muscles_json': primaryMusclesJson,
+      if (secondaryMusclesJson != null)
+        'secondary_muscles_json': secondaryMusclesJson,
+      if (equipment != null) 'equipment': equipment,
+      if (formCues != null) 'form_cues': formCues,
+      if (videoUrl != null) 'video_url': videoUrl,
+      if (difficulty != null) 'difficulty': difficulty,
+      if (isCompound != null) 'is_compound': isCompound,
+      if (minimumAge != null) 'minimum_age': minimumAge,
+      if (maximumAge != null) 'maximum_age': maximumAge,
+      if (requiresModification50Plus != null)
+        'requires_modification50_plus': requiresModification50Plus,
+      if (modification50PlusNotes != null)
+        'modification50_plus_notes': modification50PlusNotes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StrengthExercisesCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? name,
+      Value<String>? description,
+      Value<String>? primaryMusclesJson,
+      Value<String>? secondaryMusclesJson,
+      Value<String>? equipment,
+      Value<String>? formCues,
+      Value<String?>? videoUrl,
+      Value<String>? difficulty,
+      Value<bool>? isCompound,
+      Value<int>? minimumAge,
+      Value<int?>? maximumAge,
+      Value<bool>? requiresModification50Plus,
+      Value<String?>? modification50PlusNotes,
+      Value<int>? rowid}) {
+    return StrengthExercisesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      primaryMusclesJson: primaryMusclesJson ?? this.primaryMusclesJson,
+      secondaryMusclesJson: secondaryMusclesJson ?? this.secondaryMusclesJson,
+      equipment: equipment ?? this.equipment,
+      formCues: formCues ?? this.formCues,
+      videoUrl: videoUrl ?? this.videoUrl,
+      difficulty: difficulty ?? this.difficulty,
+      isCompound: isCompound ?? this.isCompound,
+      minimumAge: minimumAge ?? this.minimumAge,
+      maximumAge: maximumAge ?? this.maximumAge,
+      requiresModification50Plus:
+          requiresModification50Plus ?? this.requiresModification50Plus,
+      modification50PlusNotes:
+          modification50PlusNotes ?? this.modification50PlusNotes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (primaryMusclesJson.present) {
+      map['primary_muscles_json'] = Variable<String>(primaryMusclesJson.value);
+    }
+    if (secondaryMusclesJson.present) {
+      map['secondary_muscles_json'] =
+          Variable<String>(secondaryMusclesJson.value);
+    }
+    if (equipment.present) {
+      map['equipment'] = Variable<String>(equipment.value);
+    }
+    if (formCues.present) {
+      map['form_cues'] = Variable<String>(formCues.value);
+    }
+    if (videoUrl.present) {
+      map['video_url'] = Variable<String>(videoUrl.value);
+    }
+    if (difficulty.present) {
+      map['difficulty'] = Variable<String>(difficulty.value);
+    }
+    if (isCompound.present) {
+      map['is_compound'] = Variable<bool>(isCompound.value);
+    }
+    if (minimumAge.present) {
+      map['minimum_age'] = Variable<int>(minimumAge.value);
+    }
+    if (maximumAge.present) {
+      map['maximum_age'] = Variable<int>(maximumAge.value);
+    }
+    if (requiresModification50Plus.present) {
+      map['requires_modification50_plus'] =
+          Variable<bool>(requiresModification50Plus.value);
+    }
+    if (modification50PlusNotes.present) {
+      map['modification50_plus_notes'] =
+          Variable<String>(modification50PlusNotes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StrengthExercisesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('primaryMusclesJson: $primaryMusclesJson, ')
+          ..write('secondaryMusclesJson: $secondaryMusclesJson, ')
+          ..write('equipment: $equipment, ')
+          ..write('formCues: $formCues, ')
+          ..write('videoUrl: $videoUrl, ')
+          ..write('difficulty: $difficulty, ')
+          ..write('isCompound: $isCompound, ')
+          ..write('minimumAge: $minimumAge, ')
+          ..write('maximumAge: $maximumAge, ')
+          ..write('requiresModification50Plus: $requiresModification50Plus, ')
+          ..write('modification50PlusNotes: $modification50PlusNotes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StrengthWorkoutsTable extends StrengthWorkouts
+    with TableInfo<$StrengthWorkoutsTable, StrengthWorkoutEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StrengthWorkoutsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _intervalsJsonMeta =
+      const VerificationMeta('intervalsJson');
+  @override
+  late final GeneratedColumn<String> intervalsJson = GeneratedColumn<String>(
+      'intervals_json', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _workoutTypeMeta =
+      const VerificationMeta('workoutType');
+  @override
+  late final GeneratedColumn<String> workoutType = GeneratedColumn<String>(
+      'workout_type', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _estimatedDurationMinutesMeta =
+      const VerificationMeta('estimatedDurationMinutes');
+  @override
+  late final GeneratedColumn<int> estimatedDurationMinutes =
+      GeneratedColumn<int>('estimated_duration_minutes', aliasedName, false,
+          type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _difficultyMeta =
+      const VerificationMeta('difficulty');
+  @override
+  late final GeneratedColumn<String> difficulty = GeneratedColumn<String>(
+      'difficulty', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _isCustomMeta =
+      const VerificationMeta('isCustom');
+  @override
+  late final GeneratedColumn<bool> isCustom = GeneratedColumn<bool>(
+      'is_custom', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_custom" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        description,
+        intervalsJson,
+        workoutType,
+        estimatedDurationMinutes,
+        difficulty,
+        isCustom,
+        createdAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'strength_workouts';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<StrengthWorkoutEntity> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('intervals_json')) {
+      context.handle(
+          _intervalsJsonMeta,
+          intervalsJson.isAcceptableOrUnknown(
+              data['intervals_json']!, _intervalsJsonMeta));
+    } else if (isInserting) {
+      context.missing(_intervalsJsonMeta);
+    }
+    if (data.containsKey('workout_type')) {
+      context.handle(
+          _workoutTypeMeta,
+          workoutType.isAcceptableOrUnknown(
+              data['workout_type']!, _workoutTypeMeta));
+    } else if (isInserting) {
+      context.missing(_workoutTypeMeta);
+    }
+    if (data.containsKey('estimated_duration_minutes')) {
+      context.handle(
+          _estimatedDurationMinutesMeta,
+          estimatedDurationMinutes.isAcceptableOrUnknown(
+              data['estimated_duration_minutes']!,
+              _estimatedDurationMinutesMeta));
+    } else if (isInserting) {
+      context.missing(_estimatedDurationMinutesMeta);
+    }
+    if (data.containsKey('difficulty')) {
+      context.handle(
+          _difficultyMeta,
+          difficulty.isAcceptableOrUnknown(
+              data['difficulty']!, _difficultyMeta));
+    } else if (isInserting) {
+      context.missing(_difficultyMeta);
+    }
+    if (data.containsKey('is_custom')) {
+      context.handle(_isCustomMeta,
+          isCustom.isAcceptableOrUnknown(data['is_custom']!, _isCustomMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StrengthWorkoutEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StrengthWorkoutEntity(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      intervalsJson: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}intervals_json'])!,
+      workoutType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}workout_type'])!,
+      estimatedDurationMinutes: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}estimated_duration_minutes'])!,
+      difficulty: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}difficulty'])!,
+      isCustom: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_custom'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $StrengthWorkoutsTable createAlias(String alias) {
+    return $StrengthWorkoutsTable(attachedDatabase, alias);
+  }
+}
+
+class StrengthWorkoutEntity extends DataClass
+    implements Insertable<StrengthWorkoutEntity> {
+  /// Eindeutige ID
+  final String id;
+
+  /// Name des Workouts
+  final String name;
+
+  /// Beschreibung
+  final String description;
+
+  /// Intervalle als JSON Array (StrengthInterval objects)
+  final String intervalsJson;
+
+  /// Workout-Typ
+  final String workoutType;
+
+  /// Geschätzte Dauer in Minuten
+  final int estimatedDurationMinutes;
+
+  /// Schwierigkeitsgrad
+  final String difficulty;
+
+  /// Ist es ein Custom Workout?
+  final bool isCustom;
+
+  /// Erstellungsdatum
+  final DateTime createdAt;
+  const StrengthWorkoutEntity(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.intervalsJson,
+      required this.workoutType,
+      required this.estimatedDurationMinutes,
+      required this.difficulty,
+      required this.isCustom,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['intervals_json'] = Variable<String>(intervalsJson);
+    map['workout_type'] = Variable<String>(workoutType);
+    map['estimated_duration_minutes'] = Variable<int>(estimatedDurationMinutes);
+    map['difficulty'] = Variable<String>(difficulty);
+    map['is_custom'] = Variable<bool>(isCustom);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  StrengthWorkoutsCompanion toCompanion(bool nullToAbsent) {
+    return StrengthWorkoutsCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: Value(description),
+      intervalsJson: Value(intervalsJson),
+      workoutType: Value(workoutType),
+      estimatedDurationMinutes: Value(estimatedDurationMinutes),
+      difficulty: Value(difficulty),
+      isCustom: Value(isCustom),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory StrengthWorkoutEntity.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StrengthWorkoutEntity(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      intervalsJson: serializer.fromJson<String>(json['intervalsJson']),
+      workoutType: serializer.fromJson<String>(json['workoutType']),
+      estimatedDurationMinutes:
+          serializer.fromJson<int>(json['estimatedDurationMinutes']),
+      difficulty: serializer.fromJson<String>(json['difficulty']),
+      isCustom: serializer.fromJson<bool>(json['isCustom']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'intervalsJson': serializer.toJson<String>(intervalsJson),
+      'workoutType': serializer.toJson<String>(workoutType),
+      'estimatedDurationMinutes':
+          serializer.toJson<int>(estimatedDurationMinutes),
+      'difficulty': serializer.toJson<String>(difficulty),
+      'isCustom': serializer.toJson<bool>(isCustom),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  StrengthWorkoutEntity copyWith(
+          {String? id,
+          String? name,
+          String? description,
+          String? intervalsJson,
+          String? workoutType,
+          int? estimatedDurationMinutes,
+          String? difficulty,
+          bool? isCustom,
+          DateTime? createdAt}) =>
+      StrengthWorkoutEntity(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        intervalsJson: intervalsJson ?? this.intervalsJson,
+        workoutType: workoutType ?? this.workoutType,
+        estimatedDurationMinutes:
+            estimatedDurationMinutes ?? this.estimatedDurationMinutes,
+        difficulty: difficulty ?? this.difficulty,
+        isCustom: isCustom ?? this.isCustom,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  StrengthWorkoutEntity copyWithCompanion(StrengthWorkoutsCompanion data) {
+    return StrengthWorkoutEntity(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description:
+          data.description.present ? data.description.value : this.description,
+      intervalsJson: data.intervalsJson.present
+          ? data.intervalsJson.value
+          : this.intervalsJson,
+      workoutType:
+          data.workoutType.present ? data.workoutType.value : this.workoutType,
+      estimatedDurationMinutes: data.estimatedDurationMinutes.present
+          ? data.estimatedDurationMinutes.value
+          : this.estimatedDurationMinutes,
+      difficulty:
+          data.difficulty.present ? data.difficulty.value : this.difficulty,
+      isCustom: data.isCustom.present ? data.isCustom.value : this.isCustom,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StrengthWorkoutEntity(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('intervalsJson: $intervalsJson, ')
+          ..write('workoutType: $workoutType, ')
+          ..write('estimatedDurationMinutes: $estimatedDurationMinutes, ')
+          ..write('difficulty: $difficulty, ')
+          ..write('isCustom: $isCustom, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, description, intervalsJson,
+      workoutType, estimatedDurationMinutes, difficulty, isCustom, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StrengthWorkoutEntity &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.intervalsJson == this.intervalsJson &&
+          other.workoutType == this.workoutType &&
+          other.estimatedDurationMinutes == this.estimatedDurationMinutes &&
+          other.difficulty == this.difficulty &&
+          other.isCustom == this.isCustom &&
+          other.createdAt == this.createdAt);
+}
+
+class StrengthWorkoutsCompanion extends UpdateCompanion<StrengthWorkoutEntity> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<String> intervalsJson;
+  final Value<String> workoutType;
+  final Value<int> estimatedDurationMinutes;
+  final Value<String> difficulty;
+  final Value<bool> isCustom;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const StrengthWorkoutsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.intervalsJson = const Value.absent(),
+    this.workoutType = const Value.absent(),
+    this.estimatedDurationMinutes = const Value.absent(),
+    this.difficulty = const Value.absent(),
+    this.isCustom = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StrengthWorkoutsCompanion.insert({
+    required String id,
+    required String name,
+    required String description,
+    required String intervalsJson,
+    required String workoutType,
+    required int estimatedDurationMinutes,
+    required String difficulty,
+    this.isCustom = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        description = Value(description),
+        intervalsJson = Value(intervalsJson),
+        workoutType = Value(workoutType),
+        estimatedDurationMinutes = Value(estimatedDurationMinutes),
+        difficulty = Value(difficulty),
+        createdAt = Value(createdAt);
+  static Insertable<StrengthWorkoutEntity> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? intervalsJson,
+    Expression<String>? workoutType,
+    Expression<int>? estimatedDurationMinutes,
+    Expression<String>? difficulty,
+    Expression<bool>? isCustom,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (intervalsJson != null) 'intervals_json': intervalsJson,
+      if (workoutType != null) 'workout_type': workoutType,
+      if (estimatedDurationMinutes != null)
+        'estimated_duration_minutes': estimatedDurationMinutes,
+      if (difficulty != null) 'difficulty': difficulty,
+      if (isCustom != null) 'is_custom': isCustom,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StrengthWorkoutsCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? name,
+      Value<String>? description,
+      Value<String>? intervalsJson,
+      Value<String>? workoutType,
+      Value<int>? estimatedDurationMinutes,
+      Value<String>? difficulty,
+      Value<bool>? isCustom,
+      Value<DateTime>? createdAt,
+      Value<int>? rowid}) {
+    return StrengthWorkoutsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      intervalsJson: intervalsJson ?? this.intervalsJson,
+      workoutType: workoutType ?? this.workoutType,
+      estimatedDurationMinutes:
+          estimatedDurationMinutes ?? this.estimatedDurationMinutes,
+      difficulty: difficulty ?? this.difficulty,
+      isCustom: isCustom ?? this.isCustom,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (intervalsJson.present) {
+      map['intervals_json'] = Variable<String>(intervalsJson.value);
+    }
+    if (workoutType.present) {
+      map['workout_type'] = Variable<String>(workoutType.value);
+    }
+    if (estimatedDurationMinutes.present) {
+      map['estimated_duration_minutes'] =
+          Variable<int>(estimatedDurationMinutes.value);
+    }
+    if (difficulty.present) {
+      map['difficulty'] = Variable<String>(difficulty.value);
+    }
+    if (isCustom.present) {
+      map['is_custom'] = Variable<bool>(isCustom.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StrengthWorkoutsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('intervalsJson: $intervalsJson, ')
+          ..write('workoutType: $workoutType, ')
+          ..write('estimatedDurationMinutes: $estimatedDurationMinutes, ')
+          ..write('difficulty: $difficulty, ')
+          ..write('isCustom: $isCustom, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StrengthSessionsTable extends StrengthSessions
+    with TableInfo<$StrengthSessionsTable, StrengthSessionEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StrengthSessionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _startTimeMsMeta =
+      const VerificationMeta('startTimeMs');
+  @override
+  late final GeneratedColumn<int> startTimeMs = GeneratedColumn<int>(
+      'start_time_ms', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _endTimeMsMeta =
+      const VerificationMeta('endTimeMs');
+  @override
+  late final GeneratedColumn<int> endTimeMs = GeneratedColumn<int>(
+      'end_time_ms', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _workoutIdMeta =
+      const VerificationMeta('workoutId');
+  @override
+  late final GeneratedColumn<String> workoutId = GeneratedColumn<String>(
+      'workout_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _exercisesJsonMeta =
+      const VerificationMeta('exercisesJson');
+  @override
+  late final GeneratedColumn<String> exercisesJson = GeneratedColumn<String>(
+      'exercises_json', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _statsDurationSecsMeta =
+      const VerificationMeta('statsDurationSecs');
+  @override
+  late final GeneratedColumn<int> statsDurationSecs = GeneratedColumn<int>(
+      'stats_duration_secs', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _statsTotalSetsMeta =
+      const VerificationMeta('statsTotalSets');
+  @override
+  late final GeneratedColumn<int> statsTotalSets = GeneratedColumn<int>(
+      'stats_total_sets', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _statsTotalRepsMeta =
+      const VerificationMeta('statsTotalReps');
+  @override
+  late final GeneratedColumn<int> statsTotalReps = GeneratedColumn<int>(
+      'stats_total_reps', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _statsTotalVolumeMeta =
+      const VerificationMeta('statsTotalVolume');
+  @override
+  late final GeneratedColumn<double> statsTotalVolume = GeneratedColumn<double>(
+      'stats_total_volume', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0.0));
+  static const VerificationMeta _statsAvgRpeMeta =
+      const VerificationMeta('statsAvgRpe');
+  @override
+  late final GeneratedColumn<int> statsAvgRpe = GeneratedColumn<int>(
+      'stats_avg_rpe', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _statsExercisesCompletedMeta =
+      const VerificationMeta('statsExercisesCompleted');
+  @override
+  late final GeneratedColumn<int> statsExercisesCompleted =
+      GeneratedColumn<int>('stats_exercises_completed', aliasedName, false,
+          type: DriftSqlType.int,
+          requiredDuringInsert: false,
+          defaultValue: const Constant(0));
+  static const VerificationMeta _statsMuscleGroupWorkJsonMeta =
+      const VerificationMeta('statsMuscleGroupWorkJson');
+  @override
+  late final GeneratedColumn<String> statsMuscleGroupWorkJson =
+      GeneratedColumn<String>(
+          'stats_muscle_group_work_json', aliasedName, false,
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          defaultValue: const Constant('{}'));
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+      'notes', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        startTimeMs,
+        endTimeMs,
+        workoutId,
+        exercisesJson,
+        statsDurationSecs,
+        statsTotalSets,
+        statsTotalReps,
+        statsTotalVolume,
+        statsAvgRpe,
+        statsExercisesCompleted,
+        statsMuscleGroupWorkJson,
+        notes
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'strength_sessions';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<StrengthSessionEntity> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('start_time_ms')) {
+      context.handle(
+          _startTimeMsMeta,
+          startTimeMs.isAcceptableOrUnknown(
+              data['start_time_ms']!, _startTimeMsMeta));
+    } else if (isInserting) {
+      context.missing(_startTimeMsMeta);
+    }
+    if (data.containsKey('end_time_ms')) {
+      context.handle(
+          _endTimeMsMeta,
+          endTimeMs.isAcceptableOrUnknown(
+              data['end_time_ms']!, _endTimeMsMeta));
+    }
+    if (data.containsKey('workout_id')) {
+      context.handle(_workoutIdMeta,
+          workoutId.isAcceptableOrUnknown(data['workout_id']!, _workoutIdMeta));
+    }
+    if (data.containsKey('exercises_json')) {
+      context.handle(
+          _exercisesJsonMeta,
+          exercisesJson.isAcceptableOrUnknown(
+              data['exercises_json']!, _exercisesJsonMeta));
+    } else if (isInserting) {
+      context.missing(_exercisesJsonMeta);
+    }
+    if (data.containsKey('stats_duration_secs')) {
+      context.handle(
+          _statsDurationSecsMeta,
+          statsDurationSecs.isAcceptableOrUnknown(
+              data['stats_duration_secs']!, _statsDurationSecsMeta));
+    }
+    if (data.containsKey('stats_total_sets')) {
+      context.handle(
+          _statsTotalSetsMeta,
+          statsTotalSets.isAcceptableOrUnknown(
+              data['stats_total_sets']!, _statsTotalSetsMeta));
+    }
+    if (data.containsKey('stats_total_reps')) {
+      context.handle(
+          _statsTotalRepsMeta,
+          statsTotalReps.isAcceptableOrUnknown(
+              data['stats_total_reps']!, _statsTotalRepsMeta));
+    }
+    if (data.containsKey('stats_total_volume')) {
+      context.handle(
+          _statsTotalVolumeMeta,
+          statsTotalVolume.isAcceptableOrUnknown(
+              data['stats_total_volume']!, _statsTotalVolumeMeta));
+    }
+    if (data.containsKey('stats_avg_rpe')) {
+      context.handle(
+          _statsAvgRpeMeta,
+          statsAvgRpe.isAcceptableOrUnknown(
+              data['stats_avg_rpe']!, _statsAvgRpeMeta));
+    }
+    if (data.containsKey('stats_exercises_completed')) {
+      context.handle(
+          _statsExercisesCompletedMeta,
+          statsExercisesCompleted.isAcceptableOrUnknown(
+              data['stats_exercises_completed']!,
+              _statsExercisesCompletedMeta));
+    }
+    if (data.containsKey('stats_muscle_group_work_json')) {
+      context.handle(
+          _statsMuscleGroupWorkJsonMeta,
+          statsMuscleGroupWorkJson.isAcceptableOrUnknown(
+              data['stats_muscle_group_work_json']!,
+              _statsMuscleGroupWorkJsonMeta));
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+          _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StrengthSessionEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StrengthSessionEntity(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      startTimeMs: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}start_time_ms'])!,
+      endTimeMs: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}end_time_ms']),
+      workoutId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}workout_id']),
+      exercisesJson: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}exercises_json'])!,
+      statsDurationSecs: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}stats_duration_secs'])!,
+      statsTotalSets: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stats_total_sets'])!,
+      statsTotalReps: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stats_total_reps'])!,
+      statsTotalVolume: attachedDatabase.typeMapping.read(
+          DriftSqlType.double, data['${effectivePrefix}stats_total_volume'])!,
+      statsAvgRpe: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stats_avg_rpe']),
+      statsExercisesCompleted: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}stats_exercises_completed'])!,
+      statsMuscleGroupWorkJson: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}stats_muscle_group_work_json'])!,
+      notes: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}notes']),
+    );
+  }
+
+  @override
+  $StrengthSessionsTable createAlias(String alias) {
+    return $StrengthSessionsTable(attachedDatabase, alias);
+  }
+}
+
+class StrengthSessionEntity extends DataClass
+    implements Insertable<StrengthSessionEntity> {
+  /// Eindeutige ID
+  final String id;
+
+  /// Start-Zeitpunkt (Millisekunden seit Epoch)
+  final int startTimeMs;
+
+  /// End-Zeitpunkt (optional, Millisekunden seit Epoch)
+  final int? endTimeMs;
+
+  /// Link zum Workout (optional)
+  final String? workoutId;
+
+  /// Übungen mit ihren Sets als JSON Array (StrengthExerciseRecord objects)
+  final String exercisesJson;
+
+  /// Session Stats: Gesamtdauer in Sekunden
+  final int statsDurationSecs;
+
+  /// Session Stats: Gesamtanzahl Sets
+  final int statsTotalSets;
+
+  /// Session Stats: Gesamtanzahl Wiederholungen
+  final int statsTotalReps;
+
+  /// Session Stats: Gesamtvolumen (kg)
+  final double statsTotalVolume;
+
+  /// Session Stats: Durchschnittliches RPE
+  final int? statsAvgRpe;
+
+  /// Session Stats: Anzahl absolvierter Übungen
+  final int statsExercisesCompleted;
+
+  /// Session Stats: Volumen pro Muskelgruppe als JSON Object
+  final String statsMuscleGroupWorkJson;
+
+  /// Notizen zur Session
+  final String? notes;
+  const StrengthSessionEntity(
+      {required this.id,
+      required this.startTimeMs,
+      this.endTimeMs,
+      this.workoutId,
+      required this.exercisesJson,
+      required this.statsDurationSecs,
+      required this.statsTotalSets,
+      required this.statsTotalReps,
+      required this.statsTotalVolume,
+      this.statsAvgRpe,
+      required this.statsExercisesCompleted,
+      required this.statsMuscleGroupWorkJson,
+      this.notes});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['start_time_ms'] = Variable<int>(startTimeMs);
+    if (!nullToAbsent || endTimeMs != null) {
+      map['end_time_ms'] = Variable<int>(endTimeMs);
+    }
+    if (!nullToAbsent || workoutId != null) {
+      map['workout_id'] = Variable<String>(workoutId);
+    }
+    map['exercises_json'] = Variable<String>(exercisesJson);
+    map['stats_duration_secs'] = Variable<int>(statsDurationSecs);
+    map['stats_total_sets'] = Variable<int>(statsTotalSets);
+    map['stats_total_reps'] = Variable<int>(statsTotalReps);
+    map['stats_total_volume'] = Variable<double>(statsTotalVolume);
+    if (!nullToAbsent || statsAvgRpe != null) {
+      map['stats_avg_rpe'] = Variable<int>(statsAvgRpe);
+    }
+    map['stats_exercises_completed'] = Variable<int>(statsExercisesCompleted);
+    map['stats_muscle_group_work_json'] =
+        Variable<String>(statsMuscleGroupWorkJson);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    return map;
+  }
+
+  StrengthSessionsCompanion toCompanion(bool nullToAbsent) {
+    return StrengthSessionsCompanion(
+      id: Value(id),
+      startTimeMs: Value(startTimeMs),
+      endTimeMs: endTimeMs == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endTimeMs),
+      workoutId: workoutId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(workoutId),
+      exercisesJson: Value(exercisesJson),
+      statsDurationSecs: Value(statsDurationSecs),
+      statsTotalSets: Value(statsTotalSets),
+      statsTotalReps: Value(statsTotalReps),
+      statsTotalVolume: Value(statsTotalVolume),
+      statsAvgRpe: statsAvgRpe == null && nullToAbsent
+          ? const Value.absent()
+          : Value(statsAvgRpe),
+      statsExercisesCompleted: Value(statsExercisesCompleted),
+      statsMuscleGroupWorkJson: Value(statsMuscleGroupWorkJson),
+      notes:
+          notes == null && nullToAbsent ? const Value.absent() : Value(notes),
+    );
+  }
+
+  factory StrengthSessionEntity.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StrengthSessionEntity(
+      id: serializer.fromJson<String>(json['id']),
+      startTimeMs: serializer.fromJson<int>(json['startTimeMs']),
+      endTimeMs: serializer.fromJson<int?>(json['endTimeMs']),
+      workoutId: serializer.fromJson<String?>(json['workoutId']),
+      exercisesJson: serializer.fromJson<String>(json['exercisesJson']),
+      statsDurationSecs: serializer.fromJson<int>(json['statsDurationSecs']),
+      statsTotalSets: serializer.fromJson<int>(json['statsTotalSets']),
+      statsTotalReps: serializer.fromJson<int>(json['statsTotalReps']),
+      statsTotalVolume: serializer.fromJson<double>(json['statsTotalVolume']),
+      statsAvgRpe: serializer.fromJson<int?>(json['statsAvgRpe']),
+      statsExercisesCompleted:
+          serializer.fromJson<int>(json['statsExercisesCompleted']),
+      statsMuscleGroupWorkJson:
+          serializer.fromJson<String>(json['statsMuscleGroupWorkJson']),
+      notes: serializer.fromJson<String?>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'startTimeMs': serializer.toJson<int>(startTimeMs),
+      'endTimeMs': serializer.toJson<int?>(endTimeMs),
+      'workoutId': serializer.toJson<String?>(workoutId),
+      'exercisesJson': serializer.toJson<String>(exercisesJson),
+      'statsDurationSecs': serializer.toJson<int>(statsDurationSecs),
+      'statsTotalSets': serializer.toJson<int>(statsTotalSets),
+      'statsTotalReps': serializer.toJson<int>(statsTotalReps),
+      'statsTotalVolume': serializer.toJson<double>(statsTotalVolume),
+      'statsAvgRpe': serializer.toJson<int?>(statsAvgRpe),
+      'statsExercisesCompleted':
+          serializer.toJson<int>(statsExercisesCompleted),
+      'statsMuscleGroupWorkJson':
+          serializer.toJson<String>(statsMuscleGroupWorkJson),
+      'notes': serializer.toJson<String?>(notes),
+    };
+  }
+
+  StrengthSessionEntity copyWith(
+          {String? id,
+          int? startTimeMs,
+          Value<int?> endTimeMs = const Value.absent(),
+          Value<String?> workoutId = const Value.absent(),
+          String? exercisesJson,
+          int? statsDurationSecs,
+          int? statsTotalSets,
+          int? statsTotalReps,
+          double? statsTotalVolume,
+          Value<int?> statsAvgRpe = const Value.absent(),
+          int? statsExercisesCompleted,
+          String? statsMuscleGroupWorkJson,
+          Value<String?> notes = const Value.absent()}) =>
+      StrengthSessionEntity(
+        id: id ?? this.id,
+        startTimeMs: startTimeMs ?? this.startTimeMs,
+        endTimeMs: endTimeMs.present ? endTimeMs.value : this.endTimeMs,
+        workoutId: workoutId.present ? workoutId.value : this.workoutId,
+        exercisesJson: exercisesJson ?? this.exercisesJson,
+        statsDurationSecs: statsDurationSecs ?? this.statsDurationSecs,
+        statsTotalSets: statsTotalSets ?? this.statsTotalSets,
+        statsTotalReps: statsTotalReps ?? this.statsTotalReps,
+        statsTotalVolume: statsTotalVolume ?? this.statsTotalVolume,
+        statsAvgRpe: statsAvgRpe.present ? statsAvgRpe.value : this.statsAvgRpe,
+        statsExercisesCompleted:
+            statsExercisesCompleted ?? this.statsExercisesCompleted,
+        statsMuscleGroupWorkJson:
+            statsMuscleGroupWorkJson ?? this.statsMuscleGroupWorkJson,
+        notes: notes.present ? notes.value : this.notes,
+      );
+  StrengthSessionEntity copyWithCompanion(StrengthSessionsCompanion data) {
+    return StrengthSessionEntity(
+      id: data.id.present ? data.id.value : this.id,
+      startTimeMs:
+          data.startTimeMs.present ? data.startTimeMs.value : this.startTimeMs,
+      endTimeMs: data.endTimeMs.present ? data.endTimeMs.value : this.endTimeMs,
+      workoutId: data.workoutId.present ? data.workoutId.value : this.workoutId,
+      exercisesJson: data.exercisesJson.present
+          ? data.exercisesJson.value
+          : this.exercisesJson,
+      statsDurationSecs: data.statsDurationSecs.present
+          ? data.statsDurationSecs.value
+          : this.statsDurationSecs,
+      statsTotalSets: data.statsTotalSets.present
+          ? data.statsTotalSets.value
+          : this.statsTotalSets,
+      statsTotalReps: data.statsTotalReps.present
+          ? data.statsTotalReps.value
+          : this.statsTotalReps,
+      statsTotalVolume: data.statsTotalVolume.present
+          ? data.statsTotalVolume.value
+          : this.statsTotalVolume,
+      statsAvgRpe:
+          data.statsAvgRpe.present ? data.statsAvgRpe.value : this.statsAvgRpe,
+      statsExercisesCompleted: data.statsExercisesCompleted.present
+          ? data.statsExercisesCompleted.value
+          : this.statsExercisesCompleted,
+      statsMuscleGroupWorkJson: data.statsMuscleGroupWorkJson.present
+          ? data.statsMuscleGroupWorkJson.value
+          : this.statsMuscleGroupWorkJson,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StrengthSessionEntity(')
+          ..write('id: $id, ')
+          ..write('startTimeMs: $startTimeMs, ')
+          ..write('endTimeMs: $endTimeMs, ')
+          ..write('workoutId: $workoutId, ')
+          ..write('exercisesJson: $exercisesJson, ')
+          ..write('statsDurationSecs: $statsDurationSecs, ')
+          ..write('statsTotalSets: $statsTotalSets, ')
+          ..write('statsTotalReps: $statsTotalReps, ')
+          ..write('statsTotalVolume: $statsTotalVolume, ')
+          ..write('statsAvgRpe: $statsAvgRpe, ')
+          ..write('statsExercisesCompleted: $statsExercisesCompleted, ')
+          ..write('statsMuscleGroupWorkJson: $statsMuscleGroupWorkJson, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      startTimeMs,
+      endTimeMs,
+      workoutId,
+      exercisesJson,
+      statsDurationSecs,
+      statsTotalSets,
+      statsTotalReps,
+      statsTotalVolume,
+      statsAvgRpe,
+      statsExercisesCompleted,
+      statsMuscleGroupWorkJson,
+      notes);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StrengthSessionEntity &&
+          other.id == this.id &&
+          other.startTimeMs == this.startTimeMs &&
+          other.endTimeMs == this.endTimeMs &&
+          other.workoutId == this.workoutId &&
+          other.exercisesJson == this.exercisesJson &&
+          other.statsDurationSecs == this.statsDurationSecs &&
+          other.statsTotalSets == this.statsTotalSets &&
+          other.statsTotalReps == this.statsTotalReps &&
+          other.statsTotalVolume == this.statsTotalVolume &&
+          other.statsAvgRpe == this.statsAvgRpe &&
+          other.statsExercisesCompleted == this.statsExercisesCompleted &&
+          other.statsMuscleGroupWorkJson == this.statsMuscleGroupWorkJson &&
+          other.notes == this.notes);
+}
+
+class StrengthSessionsCompanion extends UpdateCompanion<StrengthSessionEntity> {
+  final Value<String> id;
+  final Value<int> startTimeMs;
+  final Value<int?> endTimeMs;
+  final Value<String?> workoutId;
+  final Value<String> exercisesJson;
+  final Value<int> statsDurationSecs;
+  final Value<int> statsTotalSets;
+  final Value<int> statsTotalReps;
+  final Value<double> statsTotalVolume;
+  final Value<int?> statsAvgRpe;
+  final Value<int> statsExercisesCompleted;
+  final Value<String> statsMuscleGroupWorkJson;
+  final Value<String?> notes;
+  final Value<int> rowid;
+  const StrengthSessionsCompanion({
+    this.id = const Value.absent(),
+    this.startTimeMs = const Value.absent(),
+    this.endTimeMs = const Value.absent(),
+    this.workoutId = const Value.absent(),
+    this.exercisesJson = const Value.absent(),
+    this.statsDurationSecs = const Value.absent(),
+    this.statsTotalSets = const Value.absent(),
+    this.statsTotalReps = const Value.absent(),
+    this.statsTotalVolume = const Value.absent(),
+    this.statsAvgRpe = const Value.absent(),
+    this.statsExercisesCompleted = const Value.absent(),
+    this.statsMuscleGroupWorkJson = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StrengthSessionsCompanion.insert({
+    required String id,
+    required int startTimeMs,
+    this.endTimeMs = const Value.absent(),
+    this.workoutId = const Value.absent(),
+    required String exercisesJson,
+    this.statsDurationSecs = const Value.absent(),
+    this.statsTotalSets = const Value.absent(),
+    this.statsTotalReps = const Value.absent(),
+    this.statsTotalVolume = const Value.absent(),
+    this.statsAvgRpe = const Value.absent(),
+    this.statsExercisesCompleted = const Value.absent(),
+    this.statsMuscleGroupWorkJson = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        startTimeMs = Value(startTimeMs),
+        exercisesJson = Value(exercisesJson);
+  static Insertable<StrengthSessionEntity> custom({
+    Expression<String>? id,
+    Expression<int>? startTimeMs,
+    Expression<int>? endTimeMs,
+    Expression<String>? workoutId,
+    Expression<String>? exercisesJson,
+    Expression<int>? statsDurationSecs,
+    Expression<int>? statsTotalSets,
+    Expression<int>? statsTotalReps,
+    Expression<double>? statsTotalVolume,
+    Expression<int>? statsAvgRpe,
+    Expression<int>? statsExercisesCompleted,
+    Expression<String>? statsMuscleGroupWorkJson,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (startTimeMs != null) 'start_time_ms': startTimeMs,
+      if (endTimeMs != null) 'end_time_ms': endTimeMs,
+      if (workoutId != null) 'workout_id': workoutId,
+      if (exercisesJson != null) 'exercises_json': exercisesJson,
+      if (statsDurationSecs != null) 'stats_duration_secs': statsDurationSecs,
+      if (statsTotalSets != null) 'stats_total_sets': statsTotalSets,
+      if (statsTotalReps != null) 'stats_total_reps': statsTotalReps,
+      if (statsTotalVolume != null) 'stats_total_volume': statsTotalVolume,
+      if (statsAvgRpe != null) 'stats_avg_rpe': statsAvgRpe,
+      if (statsExercisesCompleted != null)
+        'stats_exercises_completed': statsExercisesCompleted,
+      if (statsMuscleGroupWorkJson != null)
+        'stats_muscle_group_work_json': statsMuscleGroupWorkJson,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StrengthSessionsCompanion copyWith(
+      {Value<String>? id,
+      Value<int>? startTimeMs,
+      Value<int?>? endTimeMs,
+      Value<String?>? workoutId,
+      Value<String>? exercisesJson,
+      Value<int>? statsDurationSecs,
+      Value<int>? statsTotalSets,
+      Value<int>? statsTotalReps,
+      Value<double>? statsTotalVolume,
+      Value<int?>? statsAvgRpe,
+      Value<int>? statsExercisesCompleted,
+      Value<String>? statsMuscleGroupWorkJson,
+      Value<String?>? notes,
+      Value<int>? rowid}) {
+    return StrengthSessionsCompanion(
+      id: id ?? this.id,
+      startTimeMs: startTimeMs ?? this.startTimeMs,
+      endTimeMs: endTimeMs ?? this.endTimeMs,
+      workoutId: workoutId ?? this.workoutId,
+      exercisesJson: exercisesJson ?? this.exercisesJson,
+      statsDurationSecs: statsDurationSecs ?? this.statsDurationSecs,
+      statsTotalSets: statsTotalSets ?? this.statsTotalSets,
+      statsTotalReps: statsTotalReps ?? this.statsTotalReps,
+      statsTotalVolume: statsTotalVolume ?? this.statsTotalVolume,
+      statsAvgRpe: statsAvgRpe ?? this.statsAvgRpe,
+      statsExercisesCompleted:
+          statsExercisesCompleted ?? this.statsExercisesCompleted,
+      statsMuscleGroupWorkJson:
+          statsMuscleGroupWorkJson ?? this.statsMuscleGroupWorkJson,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (startTimeMs.present) {
+      map['start_time_ms'] = Variable<int>(startTimeMs.value);
+    }
+    if (endTimeMs.present) {
+      map['end_time_ms'] = Variable<int>(endTimeMs.value);
+    }
+    if (workoutId.present) {
+      map['workout_id'] = Variable<String>(workoutId.value);
+    }
+    if (exercisesJson.present) {
+      map['exercises_json'] = Variable<String>(exercisesJson.value);
+    }
+    if (statsDurationSecs.present) {
+      map['stats_duration_secs'] = Variable<int>(statsDurationSecs.value);
+    }
+    if (statsTotalSets.present) {
+      map['stats_total_sets'] = Variable<int>(statsTotalSets.value);
+    }
+    if (statsTotalReps.present) {
+      map['stats_total_reps'] = Variable<int>(statsTotalReps.value);
+    }
+    if (statsTotalVolume.present) {
+      map['stats_total_volume'] = Variable<double>(statsTotalVolume.value);
+    }
+    if (statsAvgRpe.present) {
+      map['stats_avg_rpe'] = Variable<int>(statsAvgRpe.value);
+    }
+    if (statsExercisesCompleted.present) {
+      map['stats_exercises_completed'] =
+          Variable<int>(statsExercisesCompleted.value);
+    }
+    if (statsMuscleGroupWorkJson.present) {
+      map['stats_muscle_group_work_json'] =
+          Variable<String>(statsMuscleGroupWorkJson.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StrengthSessionsCompanion(')
+          ..write('id: $id, ')
+          ..write('startTimeMs: $startTimeMs, ')
+          ..write('endTimeMs: $endTimeMs, ')
+          ..write('workoutId: $workoutId, ')
+          ..write('exercisesJson: $exercisesJson, ')
+          ..write('statsDurationSecs: $statsDurationSecs, ')
+          ..write('statsTotalSets: $statsTotalSets, ')
+          ..write('statsTotalReps: $statsTotalReps, ')
+          ..write('statsTotalVolume: $statsTotalVolume, ')
+          ..write('statsAvgRpe: $statsAvgRpe, ')
+          ..write('statsExercisesCompleted: $statsExercisesCompleted, ')
+          ..write('statsMuscleGroupWorkJson: $statsMuscleGroupWorkJson, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StrengthPersonalRecordsTable extends StrengthPersonalRecords
+    with TableInfo<$StrengthPersonalRecordsTable, StrengthPREntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StrengthPersonalRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _exerciseIdMeta =
+      const VerificationMeta('exerciseId');
+  @override
+  late final GeneratedColumn<String> exerciseId = GeneratedColumn<String>(
+      'exercise_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _weightKgMeta =
+      const VerificationMeta('weightKg');
+  @override
+  late final GeneratedColumn<double> weightKg = GeneratedColumn<double>(
+      'weight_kg', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
+  static const VerificationMeta _repsMeta = const VerificationMeta('reps');
+  @override
+  late final GeneratedColumn<int> reps = GeneratedColumn<int>(
+      'reps', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _achievedAtMeta =
+      const VerificationMeta('achievedAt');
+  @override
+  late final GeneratedColumn<DateTime> achievedAt = GeneratedColumn<DateTime>(
+      'achieved_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _sessionIdMeta =
+      const VerificationMeta('sessionId');
+  @override
+  late final GeneratedColumn<String> sessionId = GeneratedColumn<String>(
+      'session_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _previousWeightKgMeta =
+      const VerificationMeta('previousWeightKg');
+  @override
+  late final GeneratedColumn<double> previousWeightKg = GeneratedColumn<double>(
+      'previous_weight_kg', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, exerciseId, weightKg, reps, achievedAt, sessionId, previousWeightKg];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'strength_personal_records';
+  @override
+  VerificationContext validateIntegrity(Insertable<StrengthPREntity> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('exercise_id')) {
+      context.handle(
+          _exerciseIdMeta,
+          exerciseId.isAcceptableOrUnknown(
+              data['exercise_id']!, _exerciseIdMeta));
+    } else if (isInserting) {
+      context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('weight_kg')) {
+      context.handle(_weightKgMeta,
+          weightKg.isAcceptableOrUnknown(data['weight_kg']!, _weightKgMeta));
+    } else if (isInserting) {
+      context.missing(_weightKgMeta);
+    }
+    if (data.containsKey('reps')) {
+      context.handle(
+          _repsMeta, reps.isAcceptableOrUnknown(data['reps']!, _repsMeta));
+    } else if (isInserting) {
+      context.missing(_repsMeta);
+    }
+    if (data.containsKey('achieved_at')) {
+      context.handle(
+          _achievedAtMeta,
+          achievedAt.isAcceptableOrUnknown(
+              data['achieved_at']!, _achievedAtMeta));
+    } else if (isInserting) {
+      context.missing(_achievedAtMeta);
+    }
+    if (data.containsKey('session_id')) {
+      context.handle(_sessionIdMeta,
+          sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta));
+    }
+    if (data.containsKey('previous_weight_kg')) {
+      context.handle(
+          _previousWeightKgMeta,
+          previousWeightKg.isAcceptableOrUnknown(
+              data['previous_weight_kg']!, _previousWeightKgMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StrengthPREntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StrengthPREntity(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      exerciseId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}exercise_id'])!,
+      weightKg: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}weight_kg'])!,
+      reps: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}reps'])!,
+      achievedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}achieved_at'])!,
+      sessionId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}session_id']),
+      previousWeightKg: attachedDatabase.typeMapping.read(
+          DriftSqlType.double, data['${effectivePrefix}previous_weight_kg']),
+    );
+  }
+
+  @override
+  $StrengthPersonalRecordsTable createAlias(String alias) {
+    return $StrengthPersonalRecordsTable(attachedDatabase, alias);
+  }
+}
+
+class StrengthPREntity extends DataClass
+    implements Insertable<StrengthPREntity> {
+  /// Auto-increment ID
+  final int id;
+
+  /// Übungs-ID (Link zur StrengthExercise)
+  final String exerciseId;
+
+  /// Gewicht in kg
+  final double weightKg;
+
+  /// Wiederholungen (für Tracking: 1RM, 3RM, 5RM, 10RM)
+  final int reps;
+
+  /// Datum des PR
+  final DateTime achievedAt;
+
+  /// Session-ID (optional, für Verlinkung)
+  final String? sessionId;
+
+  /// Vorheriges PR-Gewicht in kg (optional, für History)
+  final double? previousWeightKg;
+  const StrengthPREntity(
+      {required this.id,
+      required this.exerciseId,
+      required this.weightKg,
+      required this.reps,
+      required this.achievedAt,
+      this.sessionId,
+      this.previousWeightKg});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['exercise_id'] = Variable<String>(exerciseId);
+    map['weight_kg'] = Variable<double>(weightKg);
+    map['reps'] = Variable<int>(reps);
+    map['achieved_at'] = Variable<DateTime>(achievedAt);
+    if (!nullToAbsent || sessionId != null) {
+      map['session_id'] = Variable<String>(sessionId);
+    }
+    if (!nullToAbsent || previousWeightKg != null) {
+      map['previous_weight_kg'] = Variable<double>(previousWeightKg);
+    }
+    return map;
+  }
+
+  StrengthPersonalRecordsCompanion toCompanion(bool nullToAbsent) {
+    return StrengthPersonalRecordsCompanion(
+      id: Value(id),
+      exerciseId: Value(exerciseId),
+      weightKg: Value(weightKg),
+      reps: Value(reps),
+      achievedAt: Value(achievedAt),
+      sessionId: sessionId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sessionId),
+      previousWeightKg: previousWeightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(previousWeightKg),
+    );
+  }
+
+  factory StrengthPREntity.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StrengthPREntity(
+      id: serializer.fromJson<int>(json['id']),
+      exerciseId: serializer.fromJson<String>(json['exerciseId']),
+      weightKg: serializer.fromJson<double>(json['weightKg']),
+      reps: serializer.fromJson<int>(json['reps']),
+      achievedAt: serializer.fromJson<DateTime>(json['achievedAt']),
+      sessionId: serializer.fromJson<String?>(json['sessionId']),
+      previousWeightKg: serializer.fromJson<double?>(json['previousWeightKg']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'exerciseId': serializer.toJson<String>(exerciseId),
+      'weightKg': serializer.toJson<double>(weightKg),
+      'reps': serializer.toJson<int>(reps),
+      'achievedAt': serializer.toJson<DateTime>(achievedAt),
+      'sessionId': serializer.toJson<String?>(sessionId),
+      'previousWeightKg': serializer.toJson<double?>(previousWeightKg),
+    };
+  }
+
+  StrengthPREntity copyWith(
+          {int? id,
+          String? exerciseId,
+          double? weightKg,
+          int? reps,
+          DateTime? achievedAt,
+          Value<String?> sessionId = const Value.absent(),
+          Value<double?> previousWeightKg = const Value.absent()}) =>
+      StrengthPREntity(
+        id: id ?? this.id,
+        exerciseId: exerciseId ?? this.exerciseId,
+        weightKg: weightKg ?? this.weightKg,
+        reps: reps ?? this.reps,
+        achievedAt: achievedAt ?? this.achievedAt,
+        sessionId: sessionId.present ? sessionId.value : this.sessionId,
+        previousWeightKg: previousWeightKg.present
+            ? previousWeightKg.value
+            : this.previousWeightKg,
+      );
+  StrengthPREntity copyWithCompanion(StrengthPersonalRecordsCompanion data) {
+    return StrengthPREntity(
+      id: data.id.present ? data.id.value : this.id,
+      exerciseId:
+          data.exerciseId.present ? data.exerciseId.value : this.exerciseId,
+      weightKg: data.weightKg.present ? data.weightKg.value : this.weightKg,
+      reps: data.reps.present ? data.reps.value : this.reps,
+      achievedAt:
+          data.achievedAt.present ? data.achievedAt.value : this.achievedAt,
+      sessionId: data.sessionId.present ? data.sessionId.value : this.sessionId,
+      previousWeightKg: data.previousWeightKg.present
+          ? data.previousWeightKg.value
+          : this.previousWeightKg,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StrengthPREntity(')
+          ..write('id: $id, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('reps: $reps, ')
+          ..write('achievedAt: $achievedAt, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('previousWeightKg: $previousWeightKg')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, exerciseId, weightKg, reps, achievedAt, sessionId, previousWeightKg);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StrengthPREntity &&
+          other.id == this.id &&
+          other.exerciseId == this.exerciseId &&
+          other.weightKg == this.weightKg &&
+          other.reps == this.reps &&
+          other.achievedAt == this.achievedAt &&
+          other.sessionId == this.sessionId &&
+          other.previousWeightKg == this.previousWeightKg);
+}
+
+class StrengthPersonalRecordsCompanion
+    extends UpdateCompanion<StrengthPREntity> {
+  final Value<int> id;
+  final Value<String> exerciseId;
+  final Value<double> weightKg;
+  final Value<int> reps;
+  final Value<DateTime> achievedAt;
+  final Value<String?> sessionId;
+  final Value<double?> previousWeightKg;
+  const StrengthPersonalRecordsCompanion({
+    this.id = const Value.absent(),
+    this.exerciseId = const Value.absent(),
+    this.weightKg = const Value.absent(),
+    this.reps = const Value.absent(),
+    this.achievedAt = const Value.absent(),
+    this.sessionId = const Value.absent(),
+    this.previousWeightKg = const Value.absent(),
+  });
+  StrengthPersonalRecordsCompanion.insert({
+    this.id = const Value.absent(),
+    required String exerciseId,
+    required double weightKg,
+    required int reps,
+    required DateTime achievedAt,
+    this.sessionId = const Value.absent(),
+    this.previousWeightKg = const Value.absent(),
+  })  : exerciseId = Value(exerciseId),
+        weightKg = Value(weightKg),
+        reps = Value(reps),
+        achievedAt = Value(achievedAt);
+  static Insertable<StrengthPREntity> custom({
+    Expression<int>? id,
+    Expression<String>? exerciseId,
+    Expression<double>? weightKg,
+    Expression<int>? reps,
+    Expression<DateTime>? achievedAt,
+    Expression<String>? sessionId,
+    Expression<double>? previousWeightKg,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (exerciseId != null) 'exercise_id': exerciseId,
+      if (weightKg != null) 'weight_kg': weightKg,
+      if (reps != null) 'reps': reps,
+      if (achievedAt != null) 'achieved_at': achievedAt,
+      if (sessionId != null) 'session_id': sessionId,
+      if (previousWeightKg != null) 'previous_weight_kg': previousWeightKg,
+    });
+  }
+
+  StrengthPersonalRecordsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? exerciseId,
+      Value<double>? weightKg,
+      Value<int>? reps,
+      Value<DateTime>? achievedAt,
+      Value<String?>? sessionId,
+      Value<double?>? previousWeightKg}) {
+    return StrengthPersonalRecordsCompanion(
+      id: id ?? this.id,
+      exerciseId: exerciseId ?? this.exerciseId,
+      weightKg: weightKg ?? this.weightKg,
+      reps: reps ?? this.reps,
+      achievedAt: achievedAt ?? this.achievedAt,
+      sessionId: sessionId ?? this.sessionId,
+      previousWeightKg: previousWeightKg ?? this.previousWeightKg,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (exerciseId.present) {
+      map['exercise_id'] = Variable<String>(exerciseId.value);
+    }
+    if (weightKg.present) {
+      map['weight_kg'] = Variable<double>(weightKg.value);
+    }
+    if (reps.present) {
+      map['reps'] = Variable<int>(reps.value);
+    }
+    if (achievedAt.present) {
+      map['achieved_at'] = Variable<DateTime>(achievedAt.value);
+    }
+    if (sessionId.present) {
+      map['session_id'] = Variable<String>(sessionId.value);
+    }
+    if (previousWeightKg.present) {
+      map['previous_weight_kg'] = Variable<double>(previousWeightKg.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StrengthPersonalRecordsCompanion(')
+          ..write('id: $id, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('reps: $reps, ')
+          ..write('achievedAt: $achievedAt, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('previousWeightKg: $previousWeightKg')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2690,11 +5070,26 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $GpxRoutesTable gpxRoutes = $GpxRoutesTable(this);
   late final $PersonalRecordsTable personalRecords =
       $PersonalRecordsTable(this);
+  late final $StrengthExercisesTable strengthExercises =
+      $StrengthExercisesTable(this);
+  late final $StrengthWorkoutsTable strengthWorkouts =
+      $StrengthWorkoutsTable(this);
+  late final $StrengthSessionsTable strengthSessions =
+      $StrengthSessionsTable(this);
+  late final $StrengthPersonalRecordsTable strengthPersonalRecords =
+      $StrengthPersonalRecordsTable(this);
   late final SessionDao sessionDao = SessionDao(this as AppDatabase);
   late final WorkoutDao workoutDao = WorkoutDao(this as AppDatabase);
   late final GpxRouteDao gpxRouteDao = GpxRouteDao(this as AppDatabase);
   late final PersonalRecordDao personalRecordDao =
       PersonalRecordDao(this as AppDatabase);
+  late final StrengthExerciseDao strengthExerciseDao =
+      StrengthExerciseDao(this as AppDatabase);
+  late final StrengthWorkoutDao strengthWorkoutDao =
+      StrengthWorkoutDao(this as AppDatabase);
+  late final StrengthSessionDao strengthSessionDao =
+      StrengthSessionDao(this as AppDatabase);
+  late final StrengthPRDao strengthPRDao = StrengthPRDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2704,7 +5099,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         dataPoints,
         customWorkouts,
         gpxRoutes,
-        personalRecords
+        personalRecords,
+        strengthExercises,
+        strengthWorkouts,
+        strengthSessions,
+        strengthPersonalRecords
       ];
 }
 
@@ -3764,6 +6163,889 @@ class $$PersonalRecordsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+typedef $$StrengthExercisesTableCreateCompanionBuilder
+    = StrengthExercisesCompanion Function({
+  required String id,
+  required String name,
+  required String description,
+  required String primaryMusclesJson,
+  required String secondaryMusclesJson,
+  required String equipment,
+  required String formCues,
+  Value<String?> videoUrl,
+  required String difficulty,
+  Value<bool> isCompound,
+  Value<int> minimumAge,
+  Value<int?> maximumAge,
+  Value<bool> requiresModification50Plus,
+  Value<String?> modification50PlusNotes,
+  Value<int> rowid,
+});
+typedef $$StrengthExercisesTableUpdateCompanionBuilder
+    = StrengthExercisesCompanion Function({
+  Value<String> id,
+  Value<String> name,
+  Value<String> description,
+  Value<String> primaryMusclesJson,
+  Value<String> secondaryMusclesJson,
+  Value<String> equipment,
+  Value<String> formCues,
+  Value<String?> videoUrl,
+  Value<String> difficulty,
+  Value<bool> isCompound,
+  Value<int> minimumAge,
+  Value<int?> maximumAge,
+  Value<bool> requiresModification50Plus,
+  Value<String?> modification50PlusNotes,
+  Value<int> rowid,
+});
+
+class $$StrengthExercisesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $StrengthExercisesTable,
+    StrengthExerciseEntity,
+    $$StrengthExercisesTableFilterComposer,
+    $$StrengthExercisesTableOrderingComposer,
+    $$StrengthExercisesTableCreateCompanionBuilder,
+    $$StrengthExercisesTableUpdateCompanionBuilder> {
+  $$StrengthExercisesTableTableManager(
+      _$AppDatabase db, $StrengthExercisesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$StrengthExercisesTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$StrengthExercisesTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> description = const Value.absent(),
+            Value<String> primaryMusclesJson = const Value.absent(),
+            Value<String> secondaryMusclesJson = const Value.absent(),
+            Value<String> equipment = const Value.absent(),
+            Value<String> formCues = const Value.absent(),
+            Value<String?> videoUrl = const Value.absent(),
+            Value<String> difficulty = const Value.absent(),
+            Value<bool> isCompound = const Value.absent(),
+            Value<int> minimumAge = const Value.absent(),
+            Value<int?> maximumAge = const Value.absent(),
+            Value<bool> requiresModification50Plus = const Value.absent(),
+            Value<String?> modification50PlusNotes = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              StrengthExercisesCompanion(
+            id: id,
+            name: name,
+            description: description,
+            primaryMusclesJson: primaryMusclesJson,
+            secondaryMusclesJson: secondaryMusclesJson,
+            equipment: equipment,
+            formCues: formCues,
+            videoUrl: videoUrl,
+            difficulty: difficulty,
+            isCompound: isCompound,
+            minimumAge: minimumAge,
+            maximumAge: maximumAge,
+            requiresModification50Plus: requiresModification50Plus,
+            modification50PlusNotes: modification50PlusNotes,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String name,
+            required String description,
+            required String primaryMusclesJson,
+            required String secondaryMusclesJson,
+            required String equipment,
+            required String formCues,
+            Value<String?> videoUrl = const Value.absent(),
+            required String difficulty,
+            Value<bool> isCompound = const Value.absent(),
+            Value<int> minimumAge = const Value.absent(),
+            Value<int?> maximumAge = const Value.absent(),
+            Value<bool> requiresModification50Plus = const Value.absent(),
+            Value<String?> modification50PlusNotes = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              StrengthExercisesCompanion.insert(
+            id: id,
+            name: name,
+            description: description,
+            primaryMusclesJson: primaryMusclesJson,
+            secondaryMusclesJson: secondaryMusclesJson,
+            equipment: equipment,
+            formCues: formCues,
+            videoUrl: videoUrl,
+            difficulty: difficulty,
+            isCompound: isCompound,
+            minimumAge: minimumAge,
+            maximumAge: maximumAge,
+            requiresModification50Plus: requiresModification50Plus,
+            modification50PlusNotes: modification50PlusNotes,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$StrengthExercisesTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $StrengthExercisesTable> {
+  $$StrengthExercisesTableFilterComposer(super.$state);
+  ColumnFilters<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get primaryMusclesJson => $state.composableBuilder(
+      column: $state.table.primaryMusclesJson,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get secondaryMusclesJson => $state.composableBuilder(
+      column: $state.table.secondaryMusclesJson,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get equipment => $state.composableBuilder(
+      column: $state.table.equipment,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get formCues => $state.composableBuilder(
+      column: $state.table.formCues,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get videoUrl => $state.composableBuilder(
+      column: $state.table.videoUrl,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get difficulty => $state.composableBuilder(
+      column: $state.table.difficulty,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get isCompound => $state.composableBuilder(
+      column: $state.table.isCompound,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get minimumAge => $state.composableBuilder(
+      column: $state.table.minimumAge,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get maximumAge => $state.composableBuilder(
+      column: $state.table.maximumAge,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get requiresModification50Plus =>
+      $state.composableBuilder(
+          column: $state.table.requiresModification50Plus,
+          builder: (column, joinBuilders) =>
+              ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get modification50PlusNotes => $state.composableBuilder(
+      column: $state.table.modification50PlusNotes,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$StrengthExercisesTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $StrengthExercisesTable> {
+  $$StrengthExercisesTableOrderingComposer(super.$state);
+  ColumnOrderings<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get primaryMusclesJson => $state.composableBuilder(
+      column: $state.table.primaryMusclesJson,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get secondaryMusclesJson => $state.composableBuilder(
+      column: $state.table.secondaryMusclesJson,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get equipment => $state.composableBuilder(
+      column: $state.table.equipment,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get formCues => $state.composableBuilder(
+      column: $state.table.formCues,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get videoUrl => $state.composableBuilder(
+      column: $state.table.videoUrl,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get difficulty => $state.composableBuilder(
+      column: $state.table.difficulty,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get isCompound => $state.composableBuilder(
+      column: $state.table.isCompound,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get minimumAge => $state.composableBuilder(
+      column: $state.table.minimumAge,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get maximumAge => $state.composableBuilder(
+      column: $state.table.maximumAge,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get requiresModification50Plus =>
+      $state.composableBuilder(
+          column: $state.table.requiresModification50Plus,
+          builder: (column, joinBuilders) =>
+              ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get modification50PlusNotes =>
+      $state.composableBuilder(
+          column: $state.table.modification50PlusNotes,
+          builder: (column, joinBuilders) =>
+              ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$StrengthWorkoutsTableCreateCompanionBuilder
+    = StrengthWorkoutsCompanion Function({
+  required String id,
+  required String name,
+  required String description,
+  required String intervalsJson,
+  required String workoutType,
+  required int estimatedDurationMinutes,
+  required String difficulty,
+  Value<bool> isCustom,
+  required DateTime createdAt,
+  Value<int> rowid,
+});
+typedef $$StrengthWorkoutsTableUpdateCompanionBuilder
+    = StrengthWorkoutsCompanion Function({
+  Value<String> id,
+  Value<String> name,
+  Value<String> description,
+  Value<String> intervalsJson,
+  Value<String> workoutType,
+  Value<int> estimatedDurationMinutes,
+  Value<String> difficulty,
+  Value<bool> isCustom,
+  Value<DateTime> createdAt,
+  Value<int> rowid,
+});
+
+class $$StrengthWorkoutsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $StrengthWorkoutsTable,
+    StrengthWorkoutEntity,
+    $$StrengthWorkoutsTableFilterComposer,
+    $$StrengthWorkoutsTableOrderingComposer,
+    $$StrengthWorkoutsTableCreateCompanionBuilder,
+    $$StrengthWorkoutsTableUpdateCompanionBuilder> {
+  $$StrengthWorkoutsTableTableManager(
+      _$AppDatabase db, $StrengthWorkoutsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$StrengthWorkoutsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$StrengthWorkoutsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> description = const Value.absent(),
+            Value<String> intervalsJson = const Value.absent(),
+            Value<String> workoutType = const Value.absent(),
+            Value<int> estimatedDurationMinutes = const Value.absent(),
+            Value<String> difficulty = const Value.absent(),
+            Value<bool> isCustom = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              StrengthWorkoutsCompanion(
+            id: id,
+            name: name,
+            description: description,
+            intervalsJson: intervalsJson,
+            workoutType: workoutType,
+            estimatedDurationMinutes: estimatedDurationMinutes,
+            difficulty: difficulty,
+            isCustom: isCustom,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String name,
+            required String description,
+            required String intervalsJson,
+            required String workoutType,
+            required int estimatedDurationMinutes,
+            required String difficulty,
+            Value<bool> isCustom = const Value.absent(),
+            required DateTime createdAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              StrengthWorkoutsCompanion.insert(
+            id: id,
+            name: name,
+            description: description,
+            intervalsJson: intervalsJson,
+            workoutType: workoutType,
+            estimatedDurationMinutes: estimatedDurationMinutes,
+            difficulty: difficulty,
+            isCustom: isCustom,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$StrengthWorkoutsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $StrengthWorkoutsTable> {
+  $$StrengthWorkoutsTableFilterComposer(super.$state);
+  ColumnFilters<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get intervalsJson => $state.composableBuilder(
+      column: $state.table.intervalsJson,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get workoutType => $state.composableBuilder(
+      column: $state.table.workoutType,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get estimatedDurationMinutes => $state.composableBuilder(
+      column: $state.table.estimatedDurationMinutes,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get difficulty => $state.composableBuilder(
+      column: $state.table.difficulty,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get isCustom => $state.composableBuilder(
+      column: $state.table.isCustom,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$StrengthWorkoutsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $StrengthWorkoutsTable> {
+  $$StrengthWorkoutsTableOrderingComposer(super.$state);
+  ColumnOrderings<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get intervalsJson => $state.composableBuilder(
+      column: $state.table.intervalsJson,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get workoutType => $state.composableBuilder(
+      column: $state.table.workoutType,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get estimatedDurationMinutes => $state.composableBuilder(
+      column: $state.table.estimatedDurationMinutes,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get difficulty => $state.composableBuilder(
+      column: $state.table.difficulty,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get isCustom => $state.composableBuilder(
+      column: $state.table.isCustom,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$StrengthSessionsTableCreateCompanionBuilder
+    = StrengthSessionsCompanion Function({
+  required String id,
+  required int startTimeMs,
+  Value<int?> endTimeMs,
+  Value<String?> workoutId,
+  required String exercisesJson,
+  Value<int> statsDurationSecs,
+  Value<int> statsTotalSets,
+  Value<int> statsTotalReps,
+  Value<double> statsTotalVolume,
+  Value<int?> statsAvgRpe,
+  Value<int> statsExercisesCompleted,
+  Value<String> statsMuscleGroupWorkJson,
+  Value<String?> notes,
+  Value<int> rowid,
+});
+typedef $$StrengthSessionsTableUpdateCompanionBuilder
+    = StrengthSessionsCompanion Function({
+  Value<String> id,
+  Value<int> startTimeMs,
+  Value<int?> endTimeMs,
+  Value<String?> workoutId,
+  Value<String> exercisesJson,
+  Value<int> statsDurationSecs,
+  Value<int> statsTotalSets,
+  Value<int> statsTotalReps,
+  Value<double> statsTotalVolume,
+  Value<int?> statsAvgRpe,
+  Value<int> statsExercisesCompleted,
+  Value<String> statsMuscleGroupWorkJson,
+  Value<String?> notes,
+  Value<int> rowid,
+});
+
+class $$StrengthSessionsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $StrengthSessionsTable,
+    StrengthSessionEntity,
+    $$StrengthSessionsTableFilterComposer,
+    $$StrengthSessionsTableOrderingComposer,
+    $$StrengthSessionsTableCreateCompanionBuilder,
+    $$StrengthSessionsTableUpdateCompanionBuilder> {
+  $$StrengthSessionsTableTableManager(
+      _$AppDatabase db, $StrengthSessionsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$StrengthSessionsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$StrengthSessionsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<int> startTimeMs = const Value.absent(),
+            Value<int?> endTimeMs = const Value.absent(),
+            Value<String?> workoutId = const Value.absent(),
+            Value<String> exercisesJson = const Value.absent(),
+            Value<int> statsDurationSecs = const Value.absent(),
+            Value<int> statsTotalSets = const Value.absent(),
+            Value<int> statsTotalReps = const Value.absent(),
+            Value<double> statsTotalVolume = const Value.absent(),
+            Value<int?> statsAvgRpe = const Value.absent(),
+            Value<int> statsExercisesCompleted = const Value.absent(),
+            Value<String> statsMuscleGroupWorkJson = const Value.absent(),
+            Value<String?> notes = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              StrengthSessionsCompanion(
+            id: id,
+            startTimeMs: startTimeMs,
+            endTimeMs: endTimeMs,
+            workoutId: workoutId,
+            exercisesJson: exercisesJson,
+            statsDurationSecs: statsDurationSecs,
+            statsTotalSets: statsTotalSets,
+            statsTotalReps: statsTotalReps,
+            statsTotalVolume: statsTotalVolume,
+            statsAvgRpe: statsAvgRpe,
+            statsExercisesCompleted: statsExercisesCompleted,
+            statsMuscleGroupWorkJson: statsMuscleGroupWorkJson,
+            notes: notes,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required int startTimeMs,
+            Value<int?> endTimeMs = const Value.absent(),
+            Value<String?> workoutId = const Value.absent(),
+            required String exercisesJson,
+            Value<int> statsDurationSecs = const Value.absent(),
+            Value<int> statsTotalSets = const Value.absent(),
+            Value<int> statsTotalReps = const Value.absent(),
+            Value<double> statsTotalVolume = const Value.absent(),
+            Value<int?> statsAvgRpe = const Value.absent(),
+            Value<int> statsExercisesCompleted = const Value.absent(),
+            Value<String> statsMuscleGroupWorkJson = const Value.absent(),
+            Value<String?> notes = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              StrengthSessionsCompanion.insert(
+            id: id,
+            startTimeMs: startTimeMs,
+            endTimeMs: endTimeMs,
+            workoutId: workoutId,
+            exercisesJson: exercisesJson,
+            statsDurationSecs: statsDurationSecs,
+            statsTotalSets: statsTotalSets,
+            statsTotalReps: statsTotalReps,
+            statsTotalVolume: statsTotalVolume,
+            statsAvgRpe: statsAvgRpe,
+            statsExercisesCompleted: statsExercisesCompleted,
+            statsMuscleGroupWorkJson: statsMuscleGroupWorkJson,
+            notes: notes,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$StrengthSessionsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $StrengthSessionsTable> {
+  $$StrengthSessionsTableFilterComposer(super.$state);
+  ColumnFilters<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get startTimeMs => $state.composableBuilder(
+      column: $state.table.startTimeMs,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get endTimeMs => $state.composableBuilder(
+      column: $state.table.endTimeMs,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get workoutId => $state.composableBuilder(
+      column: $state.table.workoutId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get exercisesJson => $state.composableBuilder(
+      column: $state.table.exercisesJson,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsDurationSecs => $state.composableBuilder(
+      column: $state.table.statsDurationSecs,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsTotalSets => $state.composableBuilder(
+      column: $state.table.statsTotalSets,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsTotalReps => $state.composableBuilder(
+      column: $state.table.statsTotalReps,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get statsTotalVolume => $state.composableBuilder(
+      column: $state.table.statsTotalVolume,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsAvgRpe => $state.composableBuilder(
+      column: $state.table.statsAvgRpe,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get statsExercisesCompleted => $state.composableBuilder(
+      column: $state.table.statsExercisesCompleted,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get statsMuscleGroupWorkJson =>
+      $state.composableBuilder(
+          column: $state.table.statsMuscleGroupWorkJson,
+          builder: (column, joinBuilders) =>
+              ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get notes => $state.composableBuilder(
+      column: $state.table.notes,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$StrengthSessionsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $StrengthSessionsTable> {
+  $$StrengthSessionsTableOrderingComposer(super.$state);
+  ColumnOrderings<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get startTimeMs => $state.composableBuilder(
+      column: $state.table.startTimeMs,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get endTimeMs => $state.composableBuilder(
+      column: $state.table.endTimeMs,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get workoutId => $state.composableBuilder(
+      column: $state.table.workoutId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get exercisesJson => $state.composableBuilder(
+      column: $state.table.exercisesJson,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsDurationSecs => $state.composableBuilder(
+      column: $state.table.statsDurationSecs,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsTotalSets => $state.composableBuilder(
+      column: $state.table.statsTotalSets,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsTotalReps => $state.composableBuilder(
+      column: $state.table.statsTotalReps,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get statsTotalVolume => $state.composableBuilder(
+      column: $state.table.statsTotalVolume,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsAvgRpe => $state.composableBuilder(
+      column: $state.table.statsAvgRpe,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get statsExercisesCompleted => $state.composableBuilder(
+      column: $state.table.statsExercisesCompleted,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get statsMuscleGroupWorkJson =>
+      $state.composableBuilder(
+          column: $state.table.statsMuscleGroupWorkJson,
+          builder: (column, joinBuilders) =>
+              ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get notes => $state.composableBuilder(
+      column: $state.table.notes,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$StrengthPersonalRecordsTableCreateCompanionBuilder
+    = StrengthPersonalRecordsCompanion Function({
+  Value<int> id,
+  required String exerciseId,
+  required double weightKg,
+  required int reps,
+  required DateTime achievedAt,
+  Value<String?> sessionId,
+  Value<double?> previousWeightKg,
+});
+typedef $$StrengthPersonalRecordsTableUpdateCompanionBuilder
+    = StrengthPersonalRecordsCompanion Function({
+  Value<int> id,
+  Value<String> exerciseId,
+  Value<double> weightKg,
+  Value<int> reps,
+  Value<DateTime> achievedAt,
+  Value<String?> sessionId,
+  Value<double?> previousWeightKg,
+});
+
+class $$StrengthPersonalRecordsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $StrengthPersonalRecordsTable,
+    StrengthPREntity,
+    $$StrengthPersonalRecordsTableFilterComposer,
+    $$StrengthPersonalRecordsTableOrderingComposer,
+    $$StrengthPersonalRecordsTableCreateCompanionBuilder,
+    $$StrengthPersonalRecordsTableUpdateCompanionBuilder> {
+  $$StrengthPersonalRecordsTableTableManager(
+      _$AppDatabase db, $StrengthPersonalRecordsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$StrengthPersonalRecordsTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$StrengthPersonalRecordsTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> exerciseId = const Value.absent(),
+            Value<double> weightKg = const Value.absent(),
+            Value<int> reps = const Value.absent(),
+            Value<DateTime> achievedAt = const Value.absent(),
+            Value<String?> sessionId = const Value.absent(),
+            Value<double?> previousWeightKg = const Value.absent(),
+          }) =>
+              StrengthPersonalRecordsCompanion(
+            id: id,
+            exerciseId: exerciseId,
+            weightKg: weightKg,
+            reps: reps,
+            achievedAt: achievedAt,
+            sessionId: sessionId,
+            previousWeightKg: previousWeightKg,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String exerciseId,
+            required double weightKg,
+            required int reps,
+            required DateTime achievedAt,
+            Value<String?> sessionId = const Value.absent(),
+            Value<double?> previousWeightKg = const Value.absent(),
+          }) =>
+              StrengthPersonalRecordsCompanion.insert(
+            id: id,
+            exerciseId: exerciseId,
+            weightKg: weightKg,
+            reps: reps,
+            achievedAt: achievedAt,
+            sessionId: sessionId,
+            previousWeightKg: previousWeightKg,
+          ),
+        ));
+}
+
+class $$StrengthPersonalRecordsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $StrengthPersonalRecordsTable> {
+  $$StrengthPersonalRecordsTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get exerciseId => $state.composableBuilder(
+      column: $state.table.exerciseId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get weightKg => $state.composableBuilder(
+      column: $state.table.weightKg,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get reps => $state.composableBuilder(
+      column: $state.table.reps,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get achievedAt => $state.composableBuilder(
+      column: $state.table.achievedAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get sessionId => $state.composableBuilder(
+      column: $state.table.sessionId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get previousWeightKg => $state.composableBuilder(
+      column: $state.table.previousWeightKg,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$StrengthPersonalRecordsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $StrengthPersonalRecordsTable> {
+  $$StrengthPersonalRecordsTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get exerciseId => $state.composableBuilder(
+      column: $state.table.exerciseId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get weightKg => $state.composableBuilder(
+      column: $state.table.weightKg,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get reps => $state.composableBuilder(
+      column: $state.table.reps,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get achievedAt => $state.composableBuilder(
+      column: $state.table.achievedAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get sessionId => $state.composableBuilder(
+      column: $state.table.sessionId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get previousWeightKg => $state.composableBuilder(
+      column: $state.table.previousWeightKg,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
@@ -3777,4 +7059,13 @@ class $AppDatabaseManager {
       $$GpxRoutesTableTableManager(_db, _db.gpxRoutes);
   $$PersonalRecordsTableTableManager get personalRecords =>
       $$PersonalRecordsTableTableManager(_db, _db.personalRecords);
+  $$StrengthExercisesTableTableManager get strengthExercises =>
+      $$StrengthExercisesTableTableManager(_db, _db.strengthExercises);
+  $$StrengthWorkoutsTableTableManager get strengthWorkouts =>
+      $$StrengthWorkoutsTableTableManager(_db, _db.strengthWorkouts);
+  $$StrengthSessionsTableTableManager get strengthSessions =>
+      $$StrengthSessionsTableTableManager(_db, _db.strengthSessions);
+  $$StrengthPersonalRecordsTableTableManager get strengthPersonalRecords =>
+      $$StrengthPersonalRecordsTableTableManager(
+          _db, _db.strengthPersonalRecords);
 }

@@ -12,9 +12,149 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - Apple Watch Companion App
 - Zwift-ähnliche virtuelle Welten
 - ANT+ Unterstützung
-- Krafttraining-Integration (Phase 2)
 - Mobility/Stretching-Module
 - Aktivitäts-Tracking
+- Video-Bibliothek für Übungsanleitung
+
+---
+
+## [1.0.0] - 2026-02-01
+
+### Added - Krafttraining System (Major Feature)
+
+**Kern-Features:**
+- **19+ Übungs-Bibliothek** - Evidenzbasierte Übungen für 40-70 Jahre
+  - Compound Movements (Squat, Push, Pull, Hinge, Core)
+  - Isolations-Übungen (Curls, Raises, Extensions)
+  - Altersgerechte Modifikationen für 50+
+  - Detaillierte Form Cues für jede Übung
+
+- **Custom Workout Builder** - Erstelle deine eigenen Programme
+  - LoadTarget Pattern (Absolutes Gewicht, % 1RM, RPE, Bodyweight)
+  - Flexible Sätze & Wiederholungen (einzeln oder Bereich)
+  - Tempo und Anleitung pro Übung
+  - Ruhepausen-Vorkonfiguration
+
+- **Session Player** - Trainings-Ausführung mit Smart Features
+  - State Machine: Intro → Active → Rest → Complete
+  - Rest Timer mit Countdown & Audio Cues
+  - RPE Selector & Gewicht-Tracking
+  - Quick Rep Buttons (8, 10, 12, 15)
+  - Haptic Feedback Integration
+
+- **Progress Tracking** - Visualisiere deine Entwicklung
+  - 1RM Schätzung (Epley Formula)
+  - PR Tracking (1RM, 3RM, 5RM, 10RM)
+  - Gewichts-Progress Charts
+  - Session Detail mit Set-by-Set Breakdown
+  - Volume & RPE Durchschnitte
+
+- **Progression System** - Intelligente Steigerung
+  - Linear Progression (+2,5kg bei Erfolg)
+  - Deload Detection (2+ fehlgeschlagene Sessions)
+  - Weekly Volume Calculation
+  - Personalisierte Empfehlungen basierend auf Verlauf
+
+**Health Integration:**
+- **Multi-Activity Health Programs** - Kombination Radfahren + Kraft
+  - generateWeeklyProgram50Plus(): 7-Tage Plan optimiert für 50+
+  - generateWeeklyProgramAdults(): Intensiveres Programm für 30-49
+  - Altersgerechte Sicherheitsgrenzen
+  - Evidence-based Frequency & Volume
+
+- **Health Training Tab Refactor**
+  - TabBar Navigation: Radfahren | Krafttraining
+  - Fitness Scoring für beide Aktivitäten
+  - Integrierte Wochenpläne-Ansicht
+
+**Technical Enhancements:**
+- **Database Schema v1→v2** - Migration für Kraft-Tabellen
+  - StrengthExercises (19 seed exercises)
+  - StrengthWorkouts (custom + vordefiniert)
+  - StrengthSessions (two-tier: records + stats)
+  - StrengthPersonalRecords (PR history)
+
+- **4 neue DAOs** für vollständige CRUD-Operationen
+  - StrengthExerciseDao (search, filter by muscle/equipment)
+  - StrengthWorkoutDao (CRUD, watch patterns)
+  - StrengthSessionDao (date range queries)
+  - StrengthPRDao (history, current records)
+
+- **3 neue Services**
+  - StrengthRecordService: PR-Erkennung, 1RM-Berechnung
+  - StrengthProgressionService: Progression-Logik, Deload-Erkennung
+  - StrengthProgramGenerator: Altersbasierte Programme
+
+**UI/UX:**
+- **Exercise Library Page** - Browse & Filter 19+ Übungen
+  - Real-time Search
+  - Multi-Select Filters (Muskelgruppe, Equipment, Schwierigkeit)
+  - Sortierung (Name, Difficulty)
+  - Detail Modal mit Form Cues & Modifikationen
+
+- **Strength Workout Builder** - Workout-Erstellung
+  - Drag-to-reorder Exercises
+  - Interval Configuration Pro Übung
+  - Tempo & Instructions Support
+  - Save/Load Funktionalität
+
+- **Strength Session Player** - 800+ Lines Komplexität
+  - Professional State Management
+  - Form Cues Display per Exercise
+  - Rest Timer mit farblicher Anzeige (Green→Yellow→Red)
+  - Session Summary & Stats
+
+- **Progress Dashboard**
+  - 3-Column Stats Cards (Sessions/Volume/PRs)
+  - Exercise Selector mit Description
+  - Date Range Chips (1w/1m/3m/6m/1y)
+  - PR Display Table (1RM, 3RM, 5RM, 10RM)
+
+**Testing:**
+- **153 Tests - >75% Coverage**
+  - 30 Entity Tests (Freezed serialization)
+  - 80+ Service Tests (Record detection, progression logic)
+  - 40 Seed Data Tests (Exercise library validation)
+  - 13 Widget Tests (ExerciseCard rendering & interaction)
+
+- **Key Test Categories**
+  - LoadTarget Pattern Tests (4 factory methods)
+  - Epley Formula Validation
+  - Linear Progression Algorithm
+  - Multi-Muscle Exercise Handling
+  - Age-Specific Modifications
+
+**Documentation:**
+- **STRENGTH_TRAINING_GUIDE.md** - Umfassender Benutzer-Guide
+  - Getting Started Anleitung
+  - Load Types Erklärung
+  - 50+ Best Practices
+  - PR & 1RM Erläuterung
+  - Sicherheitsrichtlinien
+  - Fortgeschrittene Konzepte (Periodization, Deload)
+
+- **README Update** - Kraft Features hinzugefügt
+- **Dartdoc Comments** - Public API dokumentiert
+
+### Changed
+- Health Training Architecture - Tab-basierte Navigation statt neuer Screen
+- HealthActivityType Enum erweitert (cycling, strength, mobility, walking)
+- HealthTrainingProgram Entity - Optional strengthWorkoutId Field
+
+### Compatibility
+- Database Migration: v1 → v2 (automatic)
+- All existing cycling features maintain backward compatibility
+- New multi-activity programs available for all users
+
+### Security
+- Age-based safety bounds (minimumAge, requiresModification50Plus)
+- Form Cue validation pre-load
+- Session data integrity checks
+
+### Performance
+- Lazy Loading für Exercise Library (on-demand filtering)
+- Efficient Stream-based Progress Updates
+- Optimized Chart Rendering (fl_chart ready)
 
 ---
 

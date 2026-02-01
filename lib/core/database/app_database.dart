@@ -10,10 +10,18 @@ import 'tables/data_point_table.dart';
 import 'tables/custom_workout_table.dart';
 import 'tables/gpx_route_table.dart';
 import 'tables/personal_record_table.dart';
+import 'tables/strength_exercise_table.dart';
+import 'tables/strength_workout_table.dart';
+import 'tables/strength_session_table.dart';
+import 'tables/strength_pr_table.dart';
 import 'daos/session_dao.dart';
 import 'daos/workout_dao.dart';
 import 'daos/gpx_route_dao.dart';
 import 'daos/personal_record_dao.dart';
+import 'daos/strength_exercise_dao.dart';
+import 'daos/strength_workout_dao.dart';
+import 'daos/strength_session_dao.dart';
+import 'daos/strength_pr_dao.dart';
 
 part 'app_database.g.dart';
 
@@ -24,12 +32,20 @@ part 'app_database.g.dart';
     CustomWorkouts,
     GpxRoutes,
     PersonalRecords,
+    StrengthExercises,
+    StrengthWorkouts,
+    StrengthSessions,
+    StrengthPersonalRecords,
   ],
   daos: [
     SessionDao,
     WorkoutDao,
     GpxRouteDao,
     PersonalRecordDao,
+    StrengthExerciseDao,
+    StrengthWorkoutDao,
+    StrengthSessionDao,
+    StrengthPRDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -47,9 +63,17 @@ class AppDatabase extends _$AppDatabase {
   GpxRouteDao get gpxRouteDao => GpxRouteDao(this);
   @override
   PersonalRecordDao get personalRecordDao => PersonalRecordDao(this);
+  @override
+  StrengthExerciseDao get strengthExerciseDao => StrengthExerciseDao(this);
+  @override
+  StrengthWorkoutDao get strengthWorkoutDao => StrengthWorkoutDao(this);
+  @override
+  StrengthSessionDao get strengthSessionDao => StrengthSessionDao(this);
+  @override
+  StrengthPRDao get strengthPRDao => StrengthPRDao(this);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration {
@@ -58,7 +82,13 @@ class AppDatabase extends _$AppDatabase {
         await m.createAll();
       },
       onUpgrade: (Migrator m, int from, int to) async {
-        // Zukünftige Migrationen hier
+        // v1 → v2: Add strength training tables
+        if (from == 1 && to == 2) {
+          await m.create(strengthExercises);
+          await m.create(strengthWorkouts);
+          await m.create(strengthSessions);
+          await m.create(strengthPersonalRecords);
+        }
       },
     );
   }
