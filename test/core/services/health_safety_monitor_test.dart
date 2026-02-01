@@ -234,11 +234,6 @@ void main() {
           recentTime,
         );
 
-        final warningWarning = HealthTrainingSafetyMonitor.shouldPlayAudioWarning(
-          HrWarningLevel.warning,
-          recentTime,
-        );
-
         // Info should still be blocked, warning might be allowed
         expect(infoWarning, false);
       });

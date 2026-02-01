@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/services/health_training_personalization_service.dart';
 import '../../../../core/services/health_training_program_generator.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../providers/providers.dart';

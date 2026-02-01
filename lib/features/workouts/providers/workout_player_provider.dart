@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/audio/audio_cue_service.dart';
+import '../../../core/services/health_safety_monitor.dart';
 import '../../../domain/entities/workout.dart';
 import '../../../domain/entities/training_session.dart';
 import '../../../providers/providers.dart';
@@ -24,6 +25,8 @@ class WorkoutPlayerData {
   final Duration totalElapsed;
   final int currentTargetPower;
   final int? countdownSeconds; // Countdown vor Intervallwechsel (3, 2, 1)
+  final HrMonitoringStatus? hrStatus; // HR Safety Monitoring Status (für Health Training)
+  final bool hrAutoPaused; // Ob Training wegen HR-Limit pausiert wurde
 
   const WorkoutPlayerData({
     this.state = WorkoutPlayerState.idle,
@@ -33,6 +36,8 @@ class WorkoutPlayerData {
     this.totalElapsed = Duration.zero,
     this.currentTargetPower = 0,
     this.countdownSeconds,
+    this.hrStatus,
+    this.hrAutoPaused = false,
   });
 
   WorkoutInterval? get currentInterval {
@@ -71,6 +76,8 @@ class WorkoutPlayerData {
     int? currentTargetPower,
     int? countdownSeconds,
     bool clearCountdown = false,
+    HrMonitoringStatus? hrStatus,
+    bool? hrAutoPaused,
   }) {
     return WorkoutPlayerData(
       state: state ?? this.state,
@@ -80,6 +87,8 @@ class WorkoutPlayerData {
       totalElapsed: totalElapsed ?? this.totalElapsed,
       currentTargetPower: currentTargetPower ?? this.currentTargetPower,
       countdownSeconds: clearCountdown ? null : (countdownSeconds ?? this.countdownSeconds),
+      hrStatus: hrStatus ?? this.hrStatus,
+      hrAutoPaused: hrAutoPaused ?? this.hrAutoPaused,
     );
   }
 }
@@ -111,6 +120,11 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
   int _consecutiveHighPowerTicks = 0;
   static const int _warningCooldownSeconds = 10;
   static const int _ticksBeforeWarning = 30; // 3 Sekunden bei 100ms Intervallen
+
+  // HR safety monitoring
+  DateTime? _lastHrInfoWarning;
+  DateTime? _lastHrWarningWarning;
+  int? _peakHrInInterval;
 
   WorkoutPlayerNotifier(this._ref) : super(const WorkoutPlayerData()) {
     // Audio Service initialisieren
@@ -184,6 +198,11 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
     // Reset power deviation tracking
     _consecutiveLowPowerTicks = 0;
     _consecutiveHighPowerTicks = 0;
+
+    // Store peak HR for recovery analysis if available
+    if (_peakHrInInterval != null && state.hrStatus?.currentHr != null) {
+      // HR peak is already stored in _peakHrInInterval for later analysis
+    }
 
     state = state.copyWith(state: WorkoutPlayerState.paused);
   }
@@ -264,6 +283,9 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
     // Check power deviation and alert if needed
     _checkPowerDeviation();
 
+    // Check HR safety (for Health Training programs)
+    _checkHrSafety();
+
     // Check if interval is complete
     if (interval != null && intervalElapsed >= interval.duration) {
       _nextInterval();
@@ -291,6 +313,9 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
 
     _intervalStartTime = DateTime.now();
     _lastCountdownPlayed = null;
+
+    // Reset HR peak for next interval (for recovery tracking)
+    _peakHrInInterval = null;
 
     state = state.copyWith(
       currentIntervalIndex: nextIndex,
@@ -412,6 +437,59 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
 
   bool get _powerDeviationAlertsEnabled => _ref.read(powerDeviationAlertsProvider);
   int get _powerDeviationThreshold => _ref.read(powerDeviationThresholdProvider);
+
+  void _checkHrSafety() {
+    final liveData = _ref.read(liveTrainingDataProvider);
+    final currentHr = liveData.heartRate;
+    final athlete = _ref.read(athleteProfileProvider);
+
+    // Berechne HR Monitoring Status
+    final hrStatus = HealthTrainingSafetyMonitor.calculateHrStatus(
+      currentHr: currentHr,
+      athlete: athlete,
+      lastInfoWarningTime: _lastHrInfoWarning,
+      lastWarningWarningTime: _lastHrWarningWarning,
+    );
+
+    // Update state mit HR Status
+    state = state.copyWith(hrStatus: hrStatus);
+
+    // Tracke Peak HR für Recovery-Analyse später
+    if (currentHr != null && ((_peakHrInInterval ?? 0) < currentHr)) {
+      _peakHrInInterval = currentHr;
+    }
+
+    // Check if we should pause due to critical HR
+    if (hrStatus.shouldAutoPause && !state.hrAutoPaused) {
+      _pauseForHrLimit();
+      return;
+    }
+
+    // Play audio warning wenn nötig
+    if (HealthTrainingSafetyMonitor.shouldPlayAudioWarning(
+      hrStatus.warningLevel,
+      hrStatus.warningLevel == HrWarningLevel.info
+          ? _lastHrInfoWarning
+          : _lastHrWarningWarning,
+    )) {
+      if (hrStatus.warningLevel == HrWarningLevel.info) {
+        _playAudioCue(AudioCueType.hrWarning);
+        _lastHrInfoWarning = DateTime.now();
+      } else if (hrStatus.warningLevel == HrWarningLevel.warning) {
+        _playAudioCue(AudioCueType.hrWarning);
+        _lastHrWarningWarning = DateTime.now();
+      } else if (hrStatus.warningLevel == HrWarningLevel.critical) {
+        _playAudioCue(AudioCueType.hrCritical);
+        _lastHrWarningWarning = DateTime.now();
+      }
+    }
+  }
+
+  void _pauseForHrLimit() {
+    // Automatisch pausieren wenn HR-Limit überschritten
+    pause();
+    state = state.copyWith(hrAutoPaused: true);
+  }
 
   @override
   void dispose() {

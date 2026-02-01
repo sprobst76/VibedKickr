@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kickr_trainer/core/services/health_training_personalization_service.dart';
 import 'package:kickr_trainer/domain/entities/athlete_profile.dart';
-import 'package:kickr_trainer/domain/entities/health_safety_limits.dart';
 
 void main() {
   group('HealthTrainingPersonalizationService', () {

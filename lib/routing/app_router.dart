@@ -30,6 +30,7 @@ class AppRoutes {
   static const trainingLoad = '/training-load';
   static const history = '/history';
   static const healthTraining = '/health-training';
+  static const programDetails = '/health-training/program-details';
   static const settings = '/settings';
   static const bleDiagnostic = '/ble-diagnostic';
 }
@@ -116,6 +117,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.trainingLoad,
         builder: (context, state) => const TrainingLoadPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.programDetails,
+        builder: (context, state) {
+          // TODO: Extract program and profile from route parameters
+          // For now, return placeholder
+          return const Scaffold(
+            body: Center(child: Text('Program Details')),
+          );
+        },
       ),
       GoRoute(
         path: AppRoutes.bleDiagnostic,

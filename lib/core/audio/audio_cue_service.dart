@@ -24,6 +24,12 @@ enum AudioCueType {
 
   /// Hohe Warnung - Power zu hoch
   powerTooHigh,
+
+  /// Mittlere Warnung - HR Warnung (Orange)
+  hrWarning,
+
+  /// Hohe Warnung - HR kritisch (Rot)
+  hrCritical,
 }
 
 /// Audio Service für Training Cues
@@ -74,6 +80,20 @@ class AudioCueService {
         frequency2: 1760,
         durationMs: 150,
         pauseMs: 50,
+      );
+
+      _audioSources[AudioCueType.hrWarning] = _createDoubleToneSource(
+        frequency1: 880, // A5 - mittlere Warnung für HR
+        frequency2: 880,
+        durationMs: 200,
+        pauseMs: 100,
+      );
+
+      _audioSources[AudioCueType.hrCritical] = _createDoubleToneSource(
+        frequency1: 1320, // E6 - hohe Warnung für kritisches HR
+        frequency2: 1320,
+        durationMs: 300,
+        pauseMs: 100,
       );
 
       _isInitialized = true;

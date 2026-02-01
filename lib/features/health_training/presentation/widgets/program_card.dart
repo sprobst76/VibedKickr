@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../domain/entities/athlete_profile.dart';
 import '../../../../domain/entities/workout.dart';
+import '../pages/program_details_page.dart';
 
 class ProgramCard extends StatelessWidget {
   final Workout program;
@@ -177,11 +178,13 @@ class ProgramCard extends StatelessWidget {
   }
 
   void _showProgramDetails(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => ProgramDetailsDialog(
-        program: program,
-        profile: profile,
+    // Navigate to program details page
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ProgramDetailsPage(
+          program: program,
+          profile: profile,
+        ),
       ),
     );
   }
@@ -214,198 +217,6 @@ class _InfoChip extends StatelessWidget {
               fontSize: 11,
               color: AppColors.textSecondary,
               fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ProgramDetailsDialog extends StatelessWidget {
-  final Workout program;
-  final AthleteProfile profile;
-
-  const ProgramDetailsDialog({
-    required this.program,
-    required this.profile,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final duration = program.totalDuration;
-    final phaseCount = program.intervals.length;
-
-    return AlertDialog(
-      title: Text(program.name),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              program.description,
-              style: const TextStyle(
-                fontSize: 13,
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Details',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textMuted,
-              ),
-            ),
-            const SizedBox(height: 8),
-            _DetailRow(
-              label: 'Dauer',
-              value: '${duration.inMinutes} Minuten',
-            ),
-            _DetailRow(
-              label: 'Phasen',
-              value: '$phaseCount',
-            ),
-            _DetailRow(
-              label: 'Wissenschaftliche Basis',
-              value: program.name.contains('Baseline') ? 'Progressive Stufentest' : 'Medizinische Protokolle',
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Intervalle',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textMuted,
-              ),
-            ),
-            const SizedBox(height: 8),
-            for (int i = 0; i < phaseCount && i < 5; i++)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: _IntervalTile(interval: program.intervals[i]),
-              ),
-            if (phaseCount > 5)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  '+ ${phaseCount - 5} weitere Phasen',
-                  style: const TextStyle(
-                    fontSize: 11,
-                    color: AppColors.textMuted,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Schließen'),
-        ),
-        ElevatedButton.icon(
-          onPressed: () {
-            // TODO: Start training
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.play_arrow),
-          label: const Text('Training starten'),
-        ),
-      ],
-    );
-  }
-}
-
-class _DetailRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _DetailRow({
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              color: AppColors.textSecondary,
-            ),
-          ),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _IntervalTile extends StatelessWidget {
-  final WorkoutInterval interval;
-
-  const _IntervalTile({required this.interval});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceLight,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                interval.name,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              Text(
-                '${interval.duration.inMinutes}:${(interval.duration.inSeconds % 60).toString().padLeft(2, '0')}',
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              interval.type.name.toUpperCase(),
-              style: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primary,
-              ),
             ),
           ),
         ],

@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kickr_trainer/core/services/health_program_result_analyzer.dart';
-import 'package:kickr_trainer/core/services/health_safety_monitor.dart';
 import 'package:kickr_trainer/domain/entities/athlete_profile.dart';
 import 'package:kickr_trainer/domain/entities/health_safety_report.dart';
 import 'package:kickr_trainer/domain/entities/training_session.dart';
@@ -302,11 +301,6 @@ void main() {
           overallScore: 92,
           description: 'Test',
           suggestions: [],
-        );
-
-        final recommendation = HealthProgramResultAnalyzer(
-          /* This test is for the recommendation generation logic
-             which should recommend stress test for excellent fitness */
         );
 
         // This would be tested through program generation

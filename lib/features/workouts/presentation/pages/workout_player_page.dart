@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import '../../../../core/services/health_safety_monitor.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/duration_formatter.dart';
 import '../../../../domain/entities/workout.dart';
@@ -10,6 +11,7 @@ import '../../../../providers/providers.dart';
 import '../../providers/workout_player_provider.dart';
 import '../widgets/interval_progress_bar.dart';
 import '../widgets/workout_timeline.dart';
+import '../../../health_training/presentation/widgets/emergency_stop_button.dart';
 
 class WorkoutPlayerPage extends ConsumerStatefulWidget {
   final String? workoutId;
@@ -393,6 +395,34 @@ class _MobileLayout extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
+          // HR Safety Indicator (for Health Training programs)
+          if (playerState.hrStatus != null) ...[
+            _HrSafetyIndicator(
+              hrStatus: playerState.hrStatus,
+              hrAutoPaused: playerState.hrAutoPaused,
+            ),
+            const SizedBox(height: 24),
+          ],
+
+          // Emergency Stop Button (for Health Training programs)
+          if (playerState.hrStatus != null)
+            Center(
+              child: EmergencyStopButton(
+                isActive: playerState.state == WorkoutPlayerState.running,
+                showWarning: playerState.hrStatus?.warningLevel == HrWarningLevel.critical,
+                warningText: playerState.hrStatus?.warningLevel == HrWarningLevel.critical
+                    ? 'HR KRITISCH! Training wurde pausiert.'
+                    : null,
+                onEmergencyStop: () {
+                  // Handle emergency stop - TODO: Implement safety report
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Notfall-Stopp aktiviert')),
+                  );
+                },
+              ),
+            ),
+          const SizedBox(height: 24),
+
           // Workout Timeline
           if (playerState.workout != null)
             WorkoutTimeline(
@@ -462,7 +492,7 @@ class _DesktopLayout extends StatelessWidget {
           ),
           const SizedBox(width: 24),
 
-          // Right: Metrics
+          // Right: Metrics & HR Safety
           SizedBox(
             width: 200,
             child: Column(
@@ -484,7 +514,17 @@ class _DesktopLayout extends StatelessWidget {
                   value: liveData.elapsed.toTimerString(),
                   unit: '',
                 ),
-                const Spacer(),
+                const SizedBox(height: 12),
+                // HR Safety Indicator (for Health Training programs)
+                if (playerState.hrStatus != null)
+                  Expanded(
+                    child: _HrSafetyIndicator(
+                      hrStatus: playerState.hrStatus,
+                      hrAutoPaused: playerState.hrAutoPaused,
+                    ),
+                  )
+                else
+                  const Spacer(),
               ],
             ),
           ),
@@ -831,6 +871,228 @@ class _PlayerControls extends StatelessWidget {
           ],
         ],
       ),
+    );
+  }
+}
+
+/// Widget zur Anzeige von HR Safety Status und Warnstufen
+class _HrSafetyIndicator extends StatelessWidget {
+  final HrMonitoringStatus? hrStatus;
+  final bool hrAutoPaused;
+
+  const _HrSafetyIndicator({
+    required this.hrStatus,
+    required this.hrAutoPaused,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (hrStatus == null) return SizedBox.shrink();
+
+    final maxSafeHr = hrStatus!.maxSafeHr;
+    final currentHr = hrStatus!.currentHr;
+    final percentage = hrStatus!.hrPercent;
+
+    // Color based on warning level
+    final Color indicatorColor = _getColorForWarning(hrStatus!.warningLevel);
+    final String warningText = hrStatus!.warningMessage;
+
+    return Column(
+      children: [
+        // HR Safety Limit Bar
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(12),
+            border: hrAutoPaused
+                ? Border.all(color: AppColors.error, width: 2)
+                : null,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Title
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Sicheres HR-Limit',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                  if (hrAutoPaused)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: AppColors.error.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Text(
+                        'Auto-Pause aktiv',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.error,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 8),
+
+              // Progress Bar with safe limit indicator
+              Stack(
+                children: [
+                  // Background bar
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: percentage / 100,
+                      minHeight: 24,
+                      backgroundColor: AppColors.surfaceLight,
+                      valueColor: AlwaysStoppedAnimation<Color>(indicatorColor),
+                    ),
+                  ),
+                  // HR percentage text
+                  Positioned.fill(
+                    child: Center(
+                      child: Text(
+                        '$currentHr / $maxSafeHr bpm ($percentage%)',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+
+              // Warning message if applicable
+              if (warningText.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: indicatorColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _getIconForWarning(hrStatus!.warningLevel),
+                        size: 14,
+                        color: indicatorColor,
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          warningText,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: indicatorColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              // Legend
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 16,
+                children: [
+                  _HrLegendItem(
+                    color: Colors.green,
+                    label: 'Normal (< 85%)',
+                  ),
+                  _HrLegendItem(
+                    color: Colors.yellow[700]!,
+                    label: 'Info (85-95%)',
+                  ),
+                  _HrLegendItem(
+                    color: Colors.orange,
+                    label: 'Warnung (95-100%)',
+                  ),
+                  _HrLegendItem(
+                    color: AppColors.error,
+                    label: 'Kritisch (>100%)',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Color _getColorForWarning(HrWarningLevel level) {
+    switch (level) {
+      case HrWarningLevel.normal:
+        return Colors.green;
+      case HrWarningLevel.info:
+        return Colors.yellow[700]!;
+      case HrWarningLevel.warning:
+        return Colors.orange;
+      case HrWarningLevel.critical:
+        return AppColors.error;
+    }
+  }
+
+  IconData _getIconForWarning(HrWarningLevel level) {
+    switch (level) {
+      case HrWarningLevel.normal:
+        return Icons.check_circle;
+      case HrWarningLevel.info:
+        return Icons.info;
+      case HrWarningLevel.warning:
+        return Icons.warning;
+      case HrWarningLevel.critical:
+        return Icons.error;
+    }
+  }
+}
+
+/// Legende für HR Warnstufen
+class _HrLegendItem extends StatelessWidget {
+  final Color color;
+  final String label;
+
+  const _HrLegendItem({
+    required this.color,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 10,
+            color: AppColors.textSecondary,
+          ),
+        ),
+      ],
     );
   }
 }

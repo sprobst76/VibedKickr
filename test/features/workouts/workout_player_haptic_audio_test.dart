@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:riverpod/riverpod.dart';
 
 import 'package:kickr_trainer/core/audio/audio_cue_service.dart';
-import 'package:kickr_trainer/domain/entities/workout.dart';
 import 'package:kickr_trainer/features/workouts/providers/workout_player_provider.dart';
 import 'package:kickr_trainer/providers/providers.dart';
 
