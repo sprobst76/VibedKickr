@@ -12,10 +12,57 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - Apple Watch Companion App
 - Zwift-ähnliche virtuelle Welten
 - ANT+ Unterstützung
+- Krafttraining-Integration (Phase 2)
+- Mobility/Stretching-Module
+- Aktivitäts-Tracking
 
 ---
 
-## [0.9.0] - 2026-01-08 (Beta)
+## [0.11.0] - 2026-02-01
+
+### Added
+- **Health Training System** - Wissenschaftlich fundierte Gesundheitsprogramme
+  - 5 Health Training Programme (Baseline Assessment, Cardiac Rehab, Age-Optimized Endurance, Stress Test, Recovery Check)
+  - Personalisierung nach Alter, Geschlecht, Gewicht und FTP
+  - Altersbasierte Sicherheitsgrenzen mit 3-tier HR Warnsystem
+  - Progressive Belastungssteigerung mit Audio/Haptic Cues
+  - Erweiterbare Architektur für Multi-Activity (Kraft, Mobility)
+
+- **HR Safety Monitoring** (Phase 6)
+  - Real-time HR Überwachung während Health Training
+  - 4-stufiges Warnsystem (normal, info, warning, critical)
+  - Auto-Pause bei HR-Limit-Überschreitung
+  - Audio-Warnungen mit Cooldown-Logik
+
+- **Post-Workout Analysis** (Phase 7)
+  - HR Recovery Analyse (1-min, 2-min Drops)
+  - Fitness-Level Schätzung (poor, fair, good, excellent)
+  - Session Comparison mit Trend-Erkennung
+  - Intelligente Next-Program Recommendations
+
+- **Safety System** (Phase 8)
+  - Medizinischer Disclaimer mit Persistierung
+  - Emergency Stop Button mit Bestätigung
+  - Sicherheits-Event Reporting
+  - 5-stufiges Safety Rating System
+
+- **Comprehensive Testing** (Phase 9)
+  - 98 Unit/Integration Tests für Health Training
+  - Validierung mit 4 repräsentativen Profilen (25M, 45F, 60M, 75F)
+  - Age-Factor Progression Testing
+  - Safety Limit Validation
+
+### Technical
+- HealthTrainingPersonalizationService mit Max HR Formeln (Tanaka, Gulati)
+- HealthSafetyMonitor für Real-time HR Überwachung
+- HealthProgramResultAnalyzer für Post-Workout Analyse
+- HealthSafetyReport für Event Tracking
+- HealthDisclaimerManager für Datenschutz
+- Code Quality: 277 analyze issues (all info-level), 0 critical warnings
+
+---
+
+## [0.10.0] - 2026-01-15 (Beta)
 
 ### Added
 - **App Icon** - Neues VibedKickr Icon mit Zahnrad und Power-Blitz Design
