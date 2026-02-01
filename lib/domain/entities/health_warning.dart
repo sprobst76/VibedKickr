@@ -17,6 +17,9 @@ enum HealthWarningType {
   ftpImprovement,        // FTP-Verbesserung erkannt (Info)
   highWeeklyTss,         // 400-499 TSS/Woche (Training Load)
   excessiveWeeklyTss,    // 500+ TSS/Woche (Training Load)
+  ftpTestReminder,       // 4-6 Wochen seit letztem FTP Test (Info)
+  ftpTestOverdue,        // 6-8 Wochen seit letztem FTP Test (Warning)
+  ftpTestCritical,       // 8+ Wochen seit letztem FTP Test (Critical)
 }
 
 /// Gesundheitsmodus-Warnung mit Informationen für den Benutzer

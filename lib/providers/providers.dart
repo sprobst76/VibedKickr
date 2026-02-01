@@ -14,6 +14,7 @@ import '../core/database/daos/personal_record_dao.dart';
 import '../core/services/personal_record_service.dart';
 import '../core/services/training_load_service.dart';
 import '../core/services/training_load_warning_service.dart';
+import '../core/services/ftp_test_reminder_service.dart';
 import '../core/services/health_mode_service.dart';
 import '../data/repositories/session_repository_impl.dart';
 import '../domain/entities/athlete_profile.dart';
@@ -657,7 +658,22 @@ final trainingLoadWarningsProvider =
   return service.generateWarnings(trainingStatus.weeklyTss);
 });
 
-/// Kombinierte Active Warnings (Health Mode + Training Load)
+/// FTP Test Reminder Service
+final ftpTestReminderServiceProvider =
+    Provider<FtpTestReminderService>((ref) {
+  return FtpTestReminderService();
+});
+
+/// Active FTP Test Reminder Warnings (basierend auf ftpTestDate)
+final ftpTestReminderWarningsProvider =
+    Provider<List<HealthWarning>>((ref) {
+  final service = ref.watch(ftpTestReminderServiceProvider);
+  final profile = ref.watch(athleteProfileProvider);
+
+  return service.generateWarnings(profile.ftpTestDate);
+});
+
+/// Kombinierte Active Warnings (Health Mode + Training Load + FTP Reminder)
 final allActiveWarningsProvider =
     Provider<List<HealthWarning>>((ref) {
   final warnings = <HealthWarning>[];
@@ -671,6 +687,10 @@ final allActiveWarningsProvider =
   // Training Load Warnings (immer aktiv, unabhängig von Health Mode)
   final trainingLoadWarnings = ref.watch(trainingLoadWarningsProvider);
   warnings.addAll(trainingLoadWarnings);
+
+  // FTP Test Reminder Warnings (immer aktiv)
+  final ftpReminderWarnings = ref.watch(ftpTestReminderWarningsProvider);
+  warnings.addAll(ftpReminderWarnings);
 
   // Sortiere nach Severity (critical zuerst)
   warnings.sort((a, b) => b.severity.index.compareTo(a.severity.index));

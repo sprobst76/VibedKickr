@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../domain/entities/health_warning.dart';
@@ -126,6 +127,14 @@ class _WarningCard extends StatelessWidget {
       case HealthWarningType.ftpImprovement:
         // Navigate to FTP update
         break;
+
+      // FTP Test Reminders - Navigate to Settings
+      case HealthWarningType.ftpTestReminder:
+      case HealthWarningType.ftpTestOverdue:
+      case HealthWarningType.ftpTestCritical:
+        context.push('/settings');  // Navigate to settings page
+        break;
+
       case HealthWarningType.restingHrElevated:
       case HealthWarningType.wellnessDeclining:
       case HealthWarningType.overtrainingRisk:
