@@ -14,6 +14,7 @@ class SettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(athleteProfileProvider);
     final soundEnabled = ref.watch(soundEnabledProvider);
+    final hapticsEnabled = ref.watch(hapticsEnabledProvider);
     final autoConnect = ref.watch(autoConnectProvider);
     final ergMode = ref.watch(ergModeProvider);
     final simulatorMode = ref.watch(simulatorModeProvider);
@@ -156,13 +157,26 @@ class SettingsPage extends ConsumerWidget {
           // Audio
           _SectionHeader(title: 'Audio'),
           Card(
-            child: SwitchListTile(
-              title: const Text('Sound-Effekte'),
-              subtitle: const Text('Audio-Hinweise bei Intervallwechsel'),
-              value: soundEnabled,
-              onChanged: (value) {
-                ref.read(soundEnabledProvider.notifier).state = value;
-              },
+            child: Column(
+              children: [
+                SwitchListTile(
+                  title: const Text('Sound-Effekte'),
+                  subtitle: const Text('Audio-Hinweise bei Intervallwechsel'),
+                  value: soundEnabled,
+                  onChanged: (value) {
+                    ref.read(soundEnabledProvider.notifier).state = value;
+                  },
+                ),
+                const Divider(height: 1),
+                SwitchListTile(
+                  title: const Text('Haptic Feedback'),
+                  subtitle: const Text('Vibration bei Intervallwechsel'),
+                  value: hapticsEnabled,
+                  onChanged: (value) {
+                    ref.read(hapticsEnabledProvider.notifier).state = value;
+                  },
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 24),

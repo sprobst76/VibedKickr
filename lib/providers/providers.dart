@@ -518,6 +518,9 @@ class ActiveSessionNotifier extends StateNotifier<TrainingSession?> {
 /// Sound an/aus
 final soundEnabledProvider = StateProvider<bool>((ref) => true);
 
+/// Haptic Feedback (Vibration) an/aus
+final hapticsEnabledProvider = StateProvider<bool>((ref) => true);
+
 /// Auto-Connect an/aus
 final autoConnectProvider = StateProvider<bool>((ref) => true);
 

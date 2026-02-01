@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/audio/audio_cue_service.dart';
@@ -83,6 +84,13 @@ class WorkoutPlayerData {
   }
 }
 
+enum HapticType {
+  countdown,
+  intervalStart,
+  workoutComplete,
+  workoutStart,
+}
+
 final workoutPlayerProvider =
     StateNotifierProvider<WorkoutPlayerNotifier, WorkoutPlayerData>((ref) {
   final notifier = WorkoutPlayerNotifier(ref);
@@ -154,6 +162,7 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
 
     // Audio Cue: Workout startet
     _playAudioCue(AudioCueType.intervalStart);
+    _triggerHaptic(HapticType.workoutStart);
 
     // Timer starten
     _startTimer();
@@ -220,6 +229,7 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
           _lastCountdownPlayed = remainingSeconds;
           if (remainingSeconds > 0) {
             _playAudioCue(AudioCueType.countdown);
+            _triggerHaptic(HapticType.countdown);
           }
         }
       }
@@ -250,6 +260,7 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
       // Workout complete
       _timer?.cancel();
       _playAudioCue(AudioCueType.workoutComplete);
+      _triggerHaptic(HapticType.workoutComplete);
       state = state.copyWith(
         state: WorkoutPlayerState.finished,
         clearCountdown: true,
@@ -276,6 +287,7 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
 
     // Audio Cue: Neues Intervall startet
     _playAudioCue(AudioCueType.intervalStart);
+    _triggerHaptic(HapticType.intervalStart);
   }
 
   void _startSession(SessionType type, {String? workoutId}) {
@@ -304,6 +316,31 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
       // Audio nicht verfügbar - silent fail
     }
   }
+
+  void _triggerHaptic(HapticType type) {
+    if (!_hapticsEnabled) return;
+
+    try {
+      switch (type) {
+        case HapticType.countdown:
+          HapticFeedback.lightImpact(); // Subtiles Ticken für Countdown
+          break;
+        case HapticType.intervalStart:
+          HapticFeedback.mediumImpact(); // Spürbarer Buzz bei Intervallwechsel
+          break;
+        case HapticType.workoutComplete:
+          HapticFeedback.heavyImpact(); // Starker Buzz zum Abschluss
+          break;
+        case HapticType.workoutStart:
+          HapticFeedback.mediumImpact(); // Motivierender Start
+          break;
+      }
+    } catch (_) {
+      // Haptic nicht verfügbar - silent fail
+    }
+  }
+
+  bool get _hapticsEnabled => _ref.read(hapticsEnabledProvider);
 
   @override
   void dispose() {
