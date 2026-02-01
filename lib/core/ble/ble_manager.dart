@@ -398,10 +398,24 @@ class BleManager {
       logger.d('Discovering HR Monitor services...');
       final services = await device.bluetoothDevice.discoverServices();
 
+      // DEBUG: Alle Services loggen
+      logger.i('Found ${services.length} services on device ${device.name}:');
+      for (final service in services) {
+        logger.i('  - Service UUID: ${service.uuid} (${service.uuid.toString().toLowerCase()})');
+        logger.i('    Characteristics: ${service.characteristics.length}');
+        for (final char in service.characteristics) {
+          logger.i('      - ${char.uuid}');
+        }
+      }
+
       // Heart Rate Service finden und initialisieren
       for (final service in services) {
-        if (service.uuid.toString().toLowerCase() == heartRateServiceUuid) {
-          logger.i('Found Heart Rate service');
+        final serviceUuid = service.uuid.toString().toLowerCase();
+        // Vergleiche beide Formen: Kurzform (180d) und Langform (0000180d-0000-1000-8000-00805f9b34fb)
+        if (serviceUuid == heartRateServiceUuid ||
+            serviceUuid == '180d' ||
+            serviceUuid.contains('180d')) {
+          logger.i('✓ Found Heart Rate service: $serviceUuid');
           _heartRateService = HeartRateService(service);
           await _heartRateService!.initialize();
 

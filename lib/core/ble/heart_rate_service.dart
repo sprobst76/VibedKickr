@@ -78,25 +78,43 @@ class HeartRateService {
   /// Initialisiert den Heart Rate Service
   Future<void> initialize() async {
     logger.i('Initializing Heart Rate Service');
+    logger.i('Service UUID: ${_service.uuid}');
+    logger.i('Number of characteristics: ${_service.characteristics.length}');
 
     for (final char in _service.characteristics) {
-      final uuid = char.uuid.toString().toLowerCase();
+      final uuidStr = char.uuid.toString().toLowerCase();
+      logger.i('  Checking characteristic: $uuidStr');
 
-      if (uuid.contains('2a37')) {
+      // Versuche mehrere Wege, die 2a37 Characteristic zu finden
+      if (uuidStr.contains('2a37') ||
+          uuidStr == '00002a37-0000-1000-8000-00805f9b34fb' ||
+          uuidStr.endsWith('2a37')) {
         _heartRateMeasurementChar = char;
-        logger.d('Found Heart Rate Measurement characteristic');
+        logger.i('✓ Found Heart Rate Measurement characteristic: $uuidStr');
+        break;
       }
     }
 
     if (_heartRateMeasurementChar == null) {
-      logger.e('Heart Rate Measurement characteristic not found');
+      logger.e('✗ Heart Rate Measurement characteristic not found');
+      logger.e('Service has ${_service.characteristics.length} characteristics:');
+      for (final char in _service.characteristics) {
+        logger.e('  - ${char.uuid}');
+      }
       return;
     }
 
-    // Notifications aktivieren
-    await _heartRateMeasurementChar!.setNotifyValue(true);
-    _dataSubscription = _heartRateMeasurementChar!.onValueReceived.listen(_parseHeartRateData);
-    logger.i('Heart Rate notifications enabled');
+    try {
+      // Notifications aktivieren
+      logger.i('Setting notify value...');
+      await _heartRateMeasurementChar!.setNotifyValue(true);
+      logger.i('✓ Notify value set successfully');
+
+      _dataSubscription = _heartRateMeasurementChar!.onValueReceived.listen(_parseHeartRateData);
+      logger.i('✓ Heart Rate notifications enabled');
+    } catch (e) {
+      logger.e('✗ Failed to enable notifications: $e');
+    }
   }
 
   /// Parst Heart Rate Measurement Daten nach Bluetooth HRP Spec
