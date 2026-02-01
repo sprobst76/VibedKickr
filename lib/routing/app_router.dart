@@ -14,6 +14,7 @@ import '../features/workouts/presentation/pages/workout_builder_page.dart';
 import '../features/workouts/presentation/pages/workout_list_page.dart';
 import '../features/workouts/presentation/pages/workout_player_page.dart';
 import '../features/settings/presentation/pages/settings_page.dart';
+import '../features/health_training/presentation/pages/health_training_page.dart';
 import '../features/debug/presentation/pages/ble_diagnostic_page.dart';
 
 /// Route Namen
@@ -28,6 +29,7 @@ class AppRoutes {
   static const healthModeSetup = '/health-mode';
   static const trainingLoad = '/training-load';
   static const history = '/history';
+  static const healthTraining = '/health-training';
   static const settings = '/settings';
   static const bleDiagnostic = '/ble-diagnostic';
 }
@@ -65,6 +67,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             path: AppRoutes.history,
             pageBuilder: (context, state) => const NoTransitionPage(
               child: SessionHistoryPage(),
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.healthTraining,
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: HealthTrainingPage(),
             ),
           ),
           GoRoute(
@@ -153,8 +161,10 @@ class _BottomNavBar extends StatelessWidget {
       currentIndex = 2;
     } else if (location.startsWith(AppRoutes.history)) {
       currentIndex = 3;
-    } else if (location == AppRoutes.settings) {
+    } else if (location.startsWith(AppRoutes.healthTraining)) {
       currentIndex = 4;
+    } else if (location == AppRoutes.settings) {
+      currentIndex = 5;
     }
 
     return NavigationBar(
@@ -174,6 +184,9 @@ class _BottomNavBar extends StatelessWidget {
             context.go(AppRoutes.history);
             break;
           case 4:
+            context.go(AppRoutes.healthTraining);
+            break;
+          case 5:
             context.go(AppRoutes.settings);
             break;
         }
@@ -198,6 +211,11 @@ class _BottomNavBar extends StatelessWidget {
           icon: Icon(Icons.history_outlined),
           selectedIcon: Icon(Icons.history),
           label: 'Verlauf',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.health_and_safety_outlined),
+          selectedIcon: Icon(Icons.health_and_safety),
+          label: 'Gesundheit',
         ),
         NavigationDestination(
           icon: Icon(Icons.settings_outlined),
