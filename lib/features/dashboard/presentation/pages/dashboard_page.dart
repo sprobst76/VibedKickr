@@ -8,6 +8,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../providers/providers.dart';
 import '../../../../routing/app_router.dart';
 import '../../../health_mode/presentation/widgets/health_mode_status_card.dart';
+import '../../../health_mode/presentation/widgets/health_warning_banner.dart';
 import '../../../training_load/presentation/widgets/training_load_card.dart';
 import '../widgets/connection_status_bar.dart';
 import '../widgets/live_chart.dart';
@@ -97,6 +98,10 @@ class _MobileLayout extends StatelessWidget {
           // Connection Status
           const ConnectionStatusBar(),
           const SizedBox(height: 16),
+
+          // Health & Training Warnings
+          const HealthWarningBanner(),
+          const SizedBox(height: 8),
 
           // Power Gauge (groß)
           PowerGauge(
@@ -204,6 +209,8 @@ class _DesktopLayout extends StatelessWidget {
             child: Column(
               children: [
                 const ConnectionStatusBar(),
+                const SizedBox(height: 16),
+                const HealthWarningBanner(),
                 const SizedBox(height: 16),
                 Expanded(
                   child: Card(

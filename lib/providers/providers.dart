@@ -13,8 +13,11 @@ import '../core/database/app_database.dart';
 import '../core/database/daos/personal_record_dao.dart';
 import '../core/services/personal_record_service.dart';
 import '../core/services/training_load_service.dart';
+import '../core/services/training_load_warning_service.dart';
+import '../core/services/health_mode_service.dart';
 import '../data/repositories/session_repository_impl.dart';
 import '../domain/entities/athlete_profile.dart';
+import '../domain/entities/health_warning.dart';
 import '../domain/entities/training_load.dart';
 import '../domain/entities/training_session.dart';
 import '../domain/repositories/session_repository.dart';
@@ -637,4 +640,40 @@ final trainingStatusProvider = Provider<TrainingStatus>((ref) {
       trend: FitnessTrend.stable,
     ),
   );
+});
+
+/// Training Load Warning Service
+final trainingLoadWarningServiceProvider =
+    Provider<TrainingLoadWarningService>((ref) {
+  return TrainingLoadWarningService();
+});
+
+/// Active Training Load Warnings (basierend auf weekly TSS)
+final trainingLoadWarningsProvider =
+    Provider<List<HealthWarning>>((ref) {
+  final service = ref.watch(trainingLoadWarningServiceProvider);
+  final trainingStatus = ref.watch(trainingStatusProvider);
+
+  return service.generateWarnings(trainingStatus.weeklyTss);
+});
+
+/// Kombinierte Active Warnings (Health Mode + Training Load)
+final allActiveWarningsProvider =
+    Provider<List<HealthWarning>>((ref) {
+  final warnings = <HealthWarning>[];
+
+  // Health Mode Warnings (nur wenn Health Mode aktiv)
+  final healthMode = ref.watch(healthModeProvider);
+  if (healthMode.isActive) {
+    warnings.addAll(healthMode.activeWarnings);
+  }
+
+  // Training Load Warnings (immer aktiv, unabhängig von Health Mode)
+  final trainingLoadWarnings = ref.watch(trainingLoadWarningsProvider);
+  warnings.addAll(trainingLoadWarnings);
+
+  // Sortiere nach Severity (critical zuerst)
+  warnings.sort((a, b) => b.severity.index.compareTo(a.severity.index));
+
+  return warnings;
 });

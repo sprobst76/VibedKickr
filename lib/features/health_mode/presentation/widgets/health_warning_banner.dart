@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../domain/entities/health_warning.dart';
 import '../../../../core/services/health_mode_service.dart';
+import '../../../../providers/providers.dart';
 
 /// Widget zum Anzeigen von Gesundheitsmodus-Warnungen
 class HealthWarningBanner extends ConsumerWidget {
@@ -11,8 +12,7 @@ class HealthWarningBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final healthMode = ref.watch(healthModeProvider);
-    final warnings = healthMode.activeWarnings;
+    final warnings = ref.watch(allActiveWarningsProvider);
 
     if (warnings.isEmpty) return const SizedBox.shrink();
 
@@ -130,6 +130,8 @@ class _WarningCard extends StatelessWidget {
       case HealthWarningType.wellnessDeclining:
       case HealthWarningType.overtrainingRisk:
       case HealthWarningType.lowWellnessScore:
+      case HealthWarningType.highWeeklyTss:
+      case HealthWarningType.excessiveWeeklyTss:
         // Show recovery tips dialog
         _showRecoveryTips(context, type);
         break;
@@ -177,6 +179,21 @@ class _WarningCard extends StatelessWidget {
             '• Massage oder Physiotherapie erwägen\n'
             '• Bei Krankheitsgefühl: Arzt aufsuchen\n'
             '• Langsamer Wiedereinstieg mit Zone 1 Training';
+      case HealthWarningType.highWeeklyTss:
+        return '• Plane 1-2 Ruhetage diese Woche ein\n'
+            '• Reduziere Intensität auf Zone 1-2 für 2-3 Tage\n'
+            '• Erhöhe Schlafdauer auf 8+ Stunden\n'
+            '• Achte auf Ernährung und Hydratation\n'
+            '• Überwache Wellness-Werte (Müdigkeit, Muskelkater)\n'
+            '• Erwäge aktive Erholung statt intensiver Einheiten';
+      case HealthWarningType.excessiveWeeklyTss:
+        return '• SOFORT Trainingsumfang reduzieren\n'
+            '• Mindestens 2 komplette Ruhetage\n'
+            '• Nur Zone 1 Training für 3-5 Tage\n'
+            '• Schlafpriorisierung (9+ Stunden)\n'
+            '• Bei Anzeichen von Übertraining (erhöhter Ruhepuls, '
+            'Leistungsabfall, Motivationsverlust): 1 Woche Trainingspause\n'
+            '• Erwäge professionelle Trainingsberatung';
       default:
         return 'Allgemeine Erholungs-Tipps:\n\n'
             '• Ausreichend Schlaf (7-9 Stunden)\n'

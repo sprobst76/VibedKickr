@@ -15,6 +15,8 @@ enum HealthWarningType {
   lowWellnessScore,      // Score <40% für 2+ Tage
   readyForProgression,   // Bereit für nächste Phase (Info)
   ftpImprovement,        // FTP-Verbesserung erkannt (Info)
+  highWeeklyTss,         // 400-499 TSS/Woche (Training Load)
+  excessiveWeeklyTss,    // 500+ TSS/Woche (Training Load)
 }
 
 /// Gesundheitsmodus-Warnung mit Informationen für den Benutzer
