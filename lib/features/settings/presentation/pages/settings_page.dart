@@ -21,6 +21,7 @@ class SettingsPage extends ConsumerWidget {
     final ergMode = ref.watch(ergModeProvider);
     final simulatorMode = ref.watch(simulatorModeProvider);
     final keepScreenOn = ref.watch(keepScreenOnProvider);
+    final themeMode = ref.watch(themeModeProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -152,6 +153,19 @@ class SettingsPage extends ConsumerWidget {
               onChanged: (value) {
                 ref.read(keepScreenOnProvider.notifier).state = value;
               },
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // Theme
+          _SectionHeader(title: 'Design'),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.palette),
+              title: const Text('Design-Modus'),
+              subtitle: Text(_getThemeModeLabel(themeMode)),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => _showThemeModeDialog(context, ref, themeMode),
             ),
           ),
           const SizedBox(height: 24),
@@ -400,6 +414,64 @@ class SettingsPage extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  void _showThemeModeDialog(BuildContext context, WidgetRef ref, ThemeMode currentMode) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Design-Modus'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RadioListTile<ThemeMode>(
+              title: const Text('System'),
+              subtitle: const Text('Folgt Systemeinstellung'),
+              value: ThemeMode.system,
+              groupValue: currentMode,
+              onChanged: (value) {
+                if (value != null) {
+                  ref.read(themeModeProvider.notifier).state = value;
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            RadioListTile<ThemeMode>(
+              title: const Text('Helles Design'),
+              subtitle: const Text('Immer helles Design'),
+              value: ThemeMode.light,
+              groupValue: currentMode,
+              onChanged: (value) {
+                if (value != null) {
+                  ref.read(themeModeProvider.notifier).state = value;
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            RadioListTile<ThemeMode>(
+              title: const Text('Dunkles Design'),
+              subtitle: const Text('Immer dunkles Design'),
+              value: ThemeMode.dark,
+              groupValue: currentMode,
+              onChanged: (value) {
+                if (value != null) {
+                  ref.read(themeModeProvider.notifier).state = value;
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getThemeModeLabel(ThemeMode mode) {
+    return switch (mode) {
+      ThemeMode.system => 'System',
+      ThemeMode.light => 'Hell',
+      ThemeMode.dark => 'Dunkel',
+    };
   }
 }
 
