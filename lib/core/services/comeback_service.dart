@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/entities/comeback_mode.dart';
+import '../../domain/entities/training_session.dart';
 import '../../domain/entities/workout.dart';
+import '../../providers/providers.dart';
 
 /// Service für Comeback Mode Management
 class ComebackService {
@@ -46,14 +48,16 @@ final comebackServiceProvider = Provider<ComebackService>((ref) {
 final comebackModeProvider =
     StateNotifierProvider<ComebackModeNotifier, ComebackMode>((ref) {
   final service = ref.watch(comebackServiceProvider);
-  return ComebackModeNotifier(service);
+  return ComebackModeNotifier(service, ref);
 });
 
 /// Comeback Mode State Notifier
 class ComebackModeNotifier extends StateNotifier<ComebackMode> {
   final ComebackService _service;
+  final Ref _ref;
 
-  ComebackModeNotifier(this._service) : super(const ComebackMode()) {
+  ComebackModeNotifier(this._service, this._ref)
+      : super(const ComebackMode()) {
     _load();
   }
 
@@ -109,6 +113,185 @@ class ComebackModeNotifier extends StateNotifier<ComebackMode> {
   Future<void> updateBaselineHr(int hr) async {
     state = state.copyWith(baselineRestingHr: hr);
     await _service.save(state);
+  }
+
+  /// Erkennt FTP-Verbesserung aus abgeschlossenen Workouts
+  Future<void> detectFtpFromSessions() async {
+    if (!state.isActive || state.startDate == null) return;
+
+    try {
+      final sessions =
+          await _ref.read(sessionRepositoryProvider).getAllSessions();
+      if (sessions.isEmpty) return;
+
+      // Filter zu Comeback-Period Sessions
+      final comebackSessions = sessions
+          .where((s) => state.isActive && s.startTime.isAfter(state.startDate ?? DateTime(2000)))
+          .toList();
+
+      if (comebackSessions.isEmpty) return;
+
+      // Versuche 3 Erkennungsmethoden
+      int? detected;
+      String? method;
+
+      // Methode 1: 20-Minuten-Power-Test (genaueste)
+      detected = _detect20MinPower(comebackSessions);
+      if (detected != null) {
+        method = '20min';
+      }
+
+      // Methode 2: Sweet Spot Intervalle (mittl. Genauigkeit)
+      if (detected == null) {
+        detected = _detectSweetSpotPower(comebackSessions);
+        if (detected != null) method = 'sweetspot';
+      }
+
+      // Methode 3: Normalized Power Trend (konservativ)
+      if (detected == null) {
+        detected = _detectNormalizedPowerTrend(comebackSessions);
+        if (detected != null) method = 'normalized';
+      }
+
+      if (detected != null && detected > state.effectiveFtp) {
+        state = state.copyWith(
+          detectedFtp: detected,
+          ftpDetectedAt: DateTime.now(),
+          ftpDetectionMethod: method,
+        );
+        await _service.save(state);
+      }
+    } catch (e) {
+      // Fehler ignorieren
+    }
+  }
+
+  int? _detect20MinPower(List<TrainingSession> sessions) {
+    // Suche nach Sessions mit 20+ Minuten Effort
+    for (final session in sessions.reversed.take(5)) {
+      if (session.stats == null) continue;
+
+      final duration = session.stats!.duration;
+      if (duration.inMinutes < 20) continue;
+
+      // Finde 20-Minuten Rolling Average Power
+      final dataPoints = session.dataPoints;
+      if (dataPoints.length < 1200) continue; // 20 min at 1Hz
+
+      int maxAvg20Min = 0;
+      for (int i = 0; i <= dataPoints.length - 1200; i++) {
+        final window = dataPoints.skip(i).take(1200);
+        final avg = window.map((p) => p.power).reduce((a, b) => a + b) ~/ 1200;
+        if (avg > maxAvg20Min) maxAvg20Min = avg;
+      }
+
+      if (maxAvg20Min > 0) {
+        return (maxAvg20Min * 0.95).round(); // 95% of 20min = FTP estimate
+      }
+    }
+    return null;
+  }
+
+  int? _detectSweetSpotPower(List<TrainingSession> sessions) {
+    // Suche nach Efforts im 75-90% FTP Bereich
+    final efforts = <int>[];
+
+    for (final session in sessions.reversed.take(10)) {
+      final dataPoints = session.dataPoints;
+      if (dataPoints.length < 300) continue; // 5+ min efforts
+
+      int currentEffortPower = 0;
+      int currentEffortLength = 0;
+
+      for (final point in dataPoints) {
+        // Check if in "sweet spot" range (75-90% of current effective FTP)
+        final targetLow = (state.effectiveFtp * 0.75).round();
+        final targetHigh = (state.effectiveFtp * 0.90).round();
+
+        if (point.power >= targetLow && point.power <= targetHigh) {
+          currentEffortPower = point.power;
+          currentEffortLength++;
+        } else if (currentEffortLength >= 300) {
+          // Effort endete, speichern wenn 5+ minuten
+          efforts.add(currentEffortPower);
+          currentEffortLength = 0;
+        } else {
+          currentEffortLength = 0;
+        }
+      }
+    }
+
+    if (efforts.isEmpty) return null;
+
+    // Durchschnitt der Sweet Spot Efforts und Rückberechnung FTP
+    final avgSweetSpot = efforts.reduce((a, b) => a + b) ~/ efforts.length;
+    return (avgSweetSpot / 0.85).round(); // Assume sweet spot = 85% FTP
+  }
+
+  int? _detectNormalizedPowerTrend(List<TrainingSession> sessions) {
+    // Konservativ: Schau auf NP Trend über letzte 5 Sessions
+    final recentNP = sessions
+        .reversed
+        .take(5)
+        .where((s) => s.stats?.normalizedPower != null)
+        .map((s) => s.stats!.normalizedPower)
+        .whereType<int>()
+        .toList();
+
+    if (recentNP.length < 3) return null;
+
+    final avgNP = recentNP.reduce((a, b) => a + b) ~/ recentNP.length;
+
+    // Wenn durchschn NP konsistent höher als effective FTP, schlag Erhöhung vor
+    if (avgNP > state.effectiveFtp * 1.05) {
+      return avgNP; // Use average NP as new FTP estimate
+    }
+
+    return null;
+  }
+
+  /// Führt zu nächster Phase vor
+  void advancePhase() {
+    if (state.currentPhase == ComebackPhase.completed) return;
+
+    // Berechne neue Startdatum für Phasenfortschritt
+    final daysToAdd = 7 - state.dayInCurrentWeek;
+    final adjustedStartDate =
+        state.startDate!.subtract(Duration(days: daysToAdd + 7));
+
+    state = state.copyWith(
+      startDate: adjustedStartDate,
+    );
+
+    _service.save(state);
+  }
+
+  /// Akzeptiert FTP-Verbesserungsvorschlag
+  void acceptFtpSuggestion() {
+    if (state.detectedFtp == null) return;
+
+    // Update athlete profile with new FTP
+    _ref.read(athleteProfileProvider.notifier).updateFtp(state.detectedFtp!);
+
+    // Update comeback original FTP
+    state = state.copyWith(
+      originalFtp: state.detectedFtp,
+      detectedFtp: null, // Clear suggestion
+      ftpDetectedAt: null,
+      ftpDetectionMethod: null,
+    );
+
+    _service.save(state);
+  }
+
+  /// Verwirft FTP-Verbesserungsvorschlag
+  void dismissFtpSuggestion() {
+    state = state.copyWith(
+      detectedFtp: null,
+      ftpDetectedAt: null,
+      ftpDetectionMethod: null,
+    );
+    _service.save(state);
   }
 }
 

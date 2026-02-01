@@ -219,6 +219,9 @@ class ComebackMode extends Equatable {
   final int? baselineRestingHr; // Normaler Ruhepuls
   final List<WellnessCheckIn> checkIns;
   final String? illnessType; // Optional: Art der Krankheit
+  final int? detectedFtp; // Aus Workouts erkannter FTP
+  final DateTime? ftpDetectedAt; // Wann FTP erkannt wurde
+  final String? ftpDetectionMethod; // '20min' | 'sweetspot' | 'normalized'
 
   const ComebackMode({
     this.isActive = false,
@@ -228,6 +231,9 @@ class ComebackMode extends Equatable {
     this.baselineRestingHr,
     this.checkIns = const [],
     this.illnessType,
+    this.detectedFtp,
+    this.ftpDetectedAt,
+    this.ftpDetectionMethod,
   });
 
   /// Aktuelle Phase basierend auf Startdatum
@@ -336,6 +342,78 @@ class ComebackMode extends Equatable {
     return (days / 28 * 100).clamp(0, 100);
   }
 
+  /// Hat eine FTP-Verbesserung erkannt?
+  bool get hasFtpSuggestion =>
+      detectedFtp != null &&
+      detectedFtp! > effectiveFtp &&
+      (ftpDetectedAt == null || DateTime.now().difference(ftpDetectedAt!).inDays < 7);
+
+  /// Empfohlene FTP-Steigerung
+  int get suggestedFtpIncrease => (detectedFtp ?? originalFtp) - effectiveFtp;
+
+  /// Ist bereit für nächste Phase?
+  bool get isReadyForNextPhase {
+    if (currentPhase == ComebackPhase.completed) return false;
+
+    // Mindestens 5 Tage in Phase
+    if (dayInCurrentWeek < 5) return false;
+
+    // Durchschnittlicher Wellness-Score >60% für letzte 3 Tage
+    final recent3Days = checkIns
+        .where((c) => DateTime.now().difference(c.date).inDays <= 3)
+        .toList();
+    if (recent3Days.length < 2) return false;
+
+    final avgScore =
+        recent3Days.map((c) => c.normalizedScore).reduce((a, b) => a + b) /
+            recent3Days.length;
+    if (avgScore < 60) return false;
+
+    // Ruhepuls nicht erhöht
+    if (isRestingHrTrending) return false;
+
+    return true;
+  }
+
+  /// Empfehlung zur Phasenfortschritt
+  String get phaseProgressionRecommendation {
+    if (currentPhase == ComebackPhase.completed) {
+      return 'Comeback abgeschlossen! Du bist zurück auf 100%.';
+    }
+
+    if (isReadyForNextPhase) {
+      final nextPhase = _getNextPhase();
+      return 'Bereit für $nextPhase! Wellness und HR sind stabil.';
+    }
+
+    final blockers = <String>[];
+    if (dayInCurrentWeek < 5) {
+      final daysLeft = 5 - dayInCurrentWeek;
+      blockers.add('$daysLeft Tag${daysLeft > 1 ? 'e' : ''} mehr empfohlen');
+    }
+
+    if (averageWellnessScore7d < 60) {
+      blockers
+          .add('Wellness-Score verbessern (aktuell: ${averageWellnessScore7d.round()}%)');
+    }
+
+    if (isRestingHrTrending) {
+      blockers.add('Ruhepuls erhöht - Erholung abwarten');
+    }
+
+    return blockers.join(', ');
+  }
+
+  String _getNextPhase() {
+    return switch (currentPhase) {
+      ComebackPhase.week1 => 'Woche 2 (70% Intensität)',
+      ComebackPhase.week2 => 'Woche 3 (85% Intensität)',
+      ComebackPhase.week3 => 'Woche 4 (100% Intensität)',
+      ComebackPhase.week4 => 'Normales Training',
+      ComebackPhase.completed => 'Bereits abgeschlossen',
+    };
+  }
+
   ComebackMode copyWith({
     bool? isActive,
     DateTime? startDate,
@@ -344,6 +422,9 @@ class ComebackMode extends Equatable {
     int? baselineRestingHr,
     List<WellnessCheckIn>? checkIns,
     String? illnessType,
+    int? detectedFtp,
+    DateTime? ftpDetectedAt,
+    String? ftpDetectionMethod,
   }) {
     return ComebackMode(
       isActive: isActive ?? this.isActive,
@@ -353,6 +434,9 @@ class ComebackMode extends Equatable {
       baselineRestingHr: baselineRestingHr ?? this.baselineRestingHr,
       checkIns: checkIns ?? this.checkIns,
       illnessType: illnessType ?? this.illnessType,
+      detectedFtp: detectedFtp ?? this.detectedFtp,
+      ftpDetectedAt: ftpDetectedAt ?? this.ftpDetectedAt,
+      ftpDetectionMethod: ftpDetectionMethod ?? this.ftpDetectionMethod,
     );
   }
 
@@ -372,6 +456,11 @@ class ComebackMode extends Equatable {
               .toList() ??
           [],
       illnessType: json['illnessType'] as String?,
+      detectedFtp: json['detectedFtp'] as int?,
+      ftpDetectedAt: json['ftpDetectedAt'] != null
+          ? DateTime.parse(json['ftpDetectedAt'] as String)
+          : null,
+      ftpDetectionMethod: json['ftpDetectionMethod'] as String?,
     );
   }
 
@@ -383,6 +472,9 @@ class ComebackMode extends Equatable {
         'baselineRestingHr': baselineRestingHr,
         'checkIns': checkIns.map((c) => c.toJson()).toList(),
         'illnessType': illnessType,
+        'detectedFtp': detectedFtp,
+        'ftpDetectedAt': ftpDetectedAt?.toIso8601String(),
+        'ftpDetectionMethod': ftpDetectionMethod,
       };
 
   @override
@@ -394,5 +486,8 @@ class ComebackMode extends Equatable {
         baselineRestingHr,
         checkIns,
         illnessType,
+        detectedFtp,
+        ftpDetectedAt,
+        ftpDetectionMethod,
       ];
 }

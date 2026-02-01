@@ -6,6 +6,8 @@ import '../../../../core/services/comeback_service.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../domain/entities/comeback_mode.dart';
 import '../../../../providers/providers.dart';
+import '../widgets/phase_readiness_card.dart';
+import '../widgets/wellness_trend_chart.dart';
 
 /// Seite zum Einrichten des Comeback Mode
 class ComebackSetupPage extends ConsumerStatefulWidget {
@@ -349,6 +351,12 @@ class _ActiveComebackView extends ConsumerWidget {
             _StatusCard(comebackMode: comebackMode),
             const SizedBox(height: 24),
 
+            // FTP Suggestion Card
+            if (comebackMode.hasFtpSuggestion) ...[
+              _FtpSuggestionCard(comebackMode: comebackMode),
+              const SizedBox(height: 24),
+            ],
+
             // Wellness History
             const Text(
               'Wellness Verlauf',
@@ -359,6 +367,19 @@ class _ActiveComebackView extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             _WellnessHistory(checkIns: comebackMode.checkIns),
+            const SizedBox(height: 24),
+
+            // Wellness Trend Chart
+            if (comebackMode.checkIns.length >= 2) ...[
+              WellnessTrendChart(
+                checkIns: comebackMode.checkIns,
+                height: 180,
+              ),
+              const SizedBox(height: 24),
+            ],
+
+            // Phase Readiness
+            PhaseReadinessCard(comebackMode: comebackMode),
             const SizedBox(height: 24),
 
             // Empfohlene Workouts
@@ -656,5 +677,142 @@ class _WellnessHistory extends StatelessWidget {
     if (score >= 50) return AppColors.primary;
     if (score >= 25) return AppColors.warning;
     return AppColors.error;
+  }
+}
+
+class _FtpSuggestionCard extends ConsumerWidget {
+  final ComebackMode comebackMode;
+
+  const _FtpSuggestionCard({required this.comebackMode});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final increase = comebackMode.suggestedFtpIncrease;
+    final method = comebackMode.ftpDetectionMethod;
+
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 0),
+      color: AppColors.success.withValues(alpha: 0.1),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.trending_up, color: AppColors.success),
+                const SizedBox(width: 8),
+                const Text(
+                  'FTP-Verbesserung erkannt!',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Deine Performance deutet auf einen höheren FTP hin. '
+              'Erkannt durch ${_getMethodLabel(method)}.',
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Aktueller FTP',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textMuted,
+                      ),
+                    ),
+                    Text(
+                      '${comebackMode.effectiveFtp} W',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                Icon(Icons.arrow_forward, color: AppColors.textMuted),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Text(
+                      'Vorgeschlagener FTP',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textMuted,
+                      ),
+                    ),
+                    Text(
+                      '${comebackMode.detectedFtp} W (+$increase)',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.success,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      ref
+                          .read(comebackModeProvider.notifier)
+                          .dismissFtpSuggestion();
+                    },
+                    child: const Text('Ignorieren'),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      ref
+                          .read(comebackModeProvider.notifier)
+                          .acceptFtpSuggestion();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('FTP aktualisiert!'),
+                          backgroundColor: AppColors.success,
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.success,
+                    ),
+                    child: const Text('FTP aktualisieren'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getMethodLabel(String? method) {
+    return switch (method) {
+      '20min' => '20-Minuten-Test',
+      'sweetspot' => 'Sweet-Spot-Analyse',
+      'normalized' => 'Normalized-Power-Trend',
+      _ => 'Workout-Analyse',
+    };
   }
 }
