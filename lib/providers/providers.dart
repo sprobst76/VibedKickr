@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/ble/ble_manager.dart';
@@ -538,6 +539,9 @@ final simulatorModeProvider = StateProvider<bool>((ref) => false);
 
 /// Bildschirm aktiv halten während Training
 final keepScreenOnProvider = StateProvider<bool>((ref) => true);
+
+/// Theme Mode (system/light/dark)
+final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.system);
 
 // ============================================================================
 // Mock Trainer Service

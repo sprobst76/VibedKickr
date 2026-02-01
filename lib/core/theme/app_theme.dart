@@ -68,6 +68,37 @@ class AppColors {
   static const scanning = warning;
 }
 
+/// Light Mode Farben
+class AppColorsLight {
+  // Primärfarben
+  static const primary = Color(0xFF0077B6); // Dunkleres Blau für Light Mode
+  static const primaryDark = Color(0xFF00B4D8);
+  static const secondary = Color(0xFF00B4D8);
+
+  // Hintergrund
+  static const background = Color(0xFFF5F5F5); // Helles Grau
+  static const surface = Color(0xFFFFFFFF); // Weiß
+  static const surfaceLight = Color(0xFFF0F0F0); // Sehr helles Grau
+
+  // Status
+  static const success = Color(0xFF2EA043);
+  static const warning = Color(0xFFF0883E);
+  static const error = Color(0xFFF85149);
+
+  // Text
+  static const textPrimary = Color(0xFF1A1A1A); // Sehr dunkles Grau
+  static const textSecondary = Color(0xFF666666); // Mittleres Grau
+  static const textMuted = Color(0xFF999999); // Helleres Grau
+
+  // Akzent
+  static const accent = Color(0xFF0077B6);
+
+  // BLE Status
+  static const connected = success;
+  static const disconnected = error;
+  static const scanning = warning;
+}
+
 class AppTheme {
   static ThemeData get dark {
     return ThemeData(
@@ -221,4 +252,193 @@ class AppTheme {
       ),
     );
   }
+
+  static ThemeData get light {
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      colorScheme: const ColorScheme.light(
+        primary: AppColorsLight.primary,
+        secondary: AppColorsLight.secondary,
+        surface: AppColorsLight.surface,
+        error: AppColorsLight.error,
+      ),
+      scaffoldBackgroundColor: AppColorsLight.background,
+
+      // AppBar
+      appBarTheme: const AppBarTheme(
+        backgroundColor: AppColorsLight.surface,
+        foregroundColor: AppColorsLight.textPrimary,
+        elevation: 1,
+        centerTitle: false,
+      ),
+
+      // Cards
+      cardTheme: CardThemeData(
+        color: AppColorsLight.surface,
+        elevation: 1,
+        shadowColor: Colors.black.withValues(alpha: 0.1),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(
+            color: AppColorsLight.surfaceLight,
+            width: 1,
+          ),
+        ),
+      ),
+
+      // Buttons
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColorsLight.primary,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColorsLight.primary,
+          side: const BorderSide(color: AppColorsLight.primary),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+
+      // Text
+      textTheme: const TextTheme(
+        displayLarge: TextStyle(
+          fontSize: 72,
+          fontWeight: FontWeight.bold,
+          color: AppColorsLight.textPrimary,
+        ),
+        displayMedium: TextStyle(
+          fontSize: 48,
+          fontWeight: FontWeight.bold,
+          color: AppColorsLight.textPrimary,
+        ),
+        displaySmall: TextStyle(
+          fontSize: 32,
+          fontWeight: FontWeight.bold,
+          color: AppColorsLight.textPrimary,
+        ),
+        headlineLarge: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: AppColorsLight.textPrimary,
+        ),
+        headlineMedium: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: AppColorsLight.textPrimary,
+        ),
+        titleLarge: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+          color: AppColorsLight.textPrimary,
+        ),
+        titleMedium: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: AppColorsLight.textPrimary,
+        ),
+        bodyLarge: TextStyle(
+          fontSize: 16,
+          color: AppColorsLight.textPrimary,
+        ),
+        bodyMedium: TextStyle(
+          fontSize: 14,
+          color: AppColorsLight.textSecondary,
+        ),
+        bodySmall: TextStyle(
+          fontSize: 12,
+          color: AppColorsLight.textMuted,
+        ),
+        labelLarge: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: AppColorsLight.textSecondary,
+        ),
+      ),
+
+      // Input
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColorsLight.surfaceLight,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: AppColorsLight.primary),
+        ),
+      ),
+
+      // Navigation
+      navigationBarTheme: const NavigationBarThemeData(
+        backgroundColor: AppColorsLight.surface,
+        indicatorColor: AppColorsLight.primaryDark,
+        labelTextStyle: WidgetStatePropertyAll(
+          TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+        ),
+      ),
+
+      // Divider
+      dividerTheme: const DividerThemeData(
+        color: AppColorsLight.surfaceLight,
+        thickness: 1,
+      ),
+
+      // Icons
+      iconTheme: const IconThemeData(
+        color: AppColorsLight.textSecondary,
+      ),
+
+      // Progress Indicator
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: AppColorsLight.primary,
+      ),
+    );
+  }
+}
+
+/// Extension für Theme-abhängige Farben (für Charts)
+extension ThemeColors on BuildContext {
+  bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
+
+  // Chart Grid Linien
+  Color get chartGridColor => isDarkMode
+      ? AppColors.surfaceLight
+      : AppColorsLight.surfaceLight;
+
+  // Chart Text / Achsen-Labels
+  Color get chartTextColor => isDarkMode
+      ? AppColors.textMuted
+      : AppColorsLight.textMuted;
+
+  // Chart Hintergrund
+  Color get chartBackgroundColor => isDarkMode
+      ? AppColors.surface
+      : AppColorsLight.surface;
+
+  // Allgemeine Surface
+  Color get surfaceColor => isDarkMode
+      ? AppColors.surface
+      : AppColorsLight.surface;
+
+  // Primary Text
+  Color get primaryTextColor => isDarkMode
+      ? AppColors.textPrimary
+      : AppColorsLight.textPrimary;
+
+  // Secondary Text
+  Color get secondaryTextColor => isDarkMode
+      ? AppColors.textSecondary
+      : AppColorsLight.textSecondary;
 }

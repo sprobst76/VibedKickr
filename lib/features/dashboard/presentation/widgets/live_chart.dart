@@ -18,10 +18,10 @@ class LivePowerChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (powerHistory.isEmpty) {
-      return const Center(
+      return Center(
         child: Text(
           'Warte auf Daten...',
-          style: TextStyle(color: AppColors.textMuted),
+          style: TextStyle(color: context.chartTextColor),
         ),
       );
     }
@@ -53,7 +53,7 @@ class LivePowerChart extends StatelessWidget {
           horizontalInterval: maxY / 5,
           getDrawingHorizontalLine: (value) {
             return FlLine(
-              color: AppColors.surfaceLight,
+              color: context.chartGridColor,
               strokeWidth: 1,
             );
           },
@@ -69,8 +69,8 @@ class LivePowerChart extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 8),
                   child: Text(
                     '${value.toInt()}',
-                    style: const TextStyle(
-                      color: AppColors.textMuted,
+                    style: TextStyle(
+                      color: context.chartTextColor,
                       fontSize: 10,
                     ),
                   ),
@@ -94,8 +94,8 @@ class LivePowerChart extends StatelessWidget {
                 if (secondsAgo == 0) return const SizedBox.shrink();
                 return Text(
                   '-${secondsAgo}s',
-                  style: const TextStyle(
-                    color: AppColors.textMuted,
+                  style: TextStyle(
+                    color: context.chartTextColor,
                     fontSize: 10,
                   ),
                 );
@@ -110,7 +110,7 @@ class LivePowerChart extends StatelessWidget {
             spots: spots,
             isCurved: true,
             curveSmoothness: 0.2,
-            color: AppColors.primary,
+            color: context.primaryTextColor,
             barWidth: 2,
             isStrokeCapRound: true,
             dotData: const FlDotData(show: false),
@@ -118,8 +118,8 @@ class LivePowerChart extends StatelessWidget {
               show: true,
               gradient: LinearGradient(
                 colors: [
-                  AppColors.primary.withOpacity(0.3),
-                  AppColors.primary.withOpacity(0.0),
+                  context.primaryTextColor.withOpacity(0.3),
+                  context.primaryTextColor.withOpacity(0.0),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -153,14 +153,14 @@ class LivePowerChart extends StatelessWidget {
         lineTouchData: LineTouchData(
           enabled: true,
           touchTooltipData: LineTouchTooltipData(
-            getTooltipColor: (spot) => AppColors.surface,
+            getTooltipColor: (spot) => context.surfaceColor,
             tooltipRoundedRadius: 8,
             getTooltipItems: (touchedSpots) {
               return touchedSpots.map((spot) {
                 return LineTooltipItem(
                   '${spot.y.toInt()} W',
-                  const TextStyle(
-                    color: AppColors.textPrimary,
+                  TextStyle(
+                    color: context.primaryTextColor,
                     fontWeight: FontWeight.bold,
                   ),
                 );
@@ -198,6 +198,7 @@ class MiniPowerChart extends StatelessWidget {
         .toList();
 
     final maxPower = powerData.reduce((a, b) => a > b ? a : b);
+    final lineColor = color ?? context.primaryTextColor;
 
     return SizedBox(
       height: 40,
@@ -213,13 +214,13 @@ class MiniPowerChart extends StatelessWidget {
               spots: spots,
               isCurved: true,
               curveSmoothness: 0.3,
-              color: color ?? AppColors.primary,
+              color: lineColor,
               barWidth: 1.5,
               isStrokeCapRound: true,
               dotData: const FlDotData(show: false),
               belowBarData: BarAreaData(
                 show: true,
-                color: (color ?? AppColors.primary).withOpacity(0.1),
+                color: lineColor.withOpacity(0.1),
               ),
             ),
           ],

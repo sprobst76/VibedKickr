@@ -552,11 +552,11 @@ class _PowerChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return _ChartCard(
       title: 'Leistung',
-      chart: _buildChart(),
+      chart: _buildChart(context),
     );
   }
 
-  Widget _buildChart() {
+  Widget _buildChart(BuildContext context) {
     final spots = dataPoints
         .asMap()
         .entries
@@ -578,7 +578,7 @@ class _PowerChart extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: 50,
           getDrawingHorizontalLine: (value) => FlLine(
-            color: AppColors.surfaceLight,
+            color: context.chartGridColor,
             strokeWidth: 1,
           ),
         ),
@@ -590,7 +590,7 @@ class _PowerChart extends StatelessWidget {
               interval: 100,
               getTitlesWidget: (value, meta) => Text(
                 '${value.toInt()}',
-                style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+                style: TextStyle(fontSize: 10, color: context.chartTextColor),
               ),
             ),
           ),
@@ -600,7 +600,7 @@ class _PowerChart extends StatelessWidget {
               reservedSize: 22,
               getTitlesWidget: (value, meta) => Text(
                 '${value.toInt()}m',
-                style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+                style: TextStyle(fontSize: 10, color: context.chartTextColor),
               ),
             ),
           ),
@@ -614,12 +614,12 @@ class _PowerChart extends StatelessWidget {
           LineChartBarData(
             spots: spots,
             isCurved: true,
-            color: AppColors.primary,
+            color: context.primaryTextColor,
             barWidth: 2,
             dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(
               show: true,
-              color: AppColors.primary.withOpacity(0.1),
+              color: context.primaryTextColor.withOpacity(0.1),
             ),
           ),
         ],
@@ -637,11 +637,11 @@ class _HeartRateChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return _ChartCard(
       title: 'Herzfrequenz',
-      chart: _buildChart(),
+      chart: _buildChart(context),
     );
   }
 
-  Widget _buildChart() {
+  Widget _buildChart(BuildContext context) {
     final spots = dataPoints
         .asMap()
         .entries
@@ -665,7 +665,7 @@ class _HeartRateChart extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: 20,
           getDrawingHorizontalLine: (value) => FlLine(
-            color: AppColors.surfaceLight,
+            color: context.chartGridColor,
             strokeWidth: 1,
           ),
         ),
@@ -677,7 +677,7 @@ class _HeartRateChart extends StatelessWidget {
               interval: 20,
               getTitlesWidget: (value, meta) => Text(
                 '${value.toInt()}',
-                style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+                style: TextStyle(fontSize: 10, color: context.chartTextColor),
               ),
             ),
           ),
@@ -687,7 +687,7 @@ class _HeartRateChart extends StatelessWidget {
               reservedSize: 22,
               getTitlesWidget: (value, meta) => Text(
                 '${value.toInt()}m',
-                style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+                style: TextStyle(fontSize: 10, color: context.chartTextColor),
               ),
             ),
           ),
@@ -724,11 +724,11 @@ class _CadenceChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return _ChartCard(
       title: 'Kadenz',
-      chart: _buildChart(),
+      chart: _buildChart(context),
     );
   }
 
-  Widget _buildChart() {
+  Widget _buildChart(BuildContext context) {
     final spots = dataPoints
         .asMap()
         .entries
@@ -751,7 +751,7 @@ class _CadenceChart extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: 20,
           getDrawingHorizontalLine: (value) => FlLine(
-            color: AppColors.surfaceLight,
+            color: context.chartGridColor,
             strokeWidth: 1,
           ),
         ),
@@ -763,7 +763,7 @@ class _CadenceChart extends StatelessWidget {
               interval: 20,
               getTitlesWidget: (value, meta) => Text(
                 '${value.toInt()}',
-                style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+                style: TextStyle(fontSize: 10, color: context.chartTextColor),
               ),
             ),
           ),
@@ -773,7 +773,7 @@ class _CadenceChart extends StatelessWidget {
               reservedSize: 22,
               getTitlesWidget: (value, meta) => Text(
                 '${value.toInt()}m',
-                style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+                style: TextStyle(fontSize: 10, color: context.chartTextColor),
               ),
             ),
           ),

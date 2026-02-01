@@ -50,10 +50,10 @@ class _PmcChartContent extends StatelessWidget {
     if (data.history.isEmpty) {
       return SizedBox(
         height: height,
-        child: const Center(
+        child: Center(
           child: Text(
             'Noch keine Trainingsdaten vorhanden',
-            style: TextStyle(color: AppColors.textSecondary),
+            style: TextStyle(color: context.secondaryTextColor),
           ),
         ),
       );
@@ -68,7 +68,7 @@ class _PmcChartContent extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _LegendItem(color: AppColors.primary, label: 'CTL (Fitness)'),
+              _LegendItem(color: context.primaryTextColor, label: 'CTL (Fitness)'),
               const SizedBox(width: 16),
               _LegendItem(color: AppColors.warning, label: 'ATL (Ermüdung)'),
               const SizedBox(width: 16),
@@ -82,7 +82,11 @@ class _PmcChartContent extends StatelessWidget {
           height: height,
           child: CustomPaint(
             size: Size.infinite,
-            painter: _PmcChartPainter(data: data),
+            painter: _PmcChartPainter(
+              data: data,
+              textColor: context.chartTextColor,
+              zeroLineColor: context.chartTextColor,
+            ),
           ),
         ),
       ],
@@ -127,8 +131,14 @@ class _LegendItem extends StatelessWidget {
 
 class _PmcChartPainter extends CustomPainter {
   final PerformanceManagementData data;
+  final Color textColor;
+  final Color zeroLineColor;
 
-  _PmcChartPainter({required this.data});
+  _PmcChartPainter({
+    required this.data,
+    required this.textColor,
+    required this.zeroLineColor,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -164,7 +174,7 @@ class _PmcChartPainter extends CustomPainter {
     if (minValue < 0 && maxValue > 0) {
       final zeroY = chartArea.bottom - (0 - minValue) / (maxValue - minValue) * chartArea.height;
       final zeroPaint = Paint()
-        ..color = AppColors.textMuted.withValues(alpha: 0.3)
+        ..color = zeroLineColor.withValues(alpha: 0.3)
         ..strokeWidth = 1
         ..style = PaintingStyle.stroke;
       canvas.drawLine(
@@ -231,8 +241,8 @@ class _PmcChartPainter extends CustomPainter {
 
       textPainter.text = TextSpan(
         text: value.round().toString(),
-        style: const TextStyle(
-          color: AppColors.textMuted,
+        style: TextStyle(
+          color: textColor,
           fontSize: 10,
         ),
       );
@@ -262,8 +272,8 @@ class _PmcChartPainter extends CustomPainter {
 
       textPainter.text = TextSpan(
         text: '${date.day}.${date.month}',
-        style: const TextStyle(
-          color: AppColors.textMuted,
+        style: TextStyle(
+          color: textColor,
           fontSize: 10,
         ),
       );
@@ -277,6 +287,8 @@ class _PmcChartPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _PmcChartPainter oldDelegate) {
-    return data != oldDelegate.data;
+    return data != oldDelegate.data ||
+        textColor != oldDelegate.textColor ||
+        zeroLineColor != oldDelegate.zeroLineColor;
   }
 }

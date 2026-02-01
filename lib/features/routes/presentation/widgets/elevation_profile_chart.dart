@@ -36,9 +36,11 @@ class ElevationProfileChart extends StatelessWidget {
             maxElevation: route.maxElevation,
             totalDistance: route.totalDistance,
             currentDistance: currentDistance,
-            lineColor: lineColor ?? AppColors.primary,
-            fillColor: fillColor ?? AppColors.primary.withValues(alpha: 0.3),
+            lineColor: lineColor ?? context.primaryTextColor,
+            fillColor: fillColor ?? context.primaryTextColor.withValues(alpha: 0.3),
             positionColor: positionColor ?? AppColors.warning,
+            gridColor: context.chartGridColor,
+            textColor: context.chartTextColor,
           ),
         );
       },
@@ -55,6 +57,8 @@ class _ElevationProfilePainter extends CustomPainter {
   final Color lineColor;
   final Color fillColor;
   final Color positionColor;
+  final Color gridColor;
+  final Color textColor;
 
   _ElevationProfilePainter({
     required this.points,
@@ -65,6 +69,8 @@ class _ElevationProfilePainter extends CustomPainter {
     required this.lineColor,
     required this.fillColor,
     required this.positionColor,
+    required this.gridColor,
+    required this.textColor,
   });
 
   @override
@@ -214,7 +220,7 @@ class _ElevationProfilePainter extends CustomPainter {
 
   void _drawGrid(Canvas canvas, Rect rect, double minEle, double maxEle) {
     final gridPaint = Paint()
-      ..color = AppColors.surfaceLight
+      ..color = gridColor
       ..strokeWidth = 1;
 
     // Horizontale Linien (Höhe)
@@ -234,7 +240,7 @@ class _ElevationProfilePainter extends CustomPainter {
 
   void _drawAxes(Canvas canvas, Rect rect, double minEle, double maxEle) {
     final textStyle = TextStyle(
-      color: AppColors.textMuted,
+      color: textColor,
       fontSize: 10,
     );
 
@@ -330,7 +336,9 @@ class _ElevationProfilePainter extends CustomPainter {
   @override
   bool shouldRepaint(_ElevationProfilePainter oldDelegate) {
     return currentDistance != oldDelegate.currentDistance ||
-        points != oldDelegate.points;
+        points != oldDelegate.points ||
+        gridColor != oldDelegate.gridColor ||
+        textColor != oldDelegate.textColor;
   }
 }
 
@@ -360,6 +368,8 @@ class ElevationProfileMini extends StatelessWidget {
           minElevation: route.minElevation,
           maxElevation: route.maxElevation,
           totalDistance: route.totalDistance,
+          lineColor: context.primaryTextColor,
+          fillColor: context.primaryTextColor,
         ),
       ),
     );
@@ -371,12 +381,16 @@ class _MiniProfilePainter extends CustomPainter {
   final double minElevation;
   final double maxElevation;
   final double totalDistance;
+  final Color lineColor;
+  final Color fillColor;
 
   _MiniProfilePainter({
     required this.points,
     required this.minElevation,
     required this.maxElevation,
     required this.totalDistance,
+    required this.lineColor,
+    required this.fillColor,
   });
 
   @override
@@ -412,8 +426,8 @@ class _MiniProfilePainter extends CustomPainter {
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        AppColors.primary.withValues(alpha: 0.4),
-        AppColors.primary.withValues(alpha: 0.1),
+        fillColor.withValues(alpha: 0.4),
+        fillColor.withValues(alpha: 0.1),
       ],
     );
 
@@ -426,12 +440,15 @@ class _MiniProfilePainter extends CustomPainter {
     canvas.drawPath(
       path,
       Paint()
-        ..color = AppColors.primary
+        ..color = lineColor
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.5,
     );
   }
 
   @override
-  bool shouldRepaint(_MiniProfilePainter oldDelegate) => false;
+  bool shouldRepaint(_MiniProfilePainter oldDelegate) {
+    return lineColor != oldDelegate.lineColor ||
+        fillColor != oldDelegate.fillColor;
+  }
 }
