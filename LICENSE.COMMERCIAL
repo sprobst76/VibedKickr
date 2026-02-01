@@ -1,0 +1,148 @@
+VIBEKICKR COMMERCIAL LICENSE AGREEMENT
+Version 1.0
+
+Effective Date: 2026
+
+LICENSOR: Stefan Probst
+LICENSEE: [To be determined per agreement]
+
+---
+
+1. OVERVIEW
+
+This Commercial License permits the licensee to use VibedKickr in commercial
+products and services while maintaining proprietary code and avoiding the
+disclosure requirements of the GNU Affero General Public License v3 (AGPL v3).
+
+The base software is licensed under AGPL v3. This Commercial License provides
+an exemption from AGPL v3 requirements for qualified commercial use cases.
+
+---
+
+2. PERMITTED USE
+
+Under this Commercial License, the licensee may:
+
+a) Integrate VibedKickr into proprietary products and services
+b) Modify the source code without disclosing modifications
+c) Distribute modified versions without releasing source code
+d) Offer VibedKickr as a Software-as-a-Service (SaaS) application
+e) Include VibedKickr in commercial applications with proprietary extensions
+f) Use VibedKickr for commercial training platforms, fitness studios, or apps
+g) Sublicense to end users (with restrictions defined in this agreement)
+
+---
+
+3. PROHIBITED USE
+
+Licensee shall NOT:
+
+a) Redistribute the unmodified VibedKickr software commercially
+b) Claim original authorship or copyright of VibedKickr
+c) Remove or alter copyright notices, license notices, or attribution
+d) Sublicense the Commercial License itself
+e) Use VibedKickr in competing commercial products (details per negotiation)
+
+---
+
+4. LICENSE FEE
+
+Commercial License fees are negotiated based on:
+
+- Type of use (SaaS, embedded, white-label, etc.)
+- Scale of deployment (number of users, locations, instances)
+- Geographic region
+- Support level required
+- Custom development needs
+
+Pricing: Available upon request. Contact license@vibekickr.dev for a quote.
+
+Payment terms: To be negotiated per agreement (annual, perpetual, etc.)
+
+---
+
+5. SUPPORT & MAINTENANCE
+
+Support level depends on the Commercial License agreement:
+
+- **Basic**: Security updates and critical bug fixes
+- **Standard**: Priority bug fixes, monthly updates, email support
+- **Premium**: Priority development, custom features, phone/Slack support
+
+Details to be specified in the final agreement.
+
+---
+
+6. INTELLECTUAL PROPERTY
+
+a) The Licensor retains all intellectual property rights to VibedKickr
+b) Modifications made by the Licensee remain the property of the Licensee
+c) The Licensor may use non-confidential feedback for product improvements
+d) VibedKickr remains attributed to the original authors
+
+---
+
+7. WARRANTY DISCLAIMER
+
+THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+
+IN NO EVENT SHALL THE LICENSOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+LIABILITY ARISING FROM THE USE OF THE SOFTWARE.
+
+---
+
+8. TERM & TERMINATION
+
+a) License term: To be specified in the final agreement (1-year, multi-year, perpetual)
+b) Renewal: Automatic unless written notice of non-renewal is given
+c) Termination: Either party may terminate with 30 days written notice
+d) Effect of termination: Licensee must cease using VibedKickr in new deployments
+   but may maintain existing installations during a 60-day transition period
+
+---
+
+9. CONFIDENTIALITY
+
+Both parties agree to maintain the confidentiality of:
+
+a) Terms of this Commercial License Agreement
+b) Pricing and fee structures
+c) Custom development details
+d) Sensitive business information shared during support
+
+---
+
+10. GOVERNING LAW
+
+This Commercial License Agreement is governed by German law and jurisdiction.
+
+---
+
+11. CONTACT & INQUIRIES
+
+For Commercial License inquiries, contact:
+
+Email: license@vibekickr.dev
+Subject: Commercial License Inquiry - [Your Company Name]
+
+Please include:
+- Company name and description
+- Type of intended use (SaaS, embedded, white-label, etc.)
+- Estimated scale (users, locations, regions)
+- Timeline for implementation
+- Support requirements
+
+---
+
+ACCEPTANCE
+
+By using VibedKickr under a Commercial License, the Licensee accepts all
+terms and conditions outlined in this agreement.
+
+For questions or clarifications, contact the Licensor at the email address above.
+
+---
+
+Last Updated: February 2026

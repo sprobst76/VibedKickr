@@ -4,7 +4,8 @@ Eine leistungsstarke Flutter-App für Indoor-Cycling-Training mit Smart Trainer 
 
 [![Flutter CI](https://github.com/sprobst76/VibedKickr/actions/workflows/flutter-ci.yml/badge.svg)](https://github.com/sprobst76/VibedKickr/actions/workflows/flutter-ci.yml)
 [![Release](https://github.com/sprobst76/VibedKickr/actions/workflows/release.yml/badge.svg)](https://github.com/sprobst76/VibedKickr/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![Commercial License Available](https://img.shields.io/badge/Commercial%20License-Available-green.svg)](LICENSE.COMMERCIAL)
 
 ## Übersicht
 
@@ -226,9 +227,76 @@ Siehe [CHANGELOG.md](CHANGELOG.md) für die vollständige Versionshistorie.
 
 Siehe [TODO.md](TODO.md) für geplante Features.
 
-## Lizenz
+## Lizensierung
 
-MIT License - Siehe [LICENSE](LICENSE) Datei
+### Für Community & Open Source
+
+**GNU Affero General Public License v3 (AGPL v3)**
+
+VibedKickr ist unter AGPL v3 lizenziert. Das bedeutet:
+
+✅ **Kostenlos für:**
+- Privates Training und Entwicklung
+- Fitness-Studios (interne Nutzung)
+- Open Source Projekte
+- Lehreinrichtungen
+- Gemeinnützige Organisationen
+
+❌ **Nicht erlaubt ohne Lizenz:**
+- Als SaaS/Web-App kommerziell anbieten
+- In Premium-Apps integrieren und verkaufen
+- Gewinnbringende Nutzung ohne Offenlegung des Codes
+- Kommerzielle Modifikationen ohne Code-Offenlegung
+
+Wenn du AGPL v3 verwendest, musst du alle Modifikationen und den gesamten Code offenlegen.
+
+### Für kommerzielle Nutzung
+
+**Commercial License** - Bezahlte Lizenz für Unternehmen
+
+Falls du VibedKickr kommerziell nutzen möchtest, ist eine Commercial License erforderlich. Diese ermöglicht:
+
+✅ **Mit Commercial License darfst du:**
+- VibedKickr als SaaS anbieten
+- Proprietary Extensions und Modifikationen machen
+- Code geheim halten
+- In kommerzielle Produkte integrieren
+- Für Fitness-Studios/Premium-Apps nutzen
+
+**Pricing:** Nach Anfrage (basierend auf Nutzungsart und Skalierung)
+
+📧 **Kontakt für Commercial Licenses:**
+```
+Email: license@vibekickr.dev
+Subject: Commercial License Inquiry
+```
+
+Bitte angeben:
+- Unternehmensname und Beschreibung
+- Geplante Nutzung (SaaS, embedded, white-label, etc.)
+- Geschätzte Skalierung (Benutzer, Standorte, Regionen)
+- Support-Anforderungen
+
+Siehe [LICENSE.COMMERCIAL](LICENSE.COMMERCIAL) für vollständige Terms & Conditions.
+
+---
+
+**Lizenz-Übersicht:**
+
+| Feature | AGPL v3 (Kostenlos) | Commercial License |
+|---------|-------------------|-------------------|
+| Privates Nutzung | ✅ | ✅ |
+| Modifikationen erlaubt | ✅ | ✅ |
+| Code muss offengelegt | ✅ | ❌ |
+| SaaS/kommerzielle Nutzung | ❌* | ✅ |
+| Proprietary Extensions | ❌ | ✅ |
+| Support | Community | Bezahlt |
+
+*Mit AGPL v3: Nur wenn allen Code offenlegst
+
+---
+
+Siehe [LICENSE](LICENSE) für die vollständige AGPL v3 Lizenztext
 
 ## Autor
 
