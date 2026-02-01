@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/services/health_training_personalization_service.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../domain/entities/athlete_profile.dart';
 import '../../../../providers/providers.dart';
 import '../../../../routing/app_router.dart';
 import '../widgets/strava_settings_card.dart';
@@ -55,6 +57,52 @@ class SettingsPage extends ConsumerWidget {
                   icon: Icons.favorite,
                   onTap: () => _showMaxHrDialog(context, ref, profile.maxHr),
                 ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // Profil & Gesundheit
+          _SectionHeader(title: 'Profil & Gesundheit'),
+          Card(
+            child: Column(
+              children: [
+                _SettingsTile(
+                  title: 'Geburtsdatum',
+                  subtitle: profile.birthDate != null
+                      ? '${profile.birthDate!.day.toString().padLeft(2, '0')}.${profile.birthDate!.month.toString().padLeft(2, '0')}.${profile.birthDate!.year}'
+                      : 'Nicht gesetzt',
+                  icon: Icons.calendar_today,
+                  onTap: () => _showBirthDatePicker(context, ref, profile.birthDate),
+                ),
+                const Divider(height: 1),
+                _SettingsTile(
+                  title: 'Alter',
+                  subtitle: profile.age != null ? '${profile.age} Jahre' : 'Geburtsdatum erforderlich',
+                  icon: Icons.info_outline,
+                ),
+                const Divider(height: 1),
+                _SettingsTile(
+                  title: 'Geschlecht',
+                  subtitle: profile.gender != null ? profile.gender!.label : 'Nicht gesetzt',
+                  icon: Icons.person,
+                  onTap: () => _showGenderDialog(context, ref, profile.gender),
+                ),
+                const Divider(height: 1),
+                _SettingsTile(
+                  title: 'Max. Herzfrequenz (berechnet)',
+                  subtitle: profile.age != null
+                      ? '${HealthTrainingPersonalizationService.calculateMaxHeartRate(profile.age!, gender: profile.gender)} bpm'
+                      : 'Geburtsdatum erforderlich',
+                  icon: Icons.favorite,
+                ),
+                if (profile.age != null) ...[
+                  const Divider(height: 1),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: _HealthMetricsDisplay(profile: profile),
+                  ),
+                ],
               ],
             ),
           ),
@@ -466,6 +514,78 @@ class SettingsPage extends ConsumerWidget {
     );
   }
 
+  void _showBirthDatePicker(BuildContext context, WidgetRef ref, DateTime? currentDate) async {
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: currentDate ?? DateTime.now().subtract(const Duration(days: 365 * 30)),
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
+      locale: const Locale('de', 'DE'),
+    );
+
+    if (pickedDate != null) {
+      ref.read(athleteProfileProvider.notifier).updateBirthDate(pickedDate);
+    }
+  }
+
+  void _showGenderDialog(BuildContext context, WidgetRef ref, Gender? currentGender) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Geschlecht'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RadioListTile<Gender>(
+              title: const Text('Männlich'),
+              value: Gender.male,
+              groupValue: currentGender,
+              onChanged: (value) {
+                if (value != null) {
+                  ref.read(athleteProfileProvider.notifier).updateGender(value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            RadioListTile<Gender>(
+              title: const Text('Weiblich'),
+              value: Gender.female,
+              groupValue: currentGender,
+              onChanged: (value) {
+                if (value != null) {
+                  ref.read(athleteProfileProvider.notifier).updateGender(value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            RadioListTile<Gender>(
+              title: const Text('Sonstiges'),
+              value: Gender.other,
+              groupValue: currentGender,
+              onChanged: (value) {
+                if (value != null) {
+                  ref.read(athleteProfileProvider.notifier).updateGender(value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            RadioListTile<Gender>(
+              title: const Text('Nicht angegeben'),
+              value: Gender.notSpecified,
+              groupValue: currentGender,
+              onChanged: (value) {
+                if (value != null) {
+                  ref.read(athleteProfileProvider.notifier).updateGender(value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   String _getThemeModeLabel(ThemeMode mode) {
     return switch (mode) {
       ThemeMode.system => 'System',
@@ -576,6 +696,191 @@ class _ZoneRow extends StatelessWidget {
               color: color,
               fontWeight: FontWeight.w500,
               fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HealthMetricsDisplay extends StatelessWidget {
+  final AthleteProfile profile;
+
+  const _HealthMetricsDisplay({required this.profile});
+
+  @override
+  Widget build(BuildContext context) {
+    final age = profile.age;
+    if (age == null) return const SizedBox.shrink();
+
+    final maxHr = HealthTrainingPersonalizationService.calculateMaxHeartRate(
+      age,
+      gender: profile.gender,
+    );
+    final ageFactor = HealthTrainingPersonalizationService.calculateAgeFactor(age);
+    final safePercent = (ageFactor * 100).round();
+    final safeHr = (maxHr * ageFactor).round();
+    final barColor = ageFactor >= 0.85
+        ? Colors.green
+        : ageFactor >= 0.75
+            ? Colors.orange
+            : Colors.red;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Sicherer Trainingsbereich',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            Text(
+              'bis $safePercent% max HR',
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: LinearProgressIndicator(
+                value: ageFactor,
+                minHeight: 32,
+                backgroundColor: AppColors.surfaceLight,
+                valueColor: AlwaysStoppedAnimation<Color>(barColor),
+              ),
+            ),
+            Positioned.fill(
+              child: Center(
+                child: Text(
+                  '$safeHr bpm',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppColors.surfaceLight,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Empfohlene Zonen',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textMuted,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              _HrZoneBadge(
+                zone: 'Z1',
+                name: 'Recovery',
+                min: 0,
+                max: (maxHr * 0.60).round(),
+              ),
+              _HrZoneBadge(
+                zone: 'Z2',
+                name: 'Aerobic',
+                min: (maxHr * 0.60).round() + 1,
+                max: (maxHr * 0.70).round(),
+              ),
+              _HrZoneBadge(
+                zone: 'Z3',
+                name: 'Tempo',
+                min: (maxHr * 0.70).round() + 1,
+                max: (maxHr * 0.80).round(),
+              ),
+              _HrZoneBadge(
+                zone: 'Z4',
+                name: 'Threshold',
+                min: (maxHr * 0.80).round() + 1,
+                max: (maxHr * 0.90).round(),
+              ),
+              _HrZoneBadge(
+                zone: 'Z5',
+                name: 'Max',
+                min: (maxHr * 0.90).round() + 1,
+                max: maxHr,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _HrZoneBadge extends StatelessWidget {
+  final String zone;
+  final String name;
+  final int min;
+  final int max;
+
+  const _HrZoneBadge({
+    required this.zone,
+    required this.name,
+    required this.min,
+    required this.max,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              zone,
+              style: const TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              name,
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
+          Text(
+            '$min–$max bpm',
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textSecondary,
             ),
           ),
         ],

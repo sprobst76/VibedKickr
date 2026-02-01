@@ -196,6 +196,14 @@ class AthleteProfileNotifier extends StateNotifier<AthleteProfile> {
     );
   }
 
+  void updateBirthDate(DateTime? birthDate) {
+    state = state.copyWith(birthDate: birthDate);
+  }
+
+  void updateGender(Gender? gender) {
+    state = state.copyWith(gender: gender);
+  }
+
   void updateProfile(AthleteProfile profile) {
     state = profile;
   }
