@@ -28,7 +28,7 @@ class ScheduledWorkoutMapper {
         createdAt: entity.createdAt,
       );
     } else {
-      final workout = await _strengthWorkoutDao.getWorkout(entity.workoutId);
+      final workout = await _strengthWorkoutDao.getWorkoutById(entity.workoutId);
 
       return ScheduledWorkout(
         id: entity.id,

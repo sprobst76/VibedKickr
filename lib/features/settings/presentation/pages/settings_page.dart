@@ -526,6 +526,26 @@ class SettingsPage extends ConsumerWidget {
       firstDate: DateTime(1950),
       lastDate: DateTime.now(),
       locale: const Locale('de', 'DE'),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            useMaterial3: true,
+            datePickerTheme: DatePickerThemeData(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              elevation: 8,
+              headerBackgroundColor: AppColors.primary,
+              headerForegroundColor: Colors.white,
+              weekdayStyle: const TextStyle(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+              dayStyle: const TextStyle(color: AppColors.textPrimary),
+              yearStyle: const TextStyle(color: AppColors.textPrimary),
+            ),
+          ),
+          child: child ?? const SizedBox(),
+        );
+      },
     );
 
     if (pickedDate != null) {

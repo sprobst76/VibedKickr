@@ -106,6 +106,26 @@ class __ScheduleWorkoutDialogState
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
       locale: const Locale('de', 'DE'),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            useMaterial3: true,
+            datePickerTheme: DatePickerThemeData(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              elevation: 8,
+              headerBackgroundColor: AppColors.primary,
+              headerForegroundColor: Colors.white,
+              weekdayStyle: const TextStyle(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+              dayStyle: const TextStyle(color: AppColors.textPrimary),
+              yearStyle: const TextStyle(color: AppColors.textPrimary),
+            ),
+          ),
+          child: child ?? const SizedBox(),
+        );
+      },
     );
 
     if (date != null) {
@@ -117,6 +137,23 @@ class __ScheduleWorkoutDialogState
     final time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            useMaterial3: true,
+            timePickerTheme: TimePickerThemeData(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              hourMinuteTextColor: AppColors.textPrimary,
+              hourMinuteColor: AppColors.primary.withValues(alpha: 0.1),
+              dialHandColor: AppColors.primary,
+              dialBackgroundColor: AppColors.surfaceLight,
+              entryModeIconColor: AppColors.textSecondary,
+              helpTextStyle: const TextStyle(color: AppColors.textPrimary),
+            ),
+          ),
+          child: child ?? const SizedBox(),
+        );
+      },
     );
 
     if (time != null) {
