@@ -1,5 +1,28 @@
 import 'package:equatable/equatable.dart';
 
+/// Geschlecht des Athleten
+enum Gender {
+  male,
+  female,
+  other,
+  notSpecified,
+}
+
+extension GenderExtension on Gender {
+  String get label {
+    switch (this) {
+      case Gender.male:
+        return 'Männlich';
+      case Gender.female:
+        return 'Weiblich';
+      case Gender.other:
+        return 'Sonstiges';
+      case Gender.notSpecified:
+        return 'Nicht angegeben';
+    }
+  }
+}
+
 /// Power Zones nach Coggan
 class PowerZones extends Equatable {
   final int z1Max; // Active Recovery
@@ -137,6 +160,8 @@ class AthleteProfile extends Equatable {
   final int? maxHr; // Maximale Herzfrequenz
   final int? restingHr; // Ruhepuls
   final int? weight; // Gewicht in kg (für W/kg)
+  final DateTime? birthDate; // Geburtsdatum für Altersberechnung
+  final Gender? gender; // Geschlecht für geschlechtsbasierte Berechnungen
   final PowerZones powerZones;
   final HeartRateZones? hrZones;
   final DateTime? ftpTestDate;
@@ -149,11 +174,25 @@ class AthleteProfile extends Equatable {
     this.maxHr,
     this.restingHr,
     this.weight,
+    this.birthDate,
+    this.gender,
     required this.powerZones,
     this.hrZones,
     this.ftpTestDate,
     this.ftpHistory = const [],
   });
+
+  /// Berechnet das Alter basierend auf Geburtsdatum
+  int? get age {
+    if (birthDate == null) return null;
+    final now = DateTime.now();
+    int calculatedAge = now.year - birthDate!.year;
+    if (now.month < birthDate!.month ||
+        (now.month == birthDate!.month && now.day < birthDate!.day)) {
+      calculatedAge--;
+    }
+    return calculatedAge;
+  }
 
   /// W/kg Berechnung
   double? get wattsPerKg {
@@ -178,6 +217,8 @@ class AthleteProfile extends Equatable {
     int? maxHr,
     int? restingHr,
     int? weight,
+    DateTime? birthDate,
+    Gender? gender,
     PowerZones? powerZones,
     HeartRateZones? hrZones,
     DateTime? ftpTestDate,
@@ -190,6 +231,8 @@ class AthleteProfile extends Equatable {
       maxHr: maxHr ?? this.maxHr,
       restingHr: restingHr ?? this.restingHr,
       weight: weight ?? this.weight,
+      birthDate: birthDate ?? this.birthDate,
+      gender: gender ?? this.gender,
       powerZones: powerZones ?? this.powerZones,
       hrZones: hrZones ?? this.hrZones,
       ftpTestDate: ftpTestDate ?? this.ftpTestDate,
@@ -219,6 +262,8 @@ class AthleteProfile extends Equatable {
         'maxHr': maxHr,
         'restingHr': restingHr,
         'weight': weight,
+        'birthDate': birthDate?.toIso8601String(),
+        'gender': gender?.name,
         'powerZones': powerZones.toJson(),
         'hrZones': hrZones?.toJson(),
         'ftpTestDate': ftpTestDate?.toIso8601String(),
@@ -232,6 +277,12 @@ class AthleteProfile extends Equatable {
         maxHr: json['maxHr'] as int?,
         restingHr: json['restingHr'] as int?,
         weight: json['weight'] as int?,
+        birthDate: json['birthDate'] != null
+            ? DateTime.parse(json['birthDate'] as String)
+            : null,
+        gender: json['gender'] != null
+            ? Gender.values.byName(json['gender'] as String)
+            : null,
         powerZones: PowerZones.fromJson(json['powerZones'] as Map<String, dynamic>),
         hrZones: json['hrZones'] != null
             ? HeartRateZones.fromJson(json['hrZones'] as Map<String, dynamic>)
@@ -253,6 +304,8 @@ class AthleteProfile extends Equatable {
         maxHr,
         restingHr,
         weight,
+        birthDate,
+        gender,
         powerZones,
         hrZones,
         ftpTestDate,

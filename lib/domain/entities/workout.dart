@@ -103,6 +103,9 @@ class WorkoutInterval extends Equatable {
   final int? cadenceMin;
   final int? cadenceMax;
   final String? instructions;
+  final int? targetHeartRate; // Ziel-HR in bpm für Health Training
+  final int? maxHeartRate; // Maximale sichere HR in bpm
+  final bool monitorRecovery; // Sollte HR-Erholung gemessen werden?
 
   const WorkoutInterval({
     required this.name,
@@ -112,6 +115,9 @@ class WorkoutInterval extends Equatable {
     this.cadenceMin,
     this.cadenceMax,
     this.instructions,
+    this.targetHeartRate,
+    this.maxHeartRate,
+    this.monitorRecovery = false,
   });
 
   factory WorkoutInterval.fromJson(Map<String, dynamic> json) {
@@ -126,6 +132,9 @@ class WorkoutInterval extends Equatable {
       cadenceMin: json['cadenceMin'] as int?,
       cadenceMax: json['cadenceMax'] as int?,
       instructions: json['instructions'] as String?,
+      targetHeartRate: json['targetHeartRate'] as int?,
+      maxHeartRate: json['maxHeartRate'] as int?,
+      monitorRecovery: json['monitorRecovery'] as bool? ?? false,
     );
   }
 
@@ -137,6 +146,9 @@ class WorkoutInterval extends Equatable {
         'cadenceMin': cadenceMin,
         'cadenceMax': cadenceMax,
         'instructions': instructions,
+        'targetHeartRate': targetHeartRate,
+        'maxHeartRate': maxHeartRate,
+        'monitorRecovery': monitorRecovery,
       };
 
   /// Erstellt eine Kopie mit optionalen Änderungen
@@ -148,6 +160,9 @@ class WorkoutInterval extends Equatable {
     int? cadenceMin,
     int? cadenceMax,
     String? instructions,
+    int? targetHeartRate,
+    int? maxHeartRate,
+    bool? monitorRecovery,
   }) {
     return WorkoutInterval(
       name: name ?? this.name,
@@ -157,12 +172,25 @@ class WorkoutInterval extends Equatable {
       cadenceMin: cadenceMin ?? this.cadenceMin,
       cadenceMax: cadenceMax ?? this.cadenceMax,
       instructions: instructions ?? this.instructions,
+      targetHeartRate: targetHeartRate ?? this.targetHeartRate,
+      maxHeartRate: maxHeartRate ?? this.maxHeartRate,
+      monitorRecovery: monitorRecovery ?? this.monitorRecovery,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [name, duration, type, powerTarget, cadenceMin, cadenceMax, instructions];
+  List<Object?> get props => [
+        name,
+        duration,
+        type,
+        powerTarget,
+        cadenceMin,
+        cadenceMax,
+        instructions,
+        targetHeartRate,
+        maxHeartRate,
+        monitorRecovery,
+      ];
 }
 
 /// Komplettes Workout
