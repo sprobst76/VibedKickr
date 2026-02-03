@@ -139,6 +139,8 @@ class SettingsPage extends ConsumerWidget {
                   value: autoConnect,
                   onChanged: (value) {
                     ref.read(autoConnectProvider.notifier).state = value;
+                    // Wire to BLE Manager für Reconnection-Logik
+                    ref.read(bleManagerProvider).setAutoReconnect(value);
                   },
                 ),
                 const Divider(height: 1),

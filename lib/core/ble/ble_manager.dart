@@ -9,6 +9,8 @@ import 'ftms_service.dart';
 import 'heart_rate_service.dart';
 import 'models/ble_device.dart';
 import 'models/connection_state.dart';
+import 'models/reconnection_state.dart';
+import 'reconnection_manager.dart';
 
 /// Zentrale Klasse für BLE-Kommunikation mit Multi-Device Support
 class BleManager {
@@ -57,6 +59,10 @@ class BleManager {
   /// HR Daten Stream (von standalone HR Monitor)
   Stream<HeartRateData> get heartRateData => _hrDataController.stream;
 
+  /// Reconnection State Stream
+  Stream<BleReconnectionState> get reconnectionState =>
+      _reconnectionManager.reconnectionState;
+
   BleConnectionState _currentState = BleConnectionState.disconnected();
   BleConnectionState get currentState => _currentState;
 
@@ -83,6 +89,10 @@ class BleManager {
   String? _lastConnectedTrainerId;
   String? _lastConnectedHrMonitorId;
   bool _autoReconnectEnabled = true;
+  bool _isManualDisconnect = false; // Guard gegen Auto-Reconnect nach manuellem Disconnect
+
+  // Reconnection Manager
+  final _reconnectionManager = BleReconnectionManager();
 
   // Platform support
   bool _isSupported = false;
@@ -143,6 +153,23 @@ class BleManager {
         if (state == BluetoothAdapterState.off) {
           _updateTrainerState(BleConnectionState.error('Bluetooth ist ausgeschaltet'));
           _updateHrState(BleConnectionState.error('Bluetooth ist ausgeschaltet'));
+          _reconnectionManager.cancelReconnection();
+        } else if (state == BluetoothAdapterState.on) {
+          // Bluetooth ist wieder an - versuche zu reconnecten wenn wir im Fehler-Zustand sind
+          if (_autoReconnectEnabled && _lastConnectedTrainerId != null &&
+              _currentState.status == ConnectionStatus.error) {
+            logger.i('Bluetooth turned back on - attempting trainer reconnect');
+            Future.delayed(const Duration(seconds: 1), () {
+              _handleTrainerDisconnection();
+            });
+          }
+          if (_autoReconnectEnabled && _lastConnectedHrMonitorId != null &&
+              _hrCurrentState.status == ConnectionStatus.error) {
+            logger.i('Bluetooth turned back on - attempting HR monitor reconnect');
+            Future.delayed(const Duration(seconds: 1), () {
+              _handleHrMonitorDisconnection();
+            });
+          }
         }
       });
 
@@ -457,7 +484,10 @@ class BleManager {
 
   /// Trennt die Trainer-Verbindung
   Future<void> disconnectTrainer() async {
-    logger.i('Disconnecting Trainer');
+    logger.i('Disconnecting Trainer (manual)');
+    _isManualDisconnect = true; // Verhindere Auto-Reconnect
+    _reconnectionManager.cancelReconnection();
+
     _trainerConnectionSubscription?.cancel();
     _ftmsService?.dispose();
     _ftmsService = null;
@@ -470,11 +500,15 @@ class BleManager {
 
     _connectedTrainer = null;
     _updateTrainerState(BleConnectionState.disconnected());
+    _isManualDisconnect = false; // Reset für nächste Disconnection
   }
 
   /// Trennt die HR Monitor-Verbindung
   Future<void> disconnectHrMonitor() async {
-    logger.i('Disconnecting HR Monitor');
+    logger.i('Disconnecting HR Monitor (manual)');
+    _isManualDisconnect = true; // Verhindere Auto-Reconnect
+    _reconnectionManager.cancelReconnection();
+
     _hrConnectionSubscription?.cancel();
     _hrDataSubscription?.cancel();
     _heartRateService?.dispose();
@@ -488,6 +522,7 @@ class BleManager {
 
     _connectedHrMonitor = null;
     _updateHrState(BleConnectionState.disconnected());
+    _isManualDisconnect = false; // Reset für nächste Disconnection
   }
 
   /// Legacy disconnect - trennt Trainer
@@ -528,39 +563,100 @@ class BleManager {
   }
 
   void _handleTrainerDisconnection() {
-    logger.w('Trainer disconnected');
+    logger.w('Trainer disconnected unexpectedly');
+
+    // Cleanup
     _ftmsService?.dispose();
     _ftmsService = null;
     _connectedTrainer = null;
+
+    // Verhindere Auto-Reconnect bei manuellem Disconnect
+    if (_isManualDisconnect) {
+      _updateTrainerState(BleConnectionState.disconnected());
+      return;
+    }
+
     _updateTrainerState(BleConnectionState.disconnected());
 
-    // Auto-Reconnect
+    // Starte exponentiellen Backoff für Reconnection
     if (_autoReconnectEnabled && _lastConnectedTrainerId != null) {
-      logger.i('Attempting trainer auto-reconnect in 2 seconds');
-      Future.delayed(const Duration(seconds: 2), () {
-        reconnectTrainer();
-      });
+      logger.i('Starting auto-reconnect for trainer: $_lastConnectedTrainerId');
+      _reconnectionManager.startReconnection(
+        deviceId: _lastConnectedTrainerId!,
+        reconnectFunction: () async {
+          // Update state to reconnecting
+          _updateTrainerState(BleConnectionState.reconnecting(
+            BleDevice(
+              id: _lastConnectedTrainerId!,
+              name: 'Previous Trainer',
+              rssi: 0,
+              bluetoothDevice: _connectedTrainer ?? BluetoothDevice(remoteId: DeviceIdentifier(_lastConnectedTrainerId!)),
+              deviceType: BleDeviceType.trainer,
+            ),
+          ));
+          return await reconnectTrainer();
+        },
+        onStateChange: (state) {
+          if (state.status == ReconnectionStatus.failed) {
+            _updateTrainerState(BleConnectionState.error(
+              'Reconnection failed after ${state.maxAttempts} attempts',
+            ));
+          }
+        },
+      );
     }
   }
 
   void _handleHrMonitorDisconnection() {
-    logger.w('HR Monitor disconnected');
+    logger.w('HR Monitor disconnected unexpectedly');
+
+    // Cleanup
     _hrDataSubscription?.cancel();
     _heartRateService?.dispose();
     _heartRateService = null;
     _connectedHrMonitor = null;
+
+    // Verhindere Auto-Reconnect bei manuellem Disconnect
+    if (_isManualDisconnect) {
+      _updateHrState(BleConnectionState.disconnected());
+      return;
+    }
+
     _updateHrState(BleConnectionState.disconnected());
 
-    // Auto-Reconnect für HR Monitor
+    // Starte exponentiellen Backoff für Reconnection
     if (_autoReconnectEnabled && _lastConnectedHrMonitorId != null) {
-      logger.i('Attempting HR Monitor auto-reconnect in 2 seconds');
-      Future.delayed(const Duration(seconds: 2), () async {
-        await startScan(timeout: const Duration(seconds: 5));
-        final device = _devices.where((d) => d.id == _lastConnectedHrMonitorId).firstOrNull;
-        if (device != null) {
-          await connectHrMonitor(device);
-        }
-      });
+      logger.i('Starting auto-reconnect for HR Monitor: $_lastConnectedHrMonitorId');
+      _reconnectionManager.startReconnection(
+        deviceId: _lastConnectedHrMonitorId!,
+        reconnectFunction: () async {
+          // Update state to reconnecting
+          _updateHrState(BleConnectionState.reconnecting(
+            BleDevice(
+              id: _lastConnectedHrMonitorId!,
+              name: 'Previous HR Monitor',
+              rssi: 0,
+              bluetoothDevice: _connectedHrMonitor ?? BluetoothDevice(remoteId: DeviceIdentifier(_lastConnectedHrMonitorId!)),
+              deviceType: BleDeviceType.heartRateMonitor,
+            ),
+          ));
+
+          // Scan für das Gerät und reconnect
+          await startScan(timeout: const Duration(seconds: 5));
+          final device = _devices.where((d) => d.id == _lastConnectedHrMonitorId).firstOrNull;
+          if (device != null) {
+            return await connectHrMonitor(device);
+          }
+          return false;
+        },
+        onStateChange: (state) {
+          if (state.status == ReconnectionStatus.failed) {
+            _updateHrState(BleConnectionState.error(
+              'Reconnection failed after ${state.maxAttempts} attempts',
+            ));
+          }
+        },
+      );
     }
   }
 
@@ -615,7 +711,14 @@ class BleManager {
   /// Aktiviert/Deaktiviert Auto-Reconnect
   void setAutoReconnect(bool enabled) {
     _autoReconnectEnabled = enabled;
+    if (!enabled) {
+      logger.i('Auto-Reconnect disabled - cancelling active reconnection');
+      _reconnectionManager.cancelReconnection();
+    }
   }
+
+  /// Gibt zurück ob Auto-Reconnect aktiviert ist
+  bool get autoReconnectEnabled => _autoReconnectEnabled;
 
   void dispose() {
     _trainerConnectionSubscription?.cancel();
@@ -623,6 +726,7 @@ class BleManager {
     _hrDataSubscription?.cancel();
     _scanSubscription?.cancel();
     _adapterStateSubscription?.cancel();
+    _reconnectionManager.dispose();
     _connectionStateController.close();
     _hrConnectionStateController.close();
     _discoveredDevicesController.close();

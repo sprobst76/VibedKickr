@@ -42,6 +42,12 @@ class _StatusBar extends StatelessWidget {
           'Verbinde mit ${state.device?.name ?? "Gerät"}...',
           null,
         ),
+      ConnectionStatus.reconnecting => (
+          Icons.bluetooth_searching,
+          AppColors.scanning,
+          'Stelle Verbindung wieder her...',
+          null,
+        ),
       ConnectionStatus.disconnected => (
           Icons.bluetooth_disabled,
           AppColors.textMuted,

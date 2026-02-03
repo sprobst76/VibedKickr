@@ -5,6 +5,7 @@ import 'ble_device.dart';
 enum ConnectionStatus {
   disconnected,
   connecting,
+  reconnecting,
   connected,
   error,
 }
@@ -30,6 +31,11 @@ class BleConnectionState extends Equatable {
         device: device,
       );
 
+  factory BleConnectionState.reconnecting(BleDevice device) => BleConnectionState._(
+        status: ConnectionStatus.reconnecting,
+        device: device,
+      );
+
   factory BleConnectionState.connected(BleDevice device) => BleConnectionState._(
         status: ConnectionStatus.connected,
         device: device,
@@ -47,6 +53,7 @@ class BleConnectionState extends Equatable {
 
   bool get isConnected => status == ConnectionStatus.connected;
   bool get isConnecting => status == ConnectionStatus.connecting;
+  bool get isReconnecting => status == ConnectionStatus.reconnecting;
   bool get isDisconnected => status == ConnectionStatus.disconnected;
   bool get hasError => status == ConnectionStatus.error;
 

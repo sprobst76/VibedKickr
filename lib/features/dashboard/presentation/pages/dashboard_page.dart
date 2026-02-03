@@ -64,6 +64,7 @@ class _ConnectionButton extends ConsumerWidget {
     final color = switch (state.status) {
       ConnectionStatus.connected => AppColors.connected,
       ConnectionStatus.connecting => AppColors.scanning,
+      ConnectionStatus.reconnecting => AppColors.scanning,
       ConnectionStatus.disconnected => AppColors.textMuted,
       ConnectionStatus.error => AppColors.error,
     };

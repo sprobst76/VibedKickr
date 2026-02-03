@@ -4,9 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/audio/audio_cue_service.dart';
+import '../../../core/ble/models/connection_state.dart';
 import '../../../core/services/health_safety_monitor.dart';
 import '../../../domain/entities/workout.dart';
 import '../../../domain/entities/training_session.dart';
+import '../../../main.dart';
 import '../../../providers/providers.dart';
 
 enum WorkoutPlayerState {
@@ -126,9 +128,15 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
   DateTime? _lastHrWarningWarning;
   int? _peakHrInInterval;
 
+  // BLE connection monitoring
+  StreamSubscription<BleConnectionState>? _bleConnectionSubscription;
+  bool _pausedDueToDisconnect = false;
+
   WorkoutPlayerNotifier(this._ref) : super(const WorkoutPlayerData()) {
     // Audio Service initialisieren
     _initAudio();
+    // BLE connection monitoring für auto-pause bei Disconnect
+    _initBleMonitoring();
   }
 
   Future<void> _initAudio() async {
@@ -137,6 +145,35 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
       await audioService.initialize();
     } catch (_) {
       // Audio nicht verfügbar - silent fail
+    }
+  }
+
+  Future<void> _initBleMonitoring() async {
+    try {
+      final bleManager = _ref.read(bleManagerProvider);
+      _bleConnectionSubscription = bleManager.connectionState.listen(
+        _handleConnectionStateChange,
+      );
+    } catch (e) {
+      logger.w('Failed to initialize BLE monitoring: $e');
+    }
+  }
+
+  void _handleConnectionStateChange(BleConnectionState connectionState) {
+    // Nur während aktivem Workout interessant
+    if (state.state != WorkoutPlayerState.running) return;
+
+    if (connectionState.isDisconnected || connectionState.hasError) {
+      // Trainer ist disconnected - pausiere automatisch
+      if (!_pausedDueToDisconnect) {
+        logger.w('Trainer disconnected during workout - auto-pausing');
+        _pausedDueToDisconnect = true;
+        pause();
+      }
+    } else if (connectionState.isConnected && _pausedDueToDisconnect) {
+      // Trainer ist reconnected - halte aber pausiert bis Benutzer resumen will
+      logger.i('Trainer reconnected - keeping paused until user resumes');
+      _pausedDueToDisconnect = false;
     }
   }
 
@@ -494,6 +531,7 @@ class WorkoutPlayerNotifier extends StateNotifier<WorkoutPlayerData> {
   @override
   void dispose() {
     _timer?.cancel();
+    _bleConnectionSubscription?.cancel();
     super.dispose();
   }
 }

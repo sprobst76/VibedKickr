@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import '../../../../core/ble/models/connection_state.dart';
 import '../../../../core/services/health_safety_monitor.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/duration_formatter.dart';
@@ -71,6 +72,35 @@ class _WorkoutPlayerPageState extends ConsumerState<WorkoutPlayerPage> {
     final liveData = ref.watch(liveTrainingDataProvider);
     final profile = ref.watch(athleteProfileProvider);
     final connectionState = ref.watch(bleConnectionStateProvider);
+
+    // Höre auf Reconnection-Statusänderungen und zeige Benachrichtigungen
+    ref.listen<AsyncValue<BleConnectionState>>(
+      bleConnectionStateProvider,
+      (previous, next) {
+        next.whenData((state) {
+          // Zeige "Reconnecting..." Notification
+          if (state.isReconnecting && mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: const Text('Verbindung wird wiederhergestellt...'),
+                duration: const Duration(seconds: 2),
+                backgroundColor: Colors.orange.withOpacity(0.8),
+              ),
+            );
+          }
+          // Zeige "Reconnected!" Notification
+          else if (previous?.value?.isReconnecting == true && state.isConnected) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: const Text('Trainer wieder verbunden!'),
+                duration: const Duration(seconds: 2),
+                backgroundColor: Colors.green.withOpacity(0.8),
+              ),
+            );
+          }
+        });
+      },
+    );
 
     final isConnected = connectionState.maybeWhen(
       data: (state) => state.isConnected,
