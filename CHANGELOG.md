@@ -18,6 +18,102 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [1.3.0] - 2026-02-03
+
+### Added - Robustes BLE Reconnection System
+
+**Kern-Features:**
+- **Exponential Backoff Reconnection** - Intelligente Wiederverbindung nach Bluetooth-Unterbrechung
+  - Progressive Verzögerungen: 2s → 4s → 8s → 16s → 32s (max 60s)
+  - Max 5 Reconnection-Versuche mit Circuit Breaker Pattern
+  - Verhindert Batterie-Verschleiß durch optimierte Wiederholung
+  - Concurrent Reconnection Guard gegen Race Conditions
+
+- **Reconnecting State** - Neue Verbindungs-Status für besseres UX
+  - New ConnectionStatus enum: `reconnecting`
+  - Dashboard-Icon zeigt Status während Reconnection
+  - Connection Status Bar mit "Verbindung wird wiederhergestellt..." Text
+  - Distinct Feedback während Reconnect vs Disconnect
+
+- **Workout Auto-Pause** - Schutz vor Datenkorruption
+  - Automatisches Pausieren bei Trainer-Disconnect
+  - Trainings-Daten bleiben konsistent
+  - Snackbar-Notification: "Trainer disconnected - auto-pausing"
+  - Workout bleibt pausiert nach Reconnect (manuelles Resume erforderlich)
+
+- **Bluetooth Adapter Recovery** - Automatische Wiederherstellung
+  - Erkennt wenn Bluetooth-Adapter ausgeschaltet wird
+  - Auto-Reconnect wenn Bluetooth wieder eingeschaltet wird
+  - Nahtlose Wiederverbindung ohne Benutzerinteraktion
+
+- **App Lifecycle Handling** - Background/Foreground Unterstützung
+  - AppLifecycleObserver für Lifecycle-Events
+  - Triggered Reconnect beim App-Resume (nach Background)
+  - Kritisch für iOS wo BLE bei Background-Transition droppt
+  - Proper Cleanup bei App-Pause
+
+- **Settings Integration** - User Control über Auto-Reconnect
+  - Auto-Reconnect Toggle in Settings vollständig verdrahtet
+  - Deaktivierung stoppt aktive Reconnection-Versuche
+  - Persistierung der Einstellung
+
+**Infrastructure:**
+- **BleReconnectionManager**: 280+ Zeilen Core-Logik
+  - Stream-basierte State Broadcasting
+  - Safe Event Handling mit Disposal-Checks
+  - Configuration für Max Retries und Backoff
+  - Timeout-Management für robuste Fehlerbehandlung
+
+- **Connection Event Logger**: Diagnostic Logging
+  - Event-Tracking für Reconnection-Versuche
+  - History (max 100 Events) für Debugging
+  - JSON Export für Diagnostik
+  - Formatted Output für Logs
+
+**Testing:**
+- **7 Unit Tests** - Core Reconnection Logic
+  - Exponential Backoff Verification
+  - Retry Limit Enforcement
+  - Concurrent Reconnection Guard
+  - State Transitions
+  - Cancellation Handling
+  - Stream Safety
+
+- **Comprehensive Integration Tests**
+  - Complete Reconnection Workflows
+  - Edge Case Handling
+  - Multi-Device Scenarios
+  - Lifecycle Integration
+
+### Changed
+- BLE Manager erweitert um Reconnection-Logik
+- Workout Player Provider mit BLE Connection Monitoring
+- Workout Player Page mit Reconnection UI Feedback
+- Dashboard mit Reconnecting State Handling
+- Connection Status Bar mit verbesserter Status-Anzeige
+- Settings Page mit funktionsfähigem Auto-Reconnect Toggle
+
+### Fixed
+- Bluetooth Adapter State wird nun korrekt überwacht
+- Manual Disconnect verhindert unerwünschte Auto-Reconnection
+- Stream Management mit Safe Disposal
+- Race Conditions bei mehreren Disconnect-Events
+
+### Technical
+- Build Quality: 0 Fehler, nur Info-Level Linting
+- Code Quality: 1,177 Zeilen neuer/verbesserter Code
+- 6 neue Dateien, 8 modifizierte Dateien
+- Platform-aware für Android, iOS, macOS, Linux
+- Non-blocking Backoff für responsive UI
+
+### Security
+- Safe Stream Handling bei Disposal
+- Concurrent Reconnection Guard
+- Manual Disconnect Protection
+- Proper Resource Cleanup
+
+---
+
 ## [1.0.0] - 2026-02-01
 
 ### Added - Krafttraining System (Major Feature)
