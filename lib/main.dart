@@ -5,6 +5,7 @@ import 'package:logger/logger.dart';
 import 'app.dart';
 import 'core/ble/ble_manager.dart';
 import 'core/lifecycle/app_lifecycle_observer.dart';
+import 'core/services/notification_service.dart';
 
 final logger = Logger(
   printer: PrettyPrinter(
@@ -32,6 +33,13 @@ void main() async {
   } catch (e) {
     logger.e('BLE initialization failed: $e');
     // App will continue without BLE support
+  }
+
+  // Initialize Notification Service
+  try {
+    await NotificationService.initialize();
+  } catch (e) {
+    logger.e('Notification initialization failed: $e');
   }
 
   runApp(

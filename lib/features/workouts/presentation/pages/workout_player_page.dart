@@ -3,11 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import 'package:drift/drift.dart' show Value;
+
 import '../../../../core/ble/models/connection_state.dart';
+import '../../../../core/database/app_database.dart';
+import '../../../../core/services/health_program_result_analyzer.dart';
 import '../../../../core/services/health_safety_monitor.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/duration_formatter.dart';
 import '../../../../domain/entities/workout.dart';
+import '../../../../providers/morning_workout_providers.dart';
 import '../../../../providers/providers.dart';
 import '../../providers/workout_player_provider.dart';
 import '../widgets/interval_progress_bar.dart';
@@ -186,10 +191,19 @@ class _WorkoutPlayerPageState extends ConsumerState<WorkoutPlayerPage> {
   }
 
   Future<void> _handleStop(BuildContext context, WidgetRef ref) async {
+    final playerState = ref.read(workoutPlayerProvider);
     ref.read(workoutPlayerProvider.notifier).stop();
     final result = await ref.read(activeSessionProvider.notifier).finishSession();
 
     if (result != null && result.session.dataPoints.isNotEmpty) {
+      // Prüfe ob es ein Morgen-Training ist und speichere Recovery Score
+      final isMorningWorkout =
+          playerState.workout?.id.contains('morning_wakeup') ?? false;
+
+      if (isMorningWorkout) {
+        await _saveMorningRecoveryScore(ref, result, context);
+      }
+
       if (context.mounted) {
         // Standard Snackbar für Session-Statistiken
         ScaffoldMessenger.of(context).showSnackBar(
@@ -211,6 +225,103 @@ class _WorkoutPlayerPageState extends ConsumerState<WorkoutPlayerPage> {
     if (context.mounted) {
       context.pop();
     }
+  }
+
+  Future<void> _saveMorningRecoveryScore(
+    WidgetRef ref,
+    SessionFinishResult result,
+    BuildContext context,
+  ) async {
+    try {
+      final athlete = ref.read(athleteProfileProvider);
+      final recovery = HealthProgramResultAnalyzer.analyzeHrRecovery(
+        result.session.dataPoints,
+        athlete,
+      );
+
+      if (recovery != null) {
+        final dao = ref.read(morningRecoveryDaoProvider);
+        await dao.insertScore(
+          MorningRecoveryScoresCompanion(
+            date: Value(DateTime.now()),
+            peakHr: Value(recovery.startHr),
+            hrAfter1Min: Value(recovery.hrAfter1Min ?? 0),
+            hrAfter2Min: Value(recovery.hrAfter2Min ?? 0),
+            drop1Min: Value(recovery.drop1Min ?? 0),
+            drop2Min: Value(recovery.drop2Min ?? 0),
+            recoveryScore: Value(recovery.recoveryScore),
+            assessment: Value(recovery.assessment),
+            sessionId: Value(result.session.id),
+            createdAt: Value(DateTime.now()),
+          ),
+        );
+
+        if (context.mounted) {
+          _showMorningRecoveryDialog(context, recovery);
+        }
+      }
+    } catch (e) {
+      // Recovery-Analyse-Fehler nicht kritisch
+    }
+  }
+
+  void _showMorningRecoveryDialog(
+    BuildContext context,
+    HrRecoveryAnalysis recovery,
+  ) {
+    final scoreColor = recovery.recoveryScore >= 70
+        ? Colors.green
+        : recovery.recoveryScore >= 50
+            ? Colors.orange
+            : Colors.red;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.wb_sunny, color: Colors.amber, size: 28),
+            SizedBox(width: 8),
+            Text('Morgen-Recovery'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '${recovery.recoveryScore}',
+              style: TextStyle(
+                fontSize: 48,
+                fontWeight: FontWeight.bold,
+                color: scoreColor,
+              ),
+            ),
+            const Text(
+              'Recovery Score',
+              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: 16),
+            if (recovery.drop1Min != null)
+              Text(
+                'HR-Rückgang: ${recovery.drop1Min} bpm/min',
+                style: const TextStyle(fontSize: 14),
+              ),
+            const SizedBox(height: 8),
+            Text(
+              recovery.assessment,
+              style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _showNewRecordsDialog(

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../widgets/cycling_health_training_tab.dart';
+import '../widgets/morning_workout_tab.dart';
 import '../widgets/strength_training_tab.dart';
 
 /// Hauptseite für Gesundheitstraining mit TabBar für Radfahren und Krafttraining
@@ -12,7 +13,7 @@ class HealthTrainingPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Gesundheitstraining'),
@@ -23,18 +24,23 @@ class HealthTrainingPage extends ConsumerWidget {
             indicatorColor: AppColors.primary,
             tabs: [
               Tab(
+                icon: const Icon(Icons.wb_sunny),
+                text: 'Morgen',
+              ),
+              Tab(
                 icon: const Icon(Icons.directions_bike),
                 text: 'Radfahren',
               ),
               Tab(
                 icon: const Icon(Icons.fitness_center),
-                text: 'Krafttraining',
+                text: 'Kraft',
               ),
             ],
           ),
         ),
         body: const TabBarView(
           children: [
+            MorningWorkoutTab(),
             CyclingHealthTrainingTab(),
             StrengthTrainingTab(),
           ],

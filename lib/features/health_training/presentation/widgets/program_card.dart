@@ -133,7 +133,9 @@ class ProgramCard extends StatelessWidget {
   }
 
   IconData _getProgramIcon(String name) {
-    if (name.contains('Baseline')) {
+    if (name.contains('Morgen')) {
+      return Icons.wb_sunny;
+    } else if (name.contains('Baseline')) {
       return Icons.trending_up;
     } else if (name.contains('Cardiac')) {
       return Icons.favorite;
@@ -148,7 +150,9 @@ class ProgramCard extends StatelessWidget {
   }
 
   Color _getProgramColor(String name) {
-    if (name.contains('Baseline')) {
+    if (name.contains('Morgen')) {
+      return Colors.amber;
+    } else if (name.contains('Baseline')) {
       return Colors.blue;
     } else if (name.contains('Cardiac')) {
       return Colors.red;
@@ -163,7 +167,9 @@ class ProgramCard extends StatelessWidget {
   }
 
   String _getProgramDescription(String name) {
-    if (name.contains('Baseline')) {
+    if (name.contains('Morgen')) {
+      return 'Sanftes 10-Min Morgen-Training mit Recovery-Check';
+    } else if (name.contains('Baseline')) {
       return 'Progressive Stufenbelastung zur Fitness-Bestimmung';
     } else if (name.contains('Cardiac')) {
       return 'Kardiovaskuläre Ausdauer nach AHA-Protokoll';

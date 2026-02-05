@@ -4,9 +4,10 @@ import 'health_training_personalization_service.dart';
 
 /// Service zur Generierung personalisierter Health Training Programme
 class HealthTrainingProgramGenerator {
-  /// Generiert alle 5 Health Training Programme für einen Athleten
+  /// Generiert alle Health Training Programme für einen Athleten
   static List<Workout> generateAllPrograms(AthleteProfile athlete) {
     final programs = [
+      generateMorningWakeup(athlete),
       generateBaselineAssessment(athlete),
       generateCardiacRehabIntervals(athlete),
       generateAgeOptimizedEndurance(athlete),
@@ -384,6 +385,69 @@ class HealthTrainingProgramGenerator {
       id: 'health_recovery_check_${athlete.id}',
       name: 'Recovery Capacity Check',
       description: 'Überprüfe deine Erholungsfähigkeit durch repeated moderate efforts',
+      type: WorkoutType.interval,
+      intervals: intervals,
+      createdAt: DateTime.now(),
+    );
+  }
+
+  /// Guten Morgen Training (10 min)
+  ///
+  /// Ziel: Sanfte Morgenaktivierung mit HR-Recovery-Bewertung
+  /// Struktur: 2min Warmup + 3× (2min sanfte Arbeit) + 2min Cooldown mit Recovery-Monitoring
+  /// Intensität: 40-65% max HR - sehr sanft
+  static Workout generateMorningWakeup(AthleteProfile athlete) {
+    final age = athlete.age ?? 45;
+    final maxHr = athlete.maxHr ??
+        HealthTrainingPersonalizationService.calculateMaxHeartRate(age,
+            gender: athlete.gender);
+
+    final intervals = <WorkoutInterval>[
+      // Kurzes Warmup (Morgens = steif)
+      WorkoutInterval(
+        name: 'Aufwachen',
+        duration: const Duration(minutes: 2),
+        type: IntervalType.warmup,
+        powerTarget: PowerTarget.ftpPercent(40),
+        targetHeartRate: ((45 / 100) * maxHr).round(),
+        maxHeartRate: ((55 / 100) * maxHr).round(),
+        instructions: 'Sanft starten, Körper aktivieren',
+      ),
+
+      // 3× sanfte Arbeit
+      for (int i = 1; i <= 3; i++) ...[
+        WorkoutInterval(
+          name: 'Aktivierung $i',
+          duration: const Duration(minutes: 2),
+          type: IntervalType.work,
+          powerTarget: PowerTarget.ftpPercent(55),
+          targetHeartRate: ((60 / 100) * maxHr).round(),
+          maxHeartRate: ((65 / 100) * maxHr).round(),
+          cadenceMin: 80,
+          cadenceMax: 90,
+          instructions: 'Leicht aktivieren, angenehmes Tempo',
+          monitorRecovery: false,
+        ),
+      ],
+
+      // Cooldown mit Recovery-Monitoring
+      WorkoutInterval(
+        name: 'Cooldown',
+        duration: const Duration(minutes: 2),
+        type: IntervalType.cooldown,
+        powerTarget: PowerTarget.ftpPercent(35),
+        targetHeartRate: ((40 / 100) * maxHr).round(),
+        maxHeartRate: ((50 / 100) * maxHr).round(),
+        instructions: 'Sanft ausklingen - HR-Recovery wird gemessen',
+        monitorRecovery: true,
+      ),
+    ];
+
+    return Workout(
+      id: 'health_morning_wakeup_${athlete.id}',
+      name: 'Guten Morgen Training',
+      description:
+          'Kurzes, sanftes Morgen-Training (10 Min) mit HR-Recovery-Bewertung',
       type: WorkoutType.interval,
       intervals: intervals,
       createdAt: DateTime.now(),

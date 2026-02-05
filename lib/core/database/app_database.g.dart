@@ -5516,6 +5516,556 @@ class ScheduledWorkoutsCompanion
   }
 }
 
+class $MorningRecoveryScoresTable extends MorningRecoveryScores
+    with TableInfo<$MorningRecoveryScoresTable, MorningRecoveryScoreEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MorningRecoveryScoresTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+      'date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _peakHrMeta = const VerificationMeta('peakHr');
+  @override
+  late final GeneratedColumn<int> peakHr = GeneratedColumn<int>(
+      'peak_hr', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _hrAfter1MinMeta =
+      const VerificationMeta('hrAfter1Min');
+  @override
+  late final GeneratedColumn<int> hrAfter1Min = GeneratedColumn<int>(
+      'hr_after1_min', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _hrAfter2MinMeta =
+      const VerificationMeta('hrAfter2Min');
+  @override
+  late final GeneratedColumn<int> hrAfter2Min = GeneratedColumn<int>(
+      'hr_after2_min', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _drop1MinMeta =
+      const VerificationMeta('drop1Min');
+  @override
+  late final GeneratedColumn<int> drop1Min = GeneratedColumn<int>(
+      'drop1_min', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _drop2MinMeta =
+      const VerificationMeta('drop2Min');
+  @override
+  late final GeneratedColumn<int> drop2Min = GeneratedColumn<int>(
+      'drop2_min', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _recoveryScoreMeta =
+      const VerificationMeta('recoveryScore');
+  @override
+  late final GeneratedColumn<int> recoveryScore = GeneratedColumn<int>(
+      'recovery_score', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _assessmentMeta =
+      const VerificationMeta('assessment');
+  @override
+  late final GeneratedColumn<String> assessment = GeneratedColumn<String>(
+      'assessment', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sessionIdMeta =
+      const VerificationMeta('sessionId');
+  @override
+  late final GeneratedColumn<String> sessionId = GeneratedColumn<String>(
+      'session_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        date,
+        peakHr,
+        hrAfter1Min,
+        hrAfter2Min,
+        drop1Min,
+        drop2Min,
+        recoveryScore,
+        assessment,
+        sessionId,
+        createdAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'morning_recovery_scores';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<MorningRecoveryScoreEntity> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+          _dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('peak_hr')) {
+      context.handle(_peakHrMeta,
+          peakHr.isAcceptableOrUnknown(data['peak_hr']!, _peakHrMeta));
+    } else if (isInserting) {
+      context.missing(_peakHrMeta);
+    }
+    if (data.containsKey('hr_after1_min')) {
+      context.handle(
+          _hrAfter1MinMeta,
+          hrAfter1Min.isAcceptableOrUnknown(
+              data['hr_after1_min']!, _hrAfter1MinMeta));
+    } else if (isInserting) {
+      context.missing(_hrAfter1MinMeta);
+    }
+    if (data.containsKey('hr_after2_min')) {
+      context.handle(
+          _hrAfter2MinMeta,
+          hrAfter2Min.isAcceptableOrUnknown(
+              data['hr_after2_min']!, _hrAfter2MinMeta));
+    } else if (isInserting) {
+      context.missing(_hrAfter2MinMeta);
+    }
+    if (data.containsKey('drop1_min')) {
+      context.handle(_drop1MinMeta,
+          drop1Min.isAcceptableOrUnknown(data['drop1_min']!, _drop1MinMeta));
+    } else if (isInserting) {
+      context.missing(_drop1MinMeta);
+    }
+    if (data.containsKey('drop2_min')) {
+      context.handle(_drop2MinMeta,
+          drop2Min.isAcceptableOrUnknown(data['drop2_min']!, _drop2MinMeta));
+    } else if (isInserting) {
+      context.missing(_drop2MinMeta);
+    }
+    if (data.containsKey('recovery_score')) {
+      context.handle(
+          _recoveryScoreMeta,
+          recoveryScore.isAcceptableOrUnknown(
+              data['recovery_score']!, _recoveryScoreMeta));
+    } else if (isInserting) {
+      context.missing(_recoveryScoreMeta);
+    }
+    if (data.containsKey('assessment')) {
+      context.handle(
+          _assessmentMeta,
+          assessment.isAcceptableOrUnknown(
+              data['assessment']!, _assessmentMeta));
+    } else if (isInserting) {
+      context.missing(_assessmentMeta);
+    }
+    if (data.containsKey('session_id')) {
+      context.handle(_sessionIdMeta,
+          sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MorningRecoveryScoreEntity map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MorningRecoveryScoreEntity(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      date: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+      peakHr: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}peak_hr'])!,
+      hrAfter1Min: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}hr_after1_min'])!,
+      hrAfter2Min: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}hr_after2_min'])!,
+      drop1Min: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}drop1_min'])!,
+      drop2Min: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}drop2_min'])!,
+      recoveryScore: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}recovery_score'])!,
+      assessment: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}assessment'])!,
+      sessionId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}session_id']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $MorningRecoveryScoresTable createAlias(String alias) {
+    return $MorningRecoveryScoresTable(attachedDatabase, alias);
+  }
+}
+
+class MorningRecoveryScoreEntity extends DataClass
+    implements Insertable<MorningRecoveryScoreEntity> {
+  final int id;
+  final DateTime date;
+  final int peakHr;
+  final int hrAfter1Min;
+  final int hrAfter2Min;
+  final int drop1Min;
+  final int drop2Min;
+  final int recoveryScore;
+  final String assessment;
+  final String? sessionId;
+  final DateTime createdAt;
+  const MorningRecoveryScoreEntity(
+      {required this.id,
+      required this.date,
+      required this.peakHr,
+      required this.hrAfter1Min,
+      required this.hrAfter2Min,
+      required this.drop1Min,
+      required this.drop2Min,
+      required this.recoveryScore,
+      required this.assessment,
+      this.sessionId,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['date'] = Variable<DateTime>(date);
+    map['peak_hr'] = Variable<int>(peakHr);
+    map['hr_after1_min'] = Variable<int>(hrAfter1Min);
+    map['hr_after2_min'] = Variable<int>(hrAfter2Min);
+    map['drop1_min'] = Variable<int>(drop1Min);
+    map['drop2_min'] = Variable<int>(drop2Min);
+    map['recovery_score'] = Variable<int>(recoveryScore);
+    map['assessment'] = Variable<String>(assessment);
+    if (!nullToAbsent || sessionId != null) {
+      map['session_id'] = Variable<String>(sessionId);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  MorningRecoveryScoresCompanion toCompanion(bool nullToAbsent) {
+    return MorningRecoveryScoresCompanion(
+      id: Value(id),
+      date: Value(date),
+      peakHr: Value(peakHr),
+      hrAfter1Min: Value(hrAfter1Min),
+      hrAfter2Min: Value(hrAfter2Min),
+      drop1Min: Value(drop1Min),
+      drop2Min: Value(drop2Min),
+      recoveryScore: Value(recoveryScore),
+      assessment: Value(assessment),
+      sessionId: sessionId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sessionId),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory MorningRecoveryScoreEntity.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MorningRecoveryScoreEntity(
+      id: serializer.fromJson<int>(json['id']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      peakHr: serializer.fromJson<int>(json['peakHr']),
+      hrAfter1Min: serializer.fromJson<int>(json['hrAfter1Min']),
+      hrAfter2Min: serializer.fromJson<int>(json['hrAfter2Min']),
+      drop1Min: serializer.fromJson<int>(json['drop1Min']),
+      drop2Min: serializer.fromJson<int>(json['drop2Min']),
+      recoveryScore: serializer.fromJson<int>(json['recoveryScore']),
+      assessment: serializer.fromJson<String>(json['assessment']),
+      sessionId: serializer.fromJson<String?>(json['sessionId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'date': serializer.toJson<DateTime>(date),
+      'peakHr': serializer.toJson<int>(peakHr),
+      'hrAfter1Min': serializer.toJson<int>(hrAfter1Min),
+      'hrAfter2Min': serializer.toJson<int>(hrAfter2Min),
+      'drop1Min': serializer.toJson<int>(drop1Min),
+      'drop2Min': serializer.toJson<int>(drop2Min),
+      'recoveryScore': serializer.toJson<int>(recoveryScore),
+      'assessment': serializer.toJson<String>(assessment),
+      'sessionId': serializer.toJson<String?>(sessionId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  MorningRecoveryScoreEntity copyWith(
+          {int? id,
+          DateTime? date,
+          int? peakHr,
+          int? hrAfter1Min,
+          int? hrAfter2Min,
+          int? drop1Min,
+          int? drop2Min,
+          int? recoveryScore,
+          String? assessment,
+          Value<String?> sessionId = const Value.absent(),
+          DateTime? createdAt}) =>
+      MorningRecoveryScoreEntity(
+        id: id ?? this.id,
+        date: date ?? this.date,
+        peakHr: peakHr ?? this.peakHr,
+        hrAfter1Min: hrAfter1Min ?? this.hrAfter1Min,
+        hrAfter2Min: hrAfter2Min ?? this.hrAfter2Min,
+        drop1Min: drop1Min ?? this.drop1Min,
+        drop2Min: drop2Min ?? this.drop2Min,
+        recoveryScore: recoveryScore ?? this.recoveryScore,
+        assessment: assessment ?? this.assessment,
+        sessionId: sessionId.present ? sessionId.value : this.sessionId,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  MorningRecoveryScoreEntity copyWithCompanion(
+      MorningRecoveryScoresCompanion data) {
+    return MorningRecoveryScoreEntity(
+      id: data.id.present ? data.id.value : this.id,
+      date: data.date.present ? data.date.value : this.date,
+      peakHr: data.peakHr.present ? data.peakHr.value : this.peakHr,
+      hrAfter1Min:
+          data.hrAfter1Min.present ? data.hrAfter1Min.value : this.hrAfter1Min,
+      hrAfter2Min:
+          data.hrAfter2Min.present ? data.hrAfter2Min.value : this.hrAfter2Min,
+      drop1Min: data.drop1Min.present ? data.drop1Min.value : this.drop1Min,
+      drop2Min: data.drop2Min.present ? data.drop2Min.value : this.drop2Min,
+      recoveryScore: data.recoveryScore.present
+          ? data.recoveryScore.value
+          : this.recoveryScore,
+      assessment:
+          data.assessment.present ? data.assessment.value : this.assessment,
+      sessionId: data.sessionId.present ? data.sessionId.value : this.sessionId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MorningRecoveryScoreEntity(')
+          ..write('id: $id, ')
+          ..write('date: $date, ')
+          ..write('peakHr: $peakHr, ')
+          ..write('hrAfter1Min: $hrAfter1Min, ')
+          ..write('hrAfter2Min: $hrAfter2Min, ')
+          ..write('drop1Min: $drop1Min, ')
+          ..write('drop2Min: $drop2Min, ')
+          ..write('recoveryScore: $recoveryScore, ')
+          ..write('assessment: $assessment, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, date, peakHr, hrAfter1Min, hrAfter2Min,
+      drop1Min, drop2Min, recoveryScore, assessment, sessionId, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MorningRecoveryScoreEntity &&
+          other.id == this.id &&
+          other.date == this.date &&
+          other.peakHr == this.peakHr &&
+          other.hrAfter1Min == this.hrAfter1Min &&
+          other.hrAfter2Min == this.hrAfter2Min &&
+          other.drop1Min == this.drop1Min &&
+          other.drop2Min == this.drop2Min &&
+          other.recoveryScore == this.recoveryScore &&
+          other.assessment == this.assessment &&
+          other.sessionId == this.sessionId &&
+          other.createdAt == this.createdAt);
+}
+
+class MorningRecoveryScoresCompanion
+    extends UpdateCompanion<MorningRecoveryScoreEntity> {
+  final Value<int> id;
+  final Value<DateTime> date;
+  final Value<int> peakHr;
+  final Value<int> hrAfter1Min;
+  final Value<int> hrAfter2Min;
+  final Value<int> drop1Min;
+  final Value<int> drop2Min;
+  final Value<int> recoveryScore;
+  final Value<String> assessment;
+  final Value<String?> sessionId;
+  final Value<DateTime> createdAt;
+  const MorningRecoveryScoresCompanion({
+    this.id = const Value.absent(),
+    this.date = const Value.absent(),
+    this.peakHr = const Value.absent(),
+    this.hrAfter1Min = const Value.absent(),
+    this.hrAfter2Min = const Value.absent(),
+    this.drop1Min = const Value.absent(),
+    this.drop2Min = const Value.absent(),
+    this.recoveryScore = const Value.absent(),
+    this.assessment = const Value.absent(),
+    this.sessionId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  MorningRecoveryScoresCompanion.insert({
+    this.id = const Value.absent(),
+    required DateTime date,
+    required int peakHr,
+    required int hrAfter1Min,
+    required int hrAfter2Min,
+    required int drop1Min,
+    required int drop2Min,
+    required int recoveryScore,
+    required String assessment,
+    this.sessionId = const Value.absent(),
+    required DateTime createdAt,
+  })  : date = Value(date),
+        peakHr = Value(peakHr),
+        hrAfter1Min = Value(hrAfter1Min),
+        hrAfter2Min = Value(hrAfter2Min),
+        drop1Min = Value(drop1Min),
+        drop2Min = Value(drop2Min),
+        recoveryScore = Value(recoveryScore),
+        assessment = Value(assessment),
+        createdAt = Value(createdAt);
+  static Insertable<MorningRecoveryScoreEntity> custom({
+    Expression<int>? id,
+    Expression<DateTime>? date,
+    Expression<int>? peakHr,
+    Expression<int>? hrAfter1Min,
+    Expression<int>? hrAfter2Min,
+    Expression<int>? drop1Min,
+    Expression<int>? drop2Min,
+    Expression<int>? recoveryScore,
+    Expression<String>? assessment,
+    Expression<String>? sessionId,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (date != null) 'date': date,
+      if (peakHr != null) 'peak_hr': peakHr,
+      if (hrAfter1Min != null) 'hr_after1_min': hrAfter1Min,
+      if (hrAfter2Min != null) 'hr_after2_min': hrAfter2Min,
+      if (drop1Min != null) 'drop1_min': drop1Min,
+      if (drop2Min != null) 'drop2_min': drop2Min,
+      if (recoveryScore != null) 'recovery_score': recoveryScore,
+      if (assessment != null) 'assessment': assessment,
+      if (sessionId != null) 'session_id': sessionId,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  MorningRecoveryScoresCompanion copyWith(
+      {Value<int>? id,
+      Value<DateTime>? date,
+      Value<int>? peakHr,
+      Value<int>? hrAfter1Min,
+      Value<int>? hrAfter2Min,
+      Value<int>? drop1Min,
+      Value<int>? drop2Min,
+      Value<int>? recoveryScore,
+      Value<String>? assessment,
+      Value<String?>? sessionId,
+      Value<DateTime>? createdAt}) {
+    return MorningRecoveryScoresCompanion(
+      id: id ?? this.id,
+      date: date ?? this.date,
+      peakHr: peakHr ?? this.peakHr,
+      hrAfter1Min: hrAfter1Min ?? this.hrAfter1Min,
+      hrAfter2Min: hrAfter2Min ?? this.hrAfter2Min,
+      drop1Min: drop1Min ?? this.drop1Min,
+      drop2Min: drop2Min ?? this.drop2Min,
+      recoveryScore: recoveryScore ?? this.recoveryScore,
+      assessment: assessment ?? this.assessment,
+      sessionId: sessionId ?? this.sessionId,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (peakHr.present) {
+      map['peak_hr'] = Variable<int>(peakHr.value);
+    }
+    if (hrAfter1Min.present) {
+      map['hr_after1_min'] = Variable<int>(hrAfter1Min.value);
+    }
+    if (hrAfter2Min.present) {
+      map['hr_after2_min'] = Variable<int>(hrAfter2Min.value);
+    }
+    if (drop1Min.present) {
+      map['drop1_min'] = Variable<int>(drop1Min.value);
+    }
+    if (drop2Min.present) {
+      map['drop2_min'] = Variable<int>(drop2Min.value);
+    }
+    if (recoveryScore.present) {
+      map['recovery_score'] = Variable<int>(recoveryScore.value);
+    }
+    if (assessment.present) {
+      map['assessment'] = Variable<String>(assessment.value);
+    }
+    if (sessionId.present) {
+      map['session_id'] = Variable<String>(sessionId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MorningRecoveryScoresCompanion(')
+          ..write('id: $id, ')
+          ..write('date: $date, ')
+          ..write('peakHr: $peakHr, ')
+          ..write('hrAfter1Min: $hrAfter1Min, ')
+          ..write('hrAfter2Min: $hrAfter2Min, ')
+          ..write('drop1Min: $drop1Min, ')
+          ..write('drop2Min: $drop2Min, ')
+          ..write('recoveryScore: $recoveryScore, ')
+          ..write('assessment: $assessment, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5536,6 +6086,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $StrengthPersonalRecordsTable(this);
   late final $ScheduledWorkoutsTable scheduledWorkouts =
       $ScheduledWorkoutsTable(this);
+  late final $MorningRecoveryScoresTable morningRecoveryScores =
+      $MorningRecoveryScoresTable(this);
   late final SessionDao sessionDao = SessionDao(this as AppDatabase);
   late final WorkoutDao workoutDao = WorkoutDao(this as AppDatabase);
   late final GpxRouteDao gpxRouteDao = GpxRouteDao(this as AppDatabase);
@@ -5550,6 +6102,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final StrengthPRDao strengthPRDao = StrengthPRDao(this as AppDatabase);
   late final ScheduledWorkoutDao scheduledWorkoutDao =
       ScheduledWorkoutDao(this as AppDatabase);
+  late final MorningRecoveryDao morningRecoveryDao =
+      MorningRecoveryDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5564,7 +6118,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         strengthWorkouts,
         strengthSessions,
         strengthPersonalRecords,
-        scheduledWorkouts
+        scheduledWorkouts,
+        morningRecoveryScores
       ];
 }
 
@@ -7684,6 +8239,225 @@ class $$ScheduledWorkoutsTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+typedef $$MorningRecoveryScoresTableCreateCompanionBuilder
+    = MorningRecoveryScoresCompanion Function({
+  Value<int> id,
+  required DateTime date,
+  required int peakHr,
+  required int hrAfter1Min,
+  required int hrAfter2Min,
+  required int drop1Min,
+  required int drop2Min,
+  required int recoveryScore,
+  required String assessment,
+  Value<String?> sessionId,
+  required DateTime createdAt,
+});
+typedef $$MorningRecoveryScoresTableUpdateCompanionBuilder
+    = MorningRecoveryScoresCompanion Function({
+  Value<int> id,
+  Value<DateTime> date,
+  Value<int> peakHr,
+  Value<int> hrAfter1Min,
+  Value<int> hrAfter2Min,
+  Value<int> drop1Min,
+  Value<int> drop2Min,
+  Value<int> recoveryScore,
+  Value<String> assessment,
+  Value<String?> sessionId,
+  Value<DateTime> createdAt,
+});
+
+class $$MorningRecoveryScoresTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $MorningRecoveryScoresTable,
+    MorningRecoveryScoreEntity,
+    $$MorningRecoveryScoresTableFilterComposer,
+    $$MorningRecoveryScoresTableOrderingComposer,
+    $$MorningRecoveryScoresTableCreateCompanionBuilder,
+    $$MorningRecoveryScoresTableUpdateCompanionBuilder> {
+  $$MorningRecoveryScoresTableTableManager(
+      _$AppDatabase db, $MorningRecoveryScoresTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$MorningRecoveryScoresTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$MorningRecoveryScoresTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> date = const Value.absent(),
+            Value<int> peakHr = const Value.absent(),
+            Value<int> hrAfter1Min = const Value.absent(),
+            Value<int> hrAfter2Min = const Value.absent(),
+            Value<int> drop1Min = const Value.absent(),
+            Value<int> drop2Min = const Value.absent(),
+            Value<int> recoveryScore = const Value.absent(),
+            Value<String> assessment = const Value.absent(),
+            Value<String?> sessionId = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              MorningRecoveryScoresCompanion(
+            id: id,
+            date: date,
+            peakHr: peakHr,
+            hrAfter1Min: hrAfter1Min,
+            hrAfter2Min: hrAfter2Min,
+            drop1Min: drop1Min,
+            drop2Min: drop2Min,
+            recoveryScore: recoveryScore,
+            assessment: assessment,
+            sessionId: sessionId,
+            createdAt: createdAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required DateTime date,
+            required int peakHr,
+            required int hrAfter1Min,
+            required int hrAfter2Min,
+            required int drop1Min,
+            required int drop2Min,
+            required int recoveryScore,
+            required String assessment,
+            Value<String?> sessionId = const Value.absent(),
+            required DateTime createdAt,
+          }) =>
+              MorningRecoveryScoresCompanion.insert(
+            id: id,
+            date: date,
+            peakHr: peakHr,
+            hrAfter1Min: hrAfter1Min,
+            hrAfter2Min: hrAfter2Min,
+            drop1Min: drop1Min,
+            drop2Min: drop2Min,
+            recoveryScore: recoveryScore,
+            assessment: assessment,
+            sessionId: sessionId,
+            createdAt: createdAt,
+          ),
+        ));
+}
+
+class $$MorningRecoveryScoresTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $MorningRecoveryScoresTable> {
+  $$MorningRecoveryScoresTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get date => $state.composableBuilder(
+      column: $state.table.date,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get peakHr => $state.composableBuilder(
+      column: $state.table.peakHr,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get hrAfter1Min => $state.composableBuilder(
+      column: $state.table.hrAfter1Min,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get hrAfter2Min => $state.composableBuilder(
+      column: $state.table.hrAfter2Min,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get drop1Min => $state.composableBuilder(
+      column: $state.table.drop1Min,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get drop2Min => $state.composableBuilder(
+      column: $state.table.drop2Min,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get recoveryScore => $state.composableBuilder(
+      column: $state.table.recoveryScore,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get assessment => $state.composableBuilder(
+      column: $state.table.assessment,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get sessionId => $state.composableBuilder(
+      column: $state.table.sessionId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$MorningRecoveryScoresTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $MorningRecoveryScoresTable> {
+  $$MorningRecoveryScoresTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get date => $state.composableBuilder(
+      column: $state.table.date,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get peakHr => $state.composableBuilder(
+      column: $state.table.peakHr,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get hrAfter1Min => $state.composableBuilder(
+      column: $state.table.hrAfter1Min,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get hrAfter2Min => $state.composableBuilder(
+      column: $state.table.hrAfter2Min,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get drop1Min => $state.composableBuilder(
+      column: $state.table.drop1Min,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get drop2Min => $state.composableBuilder(
+      column: $state.table.drop2Min,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get recoveryScore => $state.composableBuilder(
+      column: $state.table.recoveryScore,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get assessment => $state.composableBuilder(
+      column: $state.table.assessment,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get sessionId => $state.composableBuilder(
+      column: $state.table.sessionId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
@@ -7708,4 +8482,6 @@ class $AppDatabaseManager {
           _db, _db.strengthPersonalRecords);
   $$ScheduledWorkoutsTableTableManager get scheduledWorkouts =>
       $$ScheduledWorkoutsTableTableManager(_db, _db.scheduledWorkouts);
+  $$MorningRecoveryScoresTableTableManager get morningRecoveryScores =>
+      $$MorningRecoveryScoresTableTableManager(_db, _db.morningRecoveryScores);
 }

@@ -15,6 +15,7 @@ import 'tables/strength_workout_table.dart';
 import 'tables/strength_session_table.dart';
 import 'tables/strength_pr_table.dart';
 import 'tables/scheduled_workout_table.dart';
+import 'tables/morning_recovery_table.dart';
 import 'daos/session_dao.dart';
 import 'daos/workout_dao.dart';
 import 'daos/gpx_route_dao.dart';
@@ -24,6 +25,7 @@ import 'daos/strength_workout_dao.dart';
 import 'daos/strength_session_dao.dart';
 import 'daos/strength_pr_dao.dart';
 import 'daos/scheduled_workout_dao.dart';
+import 'daos/morning_recovery_dao.dart';
 
 part 'app_database.g.dart';
 
@@ -39,6 +41,7 @@ part 'app_database.g.dart';
     StrengthSessions,
     StrengthPersonalRecords,
     ScheduledWorkouts,
+    MorningRecoveryScores,
   ],
   daos: [
     SessionDao,
@@ -50,6 +53,7 @@ part 'app_database.g.dart';
     StrengthSessionDao,
     StrengthPRDao,
     ScheduledWorkoutDao,
+    MorningRecoveryDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -77,9 +81,11 @@ class AppDatabase extends _$AppDatabase {
   StrengthPRDao get strengthPRDao => StrengthPRDao(this);
   @override
   ScheduledWorkoutDao get scheduledWorkoutDao => ScheduledWorkoutDao(this);
+  @override
+  MorningRecoveryDao get morningRecoveryDao => MorningRecoveryDao(this);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration {
@@ -93,23 +99,33 @@ class AppDatabase extends _$AppDatabase {
         await customStatement(
           'CREATE INDEX idx_scheduled_workouts_status ON scheduled_workouts(status);',
         );
+        await customStatement(
+          'CREATE INDEX idx_morning_recovery_date ON morning_recovery_scores(date);',
+        );
       },
       onUpgrade: (Migrator m, int from, int to) async {
         // v1 → v2: Add strength training tables
-        if (from == 1 && to == 2) {
+        if (from < 2) {
           await m.create(strengthExercises);
           await m.create(strengthWorkouts);
           await m.create(strengthSessions);
           await m.create(strengthPersonalRecords);
         }
         // v2 → v3: Add scheduled workouts table
-        if (from == 2 && to == 3) {
+        if (from < 3) {
           await m.create(scheduledWorkouts);
           await customStatement(
             'CREATE INDEX idx_scheduled_workouts_date ON scheduled_workouts(scheduled_date);',
           );
           await customStatement(
             'CREATE INDEX idx_scheduled_workouts_status ON scheduled_workouts(status);',
+          );
+        }
+        // v3 → v4: Add morning recovery scores table
+        if (from < 4) {
+          await m.create(morningRecoveryScores);
+          await customStatement(
+            'CREATE INDEX idx_morning_recovery_date ON morning_recovery_scores(date);',
           );
         }
       },
