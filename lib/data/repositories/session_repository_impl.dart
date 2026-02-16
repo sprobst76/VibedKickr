@@ -26,18 +26,20 @@ class SessionRepositoryImpl implements SessionRepository {
 
   @override
   Future<void> updateSession(TrainingSession session) async {
-    // Session aktualisieren
-    await _db.sessionDao.updateSession(
-      SessionMapper.toCompanion(session),
-    );
-
-    // DataPoints: alte löschen, neue einfügen
-    await _db.sessionDao.deleteDataPointsForSession(session.id);
-    if (session.dataPoints.isNotEmpty) {
-      await _db.sessionDao.insertDataPointsBatch(
-        SessionMapper.dataPointsToCompanions(session.dataPoints, session.id),
+    await _db.transaction(() async {
+      // Session aktualisieren
+      await _db.sessionDao.updateSession(
+        SessionMapper.toCompanion(session),
       );
-    }
+
+      // DataPoints: alte löschen, neue einfügen
+      await _db.sessionDao.deleteDataPointsForSession(session.id);
+      if (session.dataPoints.isNotEmpty) {
+        await _db.sessionDao.insertDataPointsBatch(
+          SessionMapper.dataPointsToCompanions(session.dataPoints, session.id),
+        );
+      }
+    });
   }
 
   @override

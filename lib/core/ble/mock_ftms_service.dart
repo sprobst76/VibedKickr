@@ -49,7 +49,7 @@ class MockFtmsService implements FtmsServiceInterface {
     int? maxHr,
     double? weight,
   }) {
-    if (ftp != null) _ftp = ftp;
+    if (ftp != null) _ftp = ftp.clamp(1, 1000);
     if (restingHr != null) _restingHr = restingHr;
     if (maxHr != null) _maxHr = maxHr;
     if (weight != null) _weight = weight;

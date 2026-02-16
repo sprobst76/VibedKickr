@@ -18,6 +18,7 @@ class BleReconnectionManager {
   int _currentAttempt = 0;
   int _maxAttempts = defaultMaxRetries;
   bool _isReconnecting = false;
+  bool get isReconnecting => _isReconnecting;
   bool _disposed = false;
   String? _currentDeviceId;
 

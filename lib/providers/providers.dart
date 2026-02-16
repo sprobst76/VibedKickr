@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../main.dart';
+
 import '../core/ble/ble_manager.dart';
-import '../core/ble/ftms_service_interface.dart';
 import '../core/ble/heart_rate_service.dart';
 import '../core/ble/mock_ftms_service.dart';
 import '../core/ble/models/ble_device.dart';
@@ -516,8 +517,7 @@ class ActiveSessionNotifier extends StateNotifier<TrainingSession?> {
       await repository.saveSession(finishedSession);
     } catch (e) {
       // Fehler beim Speichern loggen, aber Session trotzdem zurückgeben
-      // ignore: avoid_print
-      print('Fehler beim Speichern der Session: $e');
+      logger.e('Fehler beim Speichern der Session: $e');
     }
 
     // Personal Records analysieren
@@ -527,8 +527,7 @@ class ActiveSessionNotifier extends StateNotifier<TrainingSession?> {
       newRecords = await prService.analyzeSession(finishedSession);
     } catch (e) {
       // PR-Analyse-Fehler nicht kritisch
-      // ignore: avoid_print
-      print('Fehler bei PR-Analyse: $e');
+      logger.e('Fehler bei PR-Analyse: $e');
     }
 
     state = null;

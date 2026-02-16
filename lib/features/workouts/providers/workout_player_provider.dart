@@ -58,7 +58,7 @@ class WorkoutPlayerData {
 
   double get intervalProgress {
     final interval = currentInterval;
-    if (interval == null) return 0;
+    if (interval == null || interval.duration.inMilliseconds == 0) return 0;
     return intervalElapsed.inMilliseconds / interval.duration.inMilliseconds;
   }
 

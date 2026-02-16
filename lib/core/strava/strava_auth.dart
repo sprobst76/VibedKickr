@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -48,6 +49,7 @@ class StravaToken {
 class StravaAuth {
   static const _tokenKey = 'strava_token';
   final Dio _dio = Dio();
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   StravaToken? _token;
   final _authStateController = StreamController<bool>.broadcast();
@@ -63,8 +65,15 @@ class StravaAuth {
 
   /// Initialisiert den Auth Service (lädt gespeicherten Token)
   Future<void> initialize() async {
+    // Migration: SharedPreferences → FlutterSecureStorage
     final prefs = await SharedPreferences.getInstance();
-    final tokenJson = prefs.getString(_tokenKey);
+    final legacyToken = prefs.getString(_tokenKey);
+    if (legacyToken != null) {
+      await _secureStorage.write(key: _tokenKey, value: legacyToken);
+      await prefs.remove(_tokenKey);
+    }
+
+    final tokenJson = await _secureStorage.read(key: _tokenKey);
 
     if (tokenJson != null) {
       try {
@@ -78,7 +87,7 @@ class StravaAuth {
         _authStateController.add(true);
       } catch (e) {
         // Token ungültig, löschen
-        await prefs.remove(_tokenKey);
+        await _secureStorage.delete(key: _tokenKey);
         _token = null;
       }
     }
@@ -201,15 +210,16 @@ class StravaAuth {
     }
 
     _token = null;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_tokenKey);
+    await _secureStorage.delete(key: _tokenKey);
     _authStateController.add(false);
   }
 
   Future<void> _saveToken() async {
     if (_token == null) return;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_tokenKey, jsonEncode(_token!.toJson()));
+    await _secureStorage.write(
+      key: _tokenKey,
+      value: jsonEncode(_token!.toJson()),
+    );
   }
 
   void dispose() {

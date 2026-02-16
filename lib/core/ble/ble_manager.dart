@@ -160,14 +160,16 @@ class BleManager {
         } else if (state == BluetoothAdapterState.on) {
           // Bluetooth ist wieder an - versuche zu reconnecten wenn wir im Fehler-Zustand sind
           if (_autoReconnectEnabled && _lastConnectedTrainerId != null &&
-              _currentState.status == ConnectionStatus.error) {
+              _currentState.status == ConnectionStatus.error &&
+              !_reconnectionManager.isReconnecting) {
             logger.i('Bluetooth turned back on - attempting trainer reconnect');
             Future.delayed(const Duration(seconds: 1), () {
               _handleTrainerDisconnection();
             });
           }
           if (_autoReconnectEnabled && _lastConnectedHrMonitorId != null &&
-              _hrCurrentState.status == ConnectionStatus.error) {
+              _hrCurrentState.status == ConnectionStatus.error &&
+              !_reconnectionManager.isReconnecting) {
             logger.i('Bluetooth turned back on - attempting HR monitor reconnect');
             Future.delayed(const Duration(seconds: 1), () {
               _handleHrMonitorDisconnection();
