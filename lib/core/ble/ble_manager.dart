@@ -6,8 +6,10 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../main.dart';
 import 'ftms_service.dart';
+import 'ftms_service_interface.dart';
 import 'heart_rate_service.dart';
 import 'models/ble_device.dart';
+import 'models/ble_error.dart';
 import 'models/connection_state.dart';
 import 'models/reconnection_state.dart';
 import 'reconnection_manager.dart';
@@ -71,9 +73,11 @@ class BleManager {
 
   final List<BleDevice> _devices = [];
 
+  bool _disposed = false;
+
   // Trainer Connection
   BluetoothDevice? _connectedTrainer;
-  FtmsService? _ftmsService;
+  FtmsServiceInterface? _ftmsService;
   StreamSubscription<BluetoothConnectionState>? _trainerConnectionSubscription;
 
   // HR Monitor Connection
@@ -99,7 +103,7 @@ class BleManager {
   bool get isSupported => _isSupported;
 
   /// FTMS Service für Trainer-Steuerung
-  FtmsService? get ftmsService => _ftmsService;
+  FtmsServiceInterface? get ftmsService => _ftmsService;
 
   /// Heart Rate Service
   HeartRateService? get heartRateService => _heartRateService;
@@ -122,9 +126,7 @@ class BleManager {
       logger.w('BLE not supported on Windows via flutter_blue_plus');
       logger.w('Use Android or macOS for BLE support');
       _isSupported = false;
-      _updateTrainerState(BleConnectionState.error(
-        'BLE wird auf Windows nicht unterstützt.\nBitte Android/macOS verwenden.'
-      ));
+      _updateTrainerState(BleConnectionState.fromBleError(BleError.notSupported()));
       return;
     }
 
@@ -133,7 +135,7 @@ class BleManager {
       _isSupported = await FlutterBluePlus.isSupported;
       if (!_isSupported) {
         logger.e('Bluetooth not supported on this device');
-        _updateTrainerState(BleConnectionState.error('Bluetooth wird nicht unterstützt'));
+        _updateTrainerState(BleConnectionState.fromBleError(BleError.notSupported()));
         return;
       }
 
@@ -151,8 +153,9 @@ class BleManager {
       _adapterStateSubscription = FlutterBluePlus.adapterState.listen((state) {
         logger.d('Adapter state: $state');
         if (state == BluetoothAdapterState.off) {
-          _updateTrainerState(BleConnectionState.error('Bluetooth ist ausgeschaltet'));
-          _updateHrState(BleConnectionState.error('Bluetooth ist ausgeschaltet'));
+          final error = BleError.adapterOff();
+          _updateTrainerState(BleConnectionState.fromBleError(error));
+          _updateHrState(BleConnectionState.fromBleError(error));
           _reconnectionManager.cancelReconnection();
         } else if (state == BluetoothAdapterState.on) {
           // Bluetooth ist wieder an - versuche zu reconnecten wenn wir im Fehler-Zustand sind
@@ -177,7 +180,7 @@ class BleManager {
     } catch (e) {
       logger.e('BLE initialization error: $e');
       _isSupported = false;
-      _updateTrainerState(BleConnectionState.error('BLE nicht verfügbar'));
+      _updateTrainerState(BleConnectionState.fromBleError(BleError.notSupported()));
     }
   }
 
@@ -228,9 +231,7 @@ class BleManager {
     final hasPermissions = await requestPermissions();
     if (!hasPermissions) {
       logger.e('Bluetooth permissions not granted');
-      _updateTrainerState(BleConnectionState.error(
-        'Bluetooth-Berechtigung benötigt.\nBitte in den Einstellungen erlauben.'
-      ));
+      _updateTrainerState(BleConnectionState.fromBleError(BleError.permissionDenied()));
       return;
     }
 
@@ -328,9 +329,14 @@ class BleManager {
         },
       );
 
-      // Services entdecken
+      // Services entdecken (mit Timeout)
       logger.d('Discovering trainer services...');
-      final services = await device.bluetoothDevice.discoverServices();
+      final services = await device.bluetoothDevice.discoverServices().timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          throw TimeoutException('Service discovery timed out', const Duration(seconds: 15));
+        },
+      );
 
       // Alle Services loggen für Debugging
       logger.i('Found ${services.length} services:');
@@ -372,7 +378,7 @@ class BleManager {
       if (_ftmsService == null) {
         logger.e('No FTMS service found on device');
         await device.bluetoothDevice.disconnect();
-        _updateTrainerState(BleConnectionState.error('Kein FTMS-Dienst gefunden.\nIst der Trainer im richtigen Modus?'));
+        _updateTrainerState(BleConnectionState.fromBleError(BleError.serviceNotFound('FTMS')));
         return false;
       }
 
@@ -381,9 +387,13 @@ class BleManager {
       _updateTrainerState(BleConnectionState.connected(device));
       logger.i('Connected successfully to Trainer: ${device.name}');
       return true;
+    } on TimeoutException {
+      logger.e('Trainer connection/discovery timed out');
+      _updateTrainerState(BleConnectionState.fromBleError(BleError.connectionTimeout()));
+      return false;
     } catch (e) {
       logger.e('Trainer connection error: $e');
-      _updateTrainerState(BleConnectionState.error('Verbindungsfehler: $e'));
+      _updateTrainerState(BleConnectionState.fromBleError(BleError.unknown('$e')));
       return false;
     }
   }
@@ -458,7 +468,7 @@ class BleManager {
       if (_heartRateService == null) {
         logger.e('No Heart Rate service found');
         await device.bluetoothDevice.disconnect();
-        _updateHrState(BleConnectionState.error('Kein HR-Dienst gefunden'));
+        _updateHrState(BleConnectionState.fromBleError(BleError.serviceNotFound('HR')));
         return false;
       }
 
@@ -467,9 +477,13 @@ class BleManager {
       _updateHrState(BleConnectionState.connected(device));
       logger.i('Connected successfully to HR Monitor: ${device.name}');
       return true;
+    } on TimeoutException {
+      logger.e('HR Monitor connection timed out');
+      _updateHrState(BleConnectionState.fromBleError(BleError.connectionTimeout()));
+      return false;
     } catch (e) {
       logger.e('HR Monitor connection error: $e');
-      _updateHrState(BleConnectionState.error('Verbindungsfehler: $e'));
+      _updateHrState(BleConnectionState.fromBleError(BleError.unknown('$e')));
       return false;
     }
   }
@@ -598,8 +612,8 @@ class BleManager {
         },
         onStateChange: (state) {
           if (state.status == ReconnectionStatus.failed) {
-            _updateTrainerState(BleConnectionState.error(
-              'Reconnection failed after ${state.maxAttempts} attempts',
+            _updateTrainerState(BleConnectionState.fromBleError(
+              BleError.reconnectionFailed(state.maxAttempts),
             ));
           }
         },
@@ -651,8 +665,8 @@ class BleManager {
         },
         onStateChange: (state) {
           if (state.status == ReconnectionStatus.failed) {
-            _updateHrState(BleConnectionState.error(
-              'Reconnection failed after ${state.maxAttempts} attempts',
+            _updateHrState(BleConnectionState.fromBleError(
+              BleError.reconnectionFailed(state.maxAttempts),
             ));
           }
         },
@@ -660,14 +674,35 @@ class BleManager {
     }
   }
 
+  /// Versucht die letzte fehlgeschlagene Verbindung erneut
+  Future<bool> retryLastConnection() async {
+    if (_lastConnectedTrainerId != null && _currentState.hasError) {
+      logger.i('Retrying last trainer connection');
+      return reconnectTrainer();
+    }
+    if (_lastConnectedHrMonitorId != null && _hrCurrentState.hasError) {
+      logger.i('Retrying last HR monitor connection');
+      await startScan(timeout: const Duration(seconds: 5));
+      final device = _devices.where((d) => d.id == _lastConnectedHrMonitorId).firstOrNull;
+      if (device != null) {
+        return connectHrMonitor(device);
+      }
+    }
+    return false;
+  }
+
   void _updateTrainerState(BleConnectionState state) {
     _currentState = state;
-    _connectionStateController.add(state);
+    if (!_disposed && !_connectionStateController.isClosed) {
+      _connectionStateController.add(state);
+    }
   }
 
   void _updateHrState(BleConnectionState state) {
     _hrCurrentState = state;
-    _hrConnectionStateController.add(state);
+    if (!_disposed && !_hrConnectionStateController.isClosed) {
+      _hrConnectionStateController.add(state);
+    }
   }
 
   /// Klassifiziert ein Gerät nach Typ
@@ -721,6 +756,7 @@ class BleManager {
   bool get autoReconnectEnabled => _autoReconnectEnabled;
 
   void dispose() {
+    _disposed = true;
     _trainerConnectionSubscription?.cancel();
     _hrConnectionSubscription?.cancel();
     _hrDataSubscription?.cancel();

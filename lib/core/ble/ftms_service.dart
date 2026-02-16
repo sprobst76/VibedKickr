@@ -4,11 +4,12 @@ import 'dart:typed_data';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 import '../../main.dart';
+import 'ftms_service_interface.dart';
 import 'models/ftms_data.dart';
 
 /// FTMS (Fitness Machine Service) Implementation
 /// Handles communication with smart trainers following the FTMS spec
-class FtmsService {
+class FtmsService implements FtmsServiceInterface {
   final BluetoothService _service;
 
   // FTMS Characteristics UUIDs (for documentation/reference)
@@ -95,9 +96,13 @@ class FtmsService {
 
     // Notifications für Status aktivieren
     if (_statusChar != null) {
-      await _statusChar!.setNotifyValue(true);
-      _statusSubscription = _statusChar!.onValueReceived.listen(_parseStatus);
-      logger.d('Status notifications enabled');
+      try {
+        await _statusChar!.setNotifyValue(true);
+        _statusSubscription = _statusChar!.onValueReceived.listen(_parseStatus);
+        logger.d('Status notifications enabled');
+      } catch (e) {
+        logger.e('Failed to enable Status notifications: $e');
+      }
     }
 
     // Control Point Request Control

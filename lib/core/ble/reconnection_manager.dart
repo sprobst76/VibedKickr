@@ -96,17 +96,11 @@ class BleReconnectionManager {
         '(next retry in ${backoffDuration.inSeconds}s)',
       );
 
-      // Warte auf Backoff-Verzögerung (aber abbrechbar)
-      bool cancelled = false;
-      Timer? delayTimer;
-      delayTimer = Timer(backoffDuration, () {
-        if (!cancelled) {
-          delayTimer?.cancel();
-        }
-      });
-
-      // Warte bis zum Timeout oder bis abgebrochen
+      // Warte auf Backoff-Verzögerung (abbrechbar über _isReconnecting flag)
+      _reconnectionTimer?.cancel();
+      _reconnectionTimer = Timer(backoffDuration, () {});
       await Future.delayed(backoffDuration);
+      _reconnectionTimer = null;
 
       // Prüfe ob während der Verzögerung abgebrochen wurde
       if (!_isReconnecting) {

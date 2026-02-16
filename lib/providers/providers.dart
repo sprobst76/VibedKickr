@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/ble/ble_manager.dart';
+import '../core/ble/ftms_service_interface.dart';
 import '../core/ble/heart_rate_service.dart';
 import '../core/ble/mock_ftms_service.dart';
 import '../core/ble/models/ble_device.dart';

@@ -2,14 +2,17 @@ import 'dart:async';
 import 'dart:math';
 
 import '../../main.dart';
+import 'ftms_service_interface.dart';
 import 'models/ftms_data.dart';
 
 /// Simulierter FTMS Service für Entwicklung ohne echten Trainer
-class MockFtmsService {
+class MockFtmsService implements FtmsServiceInterface {
   final _dataController = StreamController<FtmsData>.broadcast();
   final _statusController = StreamController<FtmsStatus>.broadcast();
   Timer? _simulationTimer;
   final Random _random = Random();
+
+  bool _disposed = false;
 
   // Simulation State
   int _targetPower = 100;
@@ -207,6 +210,7 @@ class MockFtmsService {
   }
 
   void _emitData() {
+    if (_disposed) return;
     final data = FtmsData(
       timestamp: DateTime.now(),
       power: _currentPower,
@@ -219,7 +223,9 @@ class MockFtmsService {
     _dataController.add(data);
   }
 
+  @override
   void dispose() {
+    _disposed = true;
     _simulationTimer?.cancel();
     _dataController.close();
     _statusController.close();

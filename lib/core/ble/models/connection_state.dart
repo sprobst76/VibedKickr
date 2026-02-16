@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import 'ble_device.dart';
+import 'ble_error.dart';
 
 enum ConnectionStatus {
   disconnected,
@@ -15,11 +16,13 @@ class BleConnectionState extends Equatable {
   final ConnectionStatus status;
   final BleDevice? device;
   final String? errorMessage;
+  final BleError? bleError;
 
   const BleConnectionState._({
     required this.status,
     this.device,
     this.errorMessage,
+    this.bleError,
   });
 
   factory BleConnectionState.disconnected() => const BleConnectionState._(
@@ -41,9 +44,19 @@ class BleConnectionState extends Equatable {
         device: device,
       );
 
-  factory BleConnectionState.error(String message) => BleConnectionState._(
+  factory BleConnectionState.error(String message, {BleError? bleError}) =>
+      BleConnectionState._(
         status: ConnectionStatus.error,
         errorMessage: message,
+        bleError: bleError,
+      );
+
+  /// Erstellt Fehlerstatus aus einem BleError (benutzerfreundliche Nachricht)
+  factory BleConnectionState.fromBleError(BleError error) =>
+      BleConnectionState._(
+        status: ConnectionStatus.error,
+        errorMessage: error.userMessage,
+        bleError: error,
       );
 
   /// Simulierter verbundener Status (für Mock-Trainer)
@@ -57,6 +70,9 @@ class BleConnectionState extends Equatable {
   bool get isDisconnected => status == ConnectionStatus.disconnected;
   bool get hasError => status == ConnectionStatus.error;
 
+  /// Ob der Fehler durch einen erneuten Versuch behoben werden kann
+  bool get isRetryable => bleError?.isRetryable ?? false;
+
   @override
-  List<Object?> get props => [status, device, errorMessage];
+  List<Object?> get props => [status, device, errorMessage, bleError];
 }
