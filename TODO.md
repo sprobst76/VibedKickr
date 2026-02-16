@@ -14,14 +14,14 @@ Diese Datei enthält geplante Features, Verbesserungen und bekannte Issues.
 ## Kurzfristig (Next Release)
 
 ### Bug Fixes
-- [ ] 🔴 Reconnect-Logik verbessern bei Bluetooth-Unterbrechung
-- [ ] 🟡 Memory-Leak bei langen Sessions prüfen
+- [x] ✅ Reconnect-Logik verbessern bei Bluetooth-Unterbrechung (v1.3.0)
+- [x] ✅ Memory-Leak bei langen Sessions prüfen (v1.4.0 - disposed guards, Timer-Fixes)
 - [ ] 🟡 Workout-Player pausiert nicht korrekt bei App-Hintergrund
 
 ### Verbesserungen
-- [ ] 🟡 Bessere Fehlerbehandlung bei BLE-Verbindungsproblemen
+- [x] ✅ Bessere Fehlerbehandlung bei BLE-Verbindungsproblemen (v1.4.0 - BleError types, Timeouts, Retry)
 - [ ] 🟡 Loading States für alle async Operationen
-- [ ] 🟢 Haptic Feedback bei Intervallwechseln
+- [x] ✅ Haptic Feedback bei Intervallwechseln (v1.1.0)
 
 ---
 
@@ -110,13 +110,13 @@ Diese Datei enthält geplante Features, Verbesserungen und bekannte Issues.
 ## Technische Schulden
 
 ### Code-Qualität
-- [ ] 🟡 Test Coverage erhöhen (aktuell ~30%)
+- [x] ✅ Test Coverage erhöhen (745 Tests, 9 neue Test-Dateien)
 - [ ] 🟡 Integration Tests hinzufügen
 - [ ] 🟢 E2E Tests mit Patrol
 - [ ] 🟢 Dokumentation für alle Public APIs
 
 ### Architektur
-- [ ] 🟡 BLE-Layer abstrahieren für bessere Testbarkeit
+- [x] ✅ BLE-Layer abstrahieren für bessere Testbarkeit (FtmsServiceInterface)
 - [ ] 🟢 Feature Flags System implementieren
 - [ ] 🟢 Offline-First Architektur
 
@@ -128,8 +128,23 @@ Diese Datei enthält geplante Features, Verbesserungen und bekannte Issues.
 
 ---
 
-## Abgeschlossen (v1.1.x)
+## Abgeschlossen
 
+### v1.4.0
+- ✅ Guten Morgen Training mit HR Recovery Tracking
+- ✅ BLE-Layer Abstraktion (FtmsServiceInterface)
+- ✅ Memory-Leak Fixes (disposed guards, Timer-Fixes)
+- ✅ Strukturierte BLE-Fehlerbehandlung (BleError types, Timeouts, Retry)
+- ✅ Test Coverage auf 745 Tests (9 neue Test-Dateien)
+- ✅ Division-by-Zero Fixes (Workout Player, Mock FTMS)
+- ✅ Strava OAuth Tokens verschlüsselt (flutter_secure_storage)
+- ✅ DB-Transaktionen für Session Updates
+
+### v1.3.0
+- ✅ BLE Reconnection System mit exponentiellem Backoff
+- ✅ Reconnect Race Condition Guard
+
+### v1.1.x
 - ✅ Session Persistence mit Drift SQLite
 - ✅ BLE Diagnostic Tool
 - ✅ Trainer Simulator für Entwicklung
