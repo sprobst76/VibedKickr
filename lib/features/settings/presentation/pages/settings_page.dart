@@ -527,7 +527,6 @@ class SettingsPage extends ConsumerWidget {
       initialDate: currentDate ?? DateTime.now().subtract(const Duration(days: 365 * 30)),
       firstDate: DateTime(1950),
       lastDate: DateTime.now(),
-      locale: const Locale('de', 'DE'),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(

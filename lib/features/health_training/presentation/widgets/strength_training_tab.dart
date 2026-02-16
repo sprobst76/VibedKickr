@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../providers/providers.dart';
+import '../../../strength_training/presentation/pages/exercise_library_page.dart';
+import '../../../strength_training/presentation/pages/strength_workout_builder_page.dart';
+import '../../../strength_training/presentation/pages/strength_progress_page.dart';
 
 /// Krafttraining Tab für Gesundheitstraining
 /// Bietet Zugang zu Übungsbibliothek, Workout Builder und Progress Tracking
@@ -149,12 +152,19 @@ class StrengthTrainingTab extends ConsumerWidget {
   }
 
   void _navigateTo(BuildContext context, String route) {
-    // TODO: Implementieren Sie Navigation wenn Routes zur Verfügung stehen
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Navigation zu $route'),
-        duration: const Duration(milliseconds: 500),
-      ),
+    final Widget page;
+    switch (route) {
+      case '/health-training/strength/library':
+        page = const ExerciseLibraryPage();
+      case '/health-training/strength/workout-builder':
+        page = const StrengthWorkoutBuilderPage();
+      case '/health-training/strength/progress':
+        page = const StrengthProgressPage();
+      default:
+        return;
+    }
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => page),
     );
   }
 }

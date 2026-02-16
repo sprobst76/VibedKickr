@@ -16,6 +16,7 @@ import '../core/services/training_load_service.dart';
 import '../core/services/training_load_warning_service.dart';
 import '../core/services/ftp_test_reminder_service.dart';
 import '../core/services/health_mode_service.dart';
+import '../core/services/athlete_profile_service.dart';
 import '../core/services/tss_threshold_settings_service.dart';
 import '../data/repositories/session_repository_impl.dart';
 import '../domain/entities/athlete_profile.dart';
@@ -178,14 +179,32 @@ final savedSessionsProvider = StreamProvider<List<TrainingSession>>((ref) {
 // Athlete Profile Provider
 // ============================================================================
 
+/// Athlete Profile Service
+final athleteProfileServiceProvider = Provider<AthleteProfileService>((ref) {
+  return AthleteProfileService();
+});
+
 /// Athleten-Profil mit FTP und Zonen
 final athleteProfileProvider =
     StateNotifierProvider<AthleteProfileNotifier, AthleteProfile>((ref) {
-  return AthleteProfileNotifier();
+  final service = ref.watch(athleteProfileServiceProvider);
+  return AthleteProfileNotifier(service);
 });
 
 class AthleteProfileNotifier extends StateNotifier<AthleteProfile> {
-  AthleteProfileNotifier() : super(AthleteProfile.defaultProfile());
+  final AthleteProfileService _service;
+
+  AthleteProfileNotifier(this._service) : super(AthleteProfile.defaultProfile()) {
+    _load();
+  }
+
+  Future<void> _load() async {
+    state = await _service.load();
+  }
+
+  Future<void> _save() async {
+    await _service.save(state);
+  }
 
   void updateFtp(int newFtp) {
     // Validierung: FTP muss zwischen 1 und 500 Watt liegen (realistischer Bereich)
@@ -193,10 +212,12 @@ class AthleteProfileNotifier extends StateNotifier<AthleteProfile> {
       return;
     }
     state = state.updateFtp(newFtp);
+    _save();
   }
 
   void updateWeight(int? weight) {
     state = state.copyWith(weight: weight);
+    _save();
   }
 
   void updateMaxHr(int? maxHr) {
@@ -204,18 +225,22 @@ class AthleteProfileNotifier extends StateNotifier<AthleteProfile> {
       maxHr: maxHr,
       hrZones: maxHr != null ? HeartRateZones.fromMaxHr(maxHr) : null,
     );
+    _save();
   }
 
   void updateBirthDate(DateTime? birthDate) {
     state = state.copyWith(birthDate: birthDate);
+    _save();
   }
 
   void updateGender(Gender? gender) {
     state = state.copyWith(gender: gender);
+    _save();
   }
 
   void updateProfile(AthleteProfile profile) {
     state = profile;
+    _save();
   }
 }
 
