@@ -1,0 +1,194 @@
+{
+  "id": "hiit_20",
+  "name": "HIIT 20",
+  "description": "20 Minuten High Intensity Interval Training",
+  "type": "hiit",
+  "intervals": [
+    {
+      "name": "Warmup",
+      "durationMs": 300000,
+      "type": "warmup",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 50
+      }
+    },
+    {
+      "name": "Sprint 1",
+      "durationMs": 30000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 150
+      },
+      "cadenceMin": 100,
+      "cadenceMax": 120,
+      "instructions": "Vollgas!"
+    },
+    {
+      "name": "Recovery 1",
+      "durationMs": 30000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 40
+      }
+    },
+    {
+      "name": "Sprint 2",
+      "durationMs": 30000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 150
+      },
+      "cadenceMin": 100,
+      "cadenceMax": 120,
+      "instructions": "Vollgas!"
+    },
+    {
+      "name": "Recovery 2",
+      "durationMs": 30000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 40
+      }
+    },
+    {
+      "name": "Sprint 3",
+      "durationMs": 30000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 150
+      },
+      "cadenceMin": 100,
+      "cadenceMax": 120,
+      "instructions": "Vollgas!"
+    },
+    {
+      "name": "Recovery 3",
+      "durationMs": 30000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 40
+      }
+    },
+    {
+      "name": "Sprint 4",
+      "durationMs": 30000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 150
+      },
+      "cadenceMin": 100,
+      "cadenceMax": 120,
+      "instructions": "Vollgas!"
+    },
+    {
+      "name": "Recovery 4",
+      "durationMs": 30000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 40
+      }
+    },
+    {
+      "name": "Sprint 5",
+      "durationMs": 30000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 150
+      },
+      "cadenceMin": 100,
+      "cadenceMax": 120,
+      "instructions": "Vollgas!"
+    },
+    {
+      "name": "Recovery 5",
+      "durationMs": 30000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 40
+      }
+    },
+    {
+      "name": "Sprint 6",
+      "durationMs": 30000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 150
+      },
+      "cadenceMin": 100,
+      "cadenceMax": 120,
+      "instructions": "Vollgas!"
+    },
+    {
+      "name": "Recovery 6",
+      "durationMs": 30000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 40
+      }
+    },
+    {
+      "name": "Sprint 7",
+      "durationMs": 30000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 150
+      },
+      "cadenceMin": 100,
+      "cadenceMax": 120,
+      "instructions": "Vollgas!"
+    },
+    {
+      "name": "Recovery 7",
+      "durationMs": 30000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 40
+      }
+    },
+    {
+      "name": "Sprint 8",
+      "durationMs": 30000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 150
+      },
+      "cadenceMin": 100,
+      "cadenceMax": 120,
+      "instructions": "Vollgas!"
+    },
+    {
+      "name": "Recovery 8",
+      "durationMs": 30000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 40
+      }
+    },
+    {
+      "name": "Cooldown",
+      "durationMs": 300000,
+      "type": "cooldown",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 40
+      }
+    }
+  ]
+}

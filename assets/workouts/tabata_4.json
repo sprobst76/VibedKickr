@@ -1,0 +1,178 @@
+{
+  "id": "tabata_4",
+  "name": "Tabata Classic",
+  "description": "4 Minuten Tabata: 8× (20s Max / 10s Rest)",
+  "type": "tabata",
+  "intervals": [
+    {
+      "name": "Warmup",
+      "durationMs": 300000,
+      "type": "warmup",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 50
+      }
+    },
+    {
+      "name": "Tabata 1",
+      "durationMs": 20000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 170
+      },
+      "cadenceMin": 110,
+      "instructions": "ALLES GEBEN!"
+    },
+    {
+      "name": "Rest 1",
+      "durationMs": 10000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "free"
+      }
+    },
+    {
+      "name": "Tabata 2",
+      "durationMs": 20000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 170
+      },
+      "cadenceMin": 110,
+      "instructions": "ALLES GEBEN!"
+    },
+    {
+      "name": "Rest 2",
+      "durationMs": 10000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "free"
+      }
+    },
+    {
+      "name": "Tabata 3",
+      "durationMs": 20000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 170
+      },
+      "cadenceMin": 110,
+      "instructions": "ALLES GEBEN!"
+    },
+    {
+      "name": "Rest 3",
+      "durationMs": 10000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "free"
+      }
+    },
+    {
+      "name": "Tabata 4",
+      "durationMs": 20000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 170
+      },
+      "cadenceMin": 110,
+      "instructions": "ALLES GEBEN!"
+    },
+    {
+      "name": "Rest 4",
+      "durationMs": 10000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "free"
+      }
+    },
+    {
+      "name": "Tabata 5",
+      "durationMs": 20000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 170
+      },
+      "cadenceMin": 110,
+      "instructions": "ALLES GEBEN!"
+    },
+    {
+      "name": "Rest 5",
+      "durationMs": 10000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "free"
+      }
+    },
+    {
+      "name": "Tabata 6",
+      "durationMs": 20000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 170
+      },
+      "cadenceMin": 110,
+      "instructions": "ALLES GEBEN!"
+    },
+    {
+      "name": "Rest 6",
+      "durationMs": 10000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "free"
+      }
+    },
+    {
+      "name": "Tabata 7",
+      "durationMs": 20000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 170
+      },
+      "cadenceMin": 110,
+      "instructions": "ALLES GEBEN!"
+    },
+    {
+      "name": "Rest 7",
+      "durationMs": 10000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "free"
+      }
+    },
+    {
+      "name": "Tabata 8",
+      "durationMs": 20000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 170
+      },
+      "cadenceMin": 110,
+      "instructions": "ALLES GEBEN!"
+    },
+    {
+      "name": "Rest 8",
+      "durationMs": 10000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "free"
+      }
+    },
+    {
+      "name": "Cooldown",
+      "durationMs": 300000,
+      "type": "cooldown",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 40
+      }
+    }
+  ]
+}

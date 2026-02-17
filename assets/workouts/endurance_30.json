@@ -1,0 +1,40 @@
+{
+  "id": "endurance_30",
+  "name": "Endurance 30",
+  "description": "30 Minuten moderates Ausdauertraining in Zone 2",
+  "type": "endurance",
+  "intervals": [
+    {
+      "name": "Warmup",
+      "durationMs": 300000,
+      "type": "warmup",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 50
+      },
+      "instructions": "Locker einrollen"
+    },
+    {
+      "name": "Endurance",
+      "durationMs": 1200000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 65
+      },
+      "cadenceMin": 85,
+      "cadenceMax": 95,
+      "instructions": "Gleichmäßig treten, Atmung kontrollieren"
+    },
+    {
+      "name": "Cooldown",
+      "durationMs": 300000,
+      "type": "cooldown",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 40
+      },
+      "instructions": "Locker ausrollen"
+    }
+  ]
+}

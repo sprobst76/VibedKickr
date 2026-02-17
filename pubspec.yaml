@@ -88,7 +88,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   
-  # Uncomment when you have assets:
-  # assets:
-  #   - assets/audio/
-  #   - assets/workouts/
+  assets:
+    - assets/workouts/

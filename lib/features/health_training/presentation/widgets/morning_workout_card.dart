@@ -171,7 +171,7 @@ class MorningWorkoutCard extends ConsumerWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => WorkoutPlayerPage(
-          workoutId: workout.id,
+          workout: workout,
         ),
       ),
     );

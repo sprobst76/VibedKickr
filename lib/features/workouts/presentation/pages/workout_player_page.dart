@@ -5,6 +5,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'package:drift/drift.dart' show Value;
 
+import '../../../../main.dart';
 import '../../../../core/ble/models/connection_state.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/services/health_program_result_analyzer.dart';
@@ -15,14 +16,16 @@ import '../../../../domain/entities/workout.dart';
 import '../../../../providers/morning_workout_providers.dart';
 import '../../../../providers/providers.dart';
 import '../../providers/workout_player_provider.dart';
+import 'workout_list_page.dart';
 import '../widgets/interval_progress_bar.dart';
 import '../widgets/workout_timeline.dart';
 import '../../../health_training/presentation/widgets/emergency_stop_button.dart';
 
 class WorkoutPlayerPage extends ConsumerStatefulWidget {
   final String? workoutId;
+  final Workout? workout;
 
-  const WorkoutPlayerPage({super.key, this.workoutId});
+  const WorkoutPlayerPage({super.key, this.workoutId, this.workout});
 
   @override
   ConsumerState<WorkoutPlayerPage> createState() => _WorkoutPlayerPageState();
@@ -39,13 +42,33 @@ class _WorkoutPlayerPageState extends ConsumerState<WorkoutPlayerPage> {
   }
 
   void _initializeWorkout() {
+    // Direkt übergebenes Workout (z.B. Health Training Programme)
+    if (widget.workout != null) {
+      ref.read(workoutPlayerProvider.notifier).loadWorkout(widget.workout!);
+      return;
+    }
+
     if (widget.workoutId != null) {
-      // Workout laden
-      final workout = PredefinedWorkouts.all.firstWhere(
-        (w) => w.id == widget.workoutId,
-        orElse: () => PredefinedWorkouts.endurance30,
+      // Erst in JSON-basierten vordefinierten Workouts suchen
+      final library = ref.read(workoutLibraryServiceProvider);
+      final predefined = library.getWorkoutById(widget.workoutId!);
+      if (predefined != null) {
+        ref.read(workoutPlayerProvider.notifier).loadWorkout(predefined);
+        return;
+      }
+
+      // Dann in Custom Workouts suchen
+      final customAsync = ref.read(customWorkoutsProvider);
+      final custom = customAsync.valueOrNull?.cast<Workout?>().firstWhere(
+        (w) => w!.id == widget.workoutId,
+        orElse: () => null,
       );
-      ref.read(workoutPlayerProvider.notifier).loadWorkout(workout);
+      if (custom != null) {
+        ref.read(workoutPlayerProvider.notifier).loadWorkout(custom);
+        return;
+      }
+
+      logger.w('Workout not found: ${widget.workoutId}');
     }
   }
 
@@ -482,20 +505,20 @@ class _MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          // Current Interval
+          // Current Interval — immer sichtbar
           if (playerState.currentInterval != null)
             IntervalProgressBar(
               interval: playerState.currentInterval!,
               elapsed: playerState.intervalElapsed,
               ftp: profile.ftp,
             ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
 
-          // Power Display
+          // Power Display — immer sichtbar
           _PowerDisplay(
             power: liveData.power,
             targetPower: playerState.currentTargetPower,
@@ -504,9 +527,9 @@ class _MobileLayout extends StatelessWidget {
             nextInterval: playerState.nextInterval,
             ftp: profile.ftp,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
 
-          // Metrics Row
+          // Metrics Row — immer sichtbar
           Row(
             children: [
               Expanded(
@@ -534,19 +557,19 @@ class _MobileLayout extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 24),
 
           // HR Safety Indicator (for Health Training programs)
           if (playerState.hrStatus != null) ...[
+            const SizedBox(height: 16),
             _HrSafetyIndicator(
               hrStatus: playerState.hrStatus,
               hrAutoPaused: playerState.hrAutoPaused,
             ),
-            const SizedBox(height: 24),
           ],
 
           // Emergency Stop Button (for Health Training programs)
-          if (playerState.hrStatus != null)
+          if (playerState.hrStatus != null) ...[
+            const SizedBox(height: 16),
             Center(
               child: EmergencyStopButton(
                 isActive: playerState.state == WorkoutPlayerState.running,
@@ -555,21 +578,23 @@ class _MobileLayout extends StatelessWidget {
                     ? 'HR KRITISCH! Training wurde pausiert.'
                     : null,
                 onEmergencyStop: () {
-                  // Handle emergency stop - TODO: Implement safety report
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Notfall-Stopp aktiviert')),
                   );
                 },
               ),
             ),
-          const SizedBox(height: 24),
+          ],
+          const SizedBox(height: 16),
 
-          // Workout Timeline
+          // Workout Timeline — scrollbar
           if (playerState.workout != null)
-            WorkoutTimeline(
-              workout: playerState.workout!,
-              currentIntervalIndex: playerState.currentIntervalIndex,
-              ftp: profile.ftp,
+            Expanded(
+              child: WorkoutTimeline(
+                workout: playerState.workout!,
+                currentIntervalIndex: playerState.currentIntervalIndex,
+                ftp: profile.ftp,
+              ),
             ),
         ],
       ),

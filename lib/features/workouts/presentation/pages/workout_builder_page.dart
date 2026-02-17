@@ -65,7 +65,8 @@ class _WorkoutBuilderPageState extends ConsumerState<WorkoutBuilderPage> {
       });
     } else {
       // Versuche vordefiniertes Workout zu finden
-      final predefined = PredefinedWorkouts.all.where((w) => w.id == widget.workoutId).firstOrNull;
+      final library = ref.read(workoutLibraryServiceProvider);
+      final predefined = library.getWorkoutById(widget.workoutId!);
       if (predefined != null) {
         setState(() {
           _nameController.text = '${predefined.name} (Kopie)';

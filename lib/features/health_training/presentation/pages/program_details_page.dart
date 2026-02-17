@@ -216,7 +216,7 @@ class ProgramDetailsPage extends ConsumerWidget {
   }
 
   void _navigateToWorkout(BuildContext context, WidgetRef ref) {
-    context.go('${AppRoutes.workoutPlayer}?workoutId=${program.id}');
+    context.go(AppRoutes.workoutPlayer, extra: program);
   }
 
   String _getProgramType(String name) {

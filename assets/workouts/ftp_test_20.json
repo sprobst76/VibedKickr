@@ -1,0 +1,55 @@
+{
+  "id": "ftp_test_20",
+  "name": "FTP Test (20 Min)",
+  "description": "20 Minuten FTP Test - Ergebnis × 0.95 = FTP",
+  "type": "ftpTest",
+  "intervals": [
+    {
+      "name": "Warmup",
+      "durationMs": 600000,
+      "type": "warmup",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 50
+      },
+      "instructions": "Locker warmfahren"
+    },
+    {
+      "name": "Aktivierung",
+      "durationMs": 180000,
+      "type": "work",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 80
+      },
+      "instructions": "3 kurze Sprints einbauen"
+    },
+    {
+      "name": "Erholung",
+      "durationMs": 300000,
+      "type": "rest",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 40
+      }
+    },
+    {
+      "name": "20 Min Test",
+      "durationMs": 1200000,
+      "type": "work",
+      "powerTarget": {
+        "type": "free"
+      },
+      "instructions": "Maximale nachhaltige Leistung! Gleichmäßig einteilen."
+    },
+    {
+      "name": "Cooldown",
+      "durationMs": 600000,
+      "type": "cooldown",
+      "powerTarget": {
+        "type": "ftpPercent",
+        "ftpPercent": 40
+      }
+    }
+  ]
+}

@@ -14,6 +14,7 @@ import '../core/ble/models/ftms_data.dart';
 import '../core/database/app_database.dart';
 import '../core/database/daos/personal_record_dao.dart';
 import '../core/services/personal_record_service.dart';
+import '../core/services/workout_library_service.dart';
 import '../core/services/training_load_service.dart';
 import '../core/services/training_load_warning_service.dart';
 import '../core/services/ftp_test_reminder_service.dart';
@@ -27,6 +28,7 @@ import '../domain/entities/training_load.dart';
 import '../domain/entities/training_session.dart';
 import '../domain/entities/tss_threshold_settings.dart';
 import '../domain/entities/scheduled_workout.dart';
+import '../domain/entities/workout.dart';
 import '../domain/repositories/session_repository.dart';
 import '../domain/repositories/scheduled_workout_repository.dart';
 import '../data/repositories/scheduled_workout_repository_impl.dart';
@@ -53,6 +55,20 @@ class SessionFinishResult {
   /// Wurden neue PRs aufgestellt?
   bool get hasNewRecords => newRecords.isNotEmpty;
 }
+
+// ============================================================================
+// Workout Library Provider
+// ============================================================================
+
+final workoutLibraryServiceProvider = Provider<WorkoutLibraryService>((ref) {
+  return WorkoutLibraryService();
+});
+
+final predefinedWorkoutsProvider = FutureProvider<List<Workout>>((ref) async {
+  final service = ref.read(workoutLibraryServiceProvider);
+  await service.loadWorkouts();
+  return service.predefinedWorkouts;
+});
 
 // ============================================================================
 // BLE Providers

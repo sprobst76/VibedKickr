@@ -23,7 +23,8 @@ class WorkoutListPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(athleteProfileProvider);
     final customWorkoutsAsync = ref.watch(customWorkoutsProvider);
-    final predefinedWorkouts = PredefinedWorkouts.all;
+    final predefinedWorkoutsAsync = ref.watch(predefinedWorkoutsProvider);
+    final predefinedWorkouts = predefinedWorkoutsAsync.valueOrNull ?? [];
 
     return Scaffold(
       appBar: AppBar(

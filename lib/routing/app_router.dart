@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../domain/entities/workout.dart';
 import '../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../features/device_connection/presentation/pages/device_scan_page.dart';
 import '../features/history/presentation/pages/session_detail_page.dart';
@@ -102,7 +103,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.workoutPlayer,
         builder: (context, state) {
           final workoutId = state.uri.queryParameters['workoutId'];
-          return WorkoutPlayerPage(workoutId: workoutId);
+          final workout = state.extra as Workout?;
+          return WorkoutPlayerPage(workoutId: workoutId, workout: workout);
         },
       ),
       GoRoute(

@@ -46,7 +46,7 @@ class WorkoutTimeline extends StatelessWidget {
           const SizedBox(height: 16),
 
           // Interval List
-          Expanded(
+          Flexible(
             child: ListView.builder(
               itemCount: workout.intervals.length,
               itemBuilder: (context, index) {
