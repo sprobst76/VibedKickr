@@ -394,13 +394,18 @@ class HealthTrainingProgramGenerator {
   /// Guten Morgen Training (10 min)
   ///
   /// Ziel: Sanfte Morgenaktivierung mit HR-Recovery-Bewertung
-  /// Struktur: 2min Warmup + 3× (2min sanfte Arbeit) + 2min Cooldown mit Recovery-Monitoring
-  /// Intensität: 40-65% max HR - sehr sanft
-  static Workout generateMorningWakeup(AthleteProfile athlete) {
+  /// Struktur: 2min Warmup + 3× (2min progressive Arbeit) + 2min Cooldown mit Recovery-Monitoring
+  /// Intensität: Progressive Steigerung von 40% bis 70% FTP
+  ///
+  /// [intensityAdjustment] verschiebt die Basis-Intensität (z.B. +5 oder -5).
+  /// Wird von der adaptiven Logik basierend auf vergangenen Recovery-Scores gesetzt.
+  static Workout generateMorningWakeup(AthleteProfile athlete,
+      {int intensityAdjustment = 0}) {
     final age = athlete.age ?? 45;
     final maxHr = athlete.maxHr ??
         HealthTrainingPersonalizationService.calculateMaxHeartRate(age,
             gender: athlete.gender);
+    final adj = intensityAdjustment;
 
     final intervals = <WorkoutInterval>[
       // Kurzes Warmup (Morgens = steif)
@@ -408,34 +413,53 @@ class HealthTrainingProgramGenerator {
         name: 'Aufwachen',
         duration: const Duration(minutes: 2),
         type: IntervalType.warmup,
-        powerTarget: PowerTarget.ftpPercent(40),
+        powerTarget: PowerTarget.ftpPercent(40 + adj),
         targetHeartRate: ((45 / 100) * maxHr).round(),
         maxHeartRate: ((55 / 100) * maxHr).round(),
         instructions: 'Sanft starten, Körper aktivieren',
       ),
 
-      // 3× sanfte Arbeit
-      for (int i = 1; i <= 3; i++) ...[
-        WorkoutInterval(
-          name: 'Aktivierung $i',
-          duration: const Duration(minutes: 2),
-          type: IntervalType.work,
-          powerTarget: PowerTarget.ftpPercent(55),
-          targetHeartRate: ((60 / 100) * maxHr).round(),
-          maxHeartRate: ((65 / 100) * maxHr).round(),
-          cadenceMin: 80,
-          cadenceMax: 90,
-          instructions: 'Leicht aktivieren, angenehmes Tempo',
-          monitorRecovery: false,
-        ),
-      ],
+      // Progressive Aktivierung: 50% → 60% → 70% FTP
+      WorkoutInterval(
+        name: 'Leichte Aktivierung',
+        duration: const Duration(minutes: 2),
+        type: IntervalType.work,
+        powerTarget: PowerTarget.ftpPercent(50 + adj),
+        targetHeartRate: ((55 / 100) * maxHr).round(),
+        maxHeartRate: ((60 / 100) * maxHr).round(),
+        cadenceMin: 80,
+        cadenceMax: 90,
+        instructions: 'Sanft einrollen, lockeres Tempo',
+      ),
+      WorkoutInterval(
+        name: 'Moderate Aktivierung',
+        duration: const Duration(minutes: 2),
+        type: IntervalType.work,
+        powerTarget: PowerTarget.ftpPercent(60 + adj),
+        targetHeartRate: ((65 / 100) * maxHr).round(),
+        maxHeartRate: ((70 / 100) * maxHr).round(),
+        cadenceMin: 80,
+        cadenceMax: 90,
+        instructions: 'Etwas mehr Druck, Körper wach machen',
+      ),
+      WorkoutInterval(
+        name: 'Volle Aktivierung',
+        duration: const Duration(minutes: 2),
+        type: IntervalType.work,
+        powerTarget: PowerTarget.ftpPercent(70 + adj),
+        targetHeartRate: ((70 / 100) * maxHr).round(),
+        maxHeartRate: ((78 / 100) * maxHr).round(),
+        cadenceMin: 85,
+        cadenceMax: 95,
+        instructions: 'Richtig wach! Guter Druck auf dem Pedal',
+      ),
 
       // Cooldown mit Recovery-Monitoring
       WorkoutInterval(
         name: 'Cooldown',
         duration: const Duration(minutes: 2),
         type: IntervalType.cooldown,
-        powerTarget: PowerTarget.ftpPercent(35),
+        powerTarget: PowerTarget.ftpPercent(35 + adj),
         targetHeartRate: ((40 / 100) * maxHr).round(),
         maxHeartRate: ((50 / 100) * maxHr).round(),
         instructions: 'Sanft ausklingen - HR-Recovery wird gemessen',
@@ -447,11 +471,25 @@ class HealthTrainingProgramGenerator {
       id: 'health_morning_wakeup_${athlete.id}',
       name: 'Guten Morgen Training',
       description:
-          'Kurzes, sanftes Morgen-Training (10 Min) mit HR-Recovery-Bewertung',
+          'Kurzes Morgen-Training (10 Min) mit progressiver Steigerung und HR-Recovery-Bewertung',
       type: WorkoutType.interval,
       intervals: intervals,
       createdAt: DateTime.now(),
     );
+  }
+
+  /// Berechnet die adaptive Intensitätsanpassung basierend auf vergangenen Recovery-Scores
+  ///
+  /// Rückgabewert: FTP-Prozent-Offset (z.B. +5, 0, -5)
+  static int calculateAdaptiveAdjustment(List<int> recentScores) {
+    if (recentScores.isEmpty) return 0;
+
+    final avgScore =
+        recentScores.reduce((a, b) => a + b) / recentScores.length;
+
+    if (avgScore >= 75) return 5; // Gute Erholung → etwas härter
+    if (avgScore < 50) return -5; // Schlechte Erholung → etwas leichter
+    return 0; // Normal
   }
 
   /// Wählt das empfohlene Programm für einen Athleten

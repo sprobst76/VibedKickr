@@ -15,6 +15,15 @@ class MorningWorkoutCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final todayScore = ref.watch(todayRecoveryScoreProvider);
     final streak = ref.watch(morningWorkoutStreakProvider);
+    final recentScoresAsync =
+        ref.watch(latestMorningRecoveryScoresProvider(5));
+
+    // Adaptive Adjustment berechnen
+    final adjustment = recentScoresAsync.whenData((scores) {
+      return HealthTrainingProgramGenerator.calculateAdaptiveAdjustment(
+        scores.map((s) => s.recoveryScore).toList(),
+      );
+    });
 
     return Card(
       child: InkWell(
@@ -44,16 +53,46 @@ class MorningWorkoutCard extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Guten Morgen Training',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Row(
+                          children: [
+                            const Text(
+                              'Guten Morgen Training',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            // Adaptive Intensity Chip
+                            if (adjustment.valueOrNull != null &&
+                                adjustment.valueOrNull != 0)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: adjustment.valueOrNull! > 0
+                                      ? Colors.green.withValues(alpha: 0.15)
+                                      : Colors.blue.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  adjustment.valueOrNull! > 0
+                                      ? '+${adjustment.valueOrNull}%'
+                                      : '${adjustment.valueOrNull}%',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: adjustment.valueOrNull! > 0
+                                        ? Colors.green
+                                        : Colors.blue,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          '10 Min sanftes Training mit Recovery-Check',
+                          '10 Min progressives Training mit Recovery-Check',
                           style: TextStyle(
                             fontSize: 12,
                             color: AppColors.textSecondary,
@@ -163,11 +202,22 @@ class MorningWorkoutCard extends ConsumerWidget {
     );
   }
 
-  void _startMorningWorkout(BuildContext context, WidgetRef ref) {
+  Future<void> _startMorningWorkout(BuildContext context, WidgetRef ref) async {
     final profile = ref.read(athleteProfileProvider);
-    final workout =
-        HealthTrainingProgramGenerator.generateMorningWakeup(profile);
 
+    // Adaptive Intensität basierend auf letzten 5 Recovery-Scores
+    final dao = ref.read(morningRecoveryDaoProvider);
+    final recentScores = await dao.getLatestScores(5);
+    final adjustment = HealthTrainingProgramGenerator.calculateAdaptiveAdjustment(
+      recentScores.map((s) => s.recoveryScore).toList(),
+    );
+
+    final workout = HealthTrainingProgramGenerator.generateMorningWakeup(
+      profile,
+      intensityAdjustment: adjustment,
+    );
+
+    if (!context.mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => WorkoutPlayerPage(

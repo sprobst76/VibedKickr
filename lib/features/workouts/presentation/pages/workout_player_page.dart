@@ -20,6 +20,7 @@ import 'workout_list_page.dart';
 import '../widgets/interval_progress_bar.dart';
 import '../widgets/workout_timeline.dart';
 import '../../../health_training/presentation/widgets/emergency_stop_button.dart';
+import '../../../health_training/presentation/pages/program_result_page.dart';
 
 class WorkoutPlayerPage extends ConsumerStatefulWidget {
   final String? workoutId;
@@ -32,12 +33,26 @@ class WorkoutPlayerPage extends ConsumerStatefulWidget {
 }
 
 class _WorkoutPlayerPageState extends ConsumerState<WorkoutPlayerPage> {
+  bool _isFinishing = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeWorkout();
       _setupWakelock();
+      _setupAutoFinish();
+    });
+  }
+
+  /// Auto-Save wenn Workout natürlich endet (alle Intervalle durch)
+  void _setupAutoFinish() {
+    ref.listenManual<WorkoutPlayerData>(workoutPlayerProvider, (previous, next) {
+      if (previous?.state != WorkoutPlayerState.finished &&
+          next.state == WorkoutPlayerState.finished &&
+          !_isFinishing) {
+        _handleStop(context, ref);
+      }
     });
   }
 
@@ -208,27 +223,45 @@ class _WorkoutPlayerPageState extends ConsumerState<WorkoutPlayerPage> {
           ],
         ),
       );
+    } else if (state == WorkoutPlayerState.finished && !_isFinishing) {
+      // Falls das Workout natürlich beendet wurde aber noch nicht gespeichert
+      _handleStop(context, ref);
     } else {
       context.pop();
     }
   }
 
   Future<void> _handleStop(BuildContext context, WidgetRef ref) async {
+    if (_isFinishing) return;
+    _isFinishing = true;
+
     final playerState = ref.read(workoutPlayerProvider);
     ref.read(workoutPlayerProvider.notifier).stop();
     final result = await ref.read(activeSessionProvider.notifier).finishSession();
 
     if (result != null && result.session.dataPoints.isNotEmpty) {
-      // Prüfe ob es ein Morgen-Training ist und speichere Recovery Score
       final isMorningWorkout =
           playerState.workout?.id.contains('morning_wakeup') ?? false;
 
       if (isMorningWorkout) {
+        // Recovery Score speichern (ohne Dialog — ProgramResultPage zeigt alles)
         await _saveMorningRecoveryScore(ref, result, context);
+
+        // Zur Ergebnis-Seite navigieren
+        if (context.mounted && playerState.workout != null) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => ProgramResultPage(
+                session: result.session,
+                program: playerState.workout!,
+              ),
+            ),
+          );
+          return;
+        }
       }
 
       if (context.mounted) {
-        // Standard Snackbar für Session-Statistiken
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -238,7 +271,6 @@ class _WorkoutPlayerPageState extends ConsumerState<WorkoutPlayerPage> {
           ),
         );
 
-        // PR Dialog anzeigen, wenn neue Records aufgestellt wurden
         if (result.hasNewRecords) {
           await _showNewRecordsDialog(context, result.newRecords);
         }
@@ -278,10 +310,6 @@ class _WorkoutPlayerPageState extends ConsumerState<WorkoutPlayerPage> {
             createdAt: Value(DateTime.now()),
           ),
         );
-
-        if (context.mounted) {
-          _showMorningRecoveryDialog(context, recovery);
-        }
       }
     } catch (e) {
       // Recovery-Analyse-Fehler nicht kritisch
