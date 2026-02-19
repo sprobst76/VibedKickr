@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../../../core/services/health_program_result_analyzer.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -32,10 +33,17 @@ class _ProgramResultPageState extends ConsumerState<ProgramResultPage> {
   @override
   void initState() {
     super.initState();
+    WakelockPlus.enable();
     _analyzeResults();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showFeedbackDialog();
     });
+  }
+
+  @override
+  void dispose() {
+    WakelockPlus.disable();
+    super.dispose();
   }
 
   void _analyzeResults() {
