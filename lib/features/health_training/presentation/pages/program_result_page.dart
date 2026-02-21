@@ -130,7 +130,7 @@ class _ProgramResultPageState extends ConsumerState<ProgramResultPage> {
       barrierDismissible: false,
       builder: (context) => DifficultyFeedbackDialog(
         onFeedback: (difficulty) {
-          Navigator.pop(context);
+          // Dialog schließt sich selbst — hier nur Feedback verarbeiten
         },
       ),
     );
