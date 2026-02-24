@@ -1,0 +1,49 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter*)",
+      "Bash(dart*)",
+      "Bash(JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 flutter*)",
+      "Bash(git*)",
+      "Bash(gh*)",
+      "Bash(adb*)",
+      "Bash(sqlite3*)",
+      "Bash(curl*)",
+      "Bash(chmod*)",
+      "Bash(ls*)",
+      "Bash(find*)",
+      "Bash(grep*)",
+      "Bash(head*)",
+      "Bash(tail*)",
+      "Bash(mkdir*)",
+      "Bash(cp*)",
+      "Bash(mv*)",
+      "Bash(tree*)",
+      "Bash(wc*)",
+      "Bash(echo*)",
+      "Bash(tee*)",
+      "Bash(cat*)",
+      "Bash(touch*)",
+      "Bash(pkill*)",
+      "Bash(rm /home/spro/development/VibedKickr*)",
+      "Bash(rm -f /home/spro/development/VibedKickr*)",
+      "Bash(rm -rf /home/spro/development/VibedKickr*)",
+      "Bash(rm /tmp/VibedKickr*)",
+      "Bash(rm -f /tmp/VibedKickr*)",
+      "Bash(rm -rf /tmp/VibedKickr*)",
+      "Bash(rm /tmp/vk_*)",
+      "Bash(rm -f /tmp/vk_*)",
+      "WebSearch"
+    ],
+    "deny": [
+      "Bash(sudo*)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf /home*)",
+      "Bash(rm -rf /root*)",
+      "Bash(rm -rf /srv*)",
+      "Bash(shutdown*)",
+      "Bash(reboot*)",
+      "Bash(ssh*)"
+    ]
+  }
+}
