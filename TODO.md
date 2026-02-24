@@ -72,6 +72,7 @@ Diese Datei enthält geplante Features, Verbesserungen und bekannte Issues.
 ### Erweiterte Konnektivität
 - [ ] 🟡 ANT+ Unterstützung (via Stick)
 - [ ] 🟡 ANT+ FE-C Protokoll
+- [ ] 🟡 Android Health Connect Integration (Nachfolger von Google Fit, `health` Flutter-Package)
 - [ ] 🟢 Direkte TrainingPeaks Integration
 - [ ] 🟢 Garmin Connect Sync
 - [ ] 🟢 Apple Health / Google Fit Sync

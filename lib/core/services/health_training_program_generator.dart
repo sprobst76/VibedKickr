@@ -8,6 +8,7 @@ class HealthTrainingProgramGenerator {
   static List<Workout> generateAllPrograms(AthleteProfile athlete) {
     final programs = [
       generateMorningWakeup(athlete),
+      generateEveningHiit(athlete),
       generateBaselineAssessment(athlete),
       generateCardiacRehabIntervals(athlete),
       generateAgeOptimizedEndurance(athlete),
@@ -473,6 +474,105 @@ class HealthTrainingProgramGenerator {
       description:
           'Kurzes Morgen-Training (10 Min) mit progressiver Steigerung und HR-Recovery-Bewertung',
       type: WorkoutType.interval,
+      intervals: intervals,
+      createdAt: DateTime.now(),
+    );
+  }
+
+  /// Abend-HIIT (21 Minuten)
+  ///
+  /// Empfehlung: 18:00–19:30 Uhr
+  /// Ziel: Maximale anaerobe Reize für Leistungssteigerung und Kalorienverbrennung
+  /// Struktur: 5min Warmup + 4× Aufbau-Sprints (120% FTP) + 4× Peak-Sprints (140% FTP) + 5min Cooldown
+  /// Intensität: Progressiv von 120% bis 140% FTP
+  static Workout generateEveningHiit(AthleteProfile athlete) {
+    final age = athlete.age ?? 45;
+    final maxHr = athlete.maxHr ??
+        HealthTrainingPersonalizationService.calculateMaxHeartRate(age,
+            gender: athlete.gender);
+
+    final intervals = <WorkoutInterval>[
+      // Warmup
+      WorkoutInterval(
+        name: 'Warmup',
+        duration: const Duration(minutes: 5),
+        type: IntervalType.warmup,
+        powerTarget: PowerTarget.ftpPercent(50),
+        targetHeartRate: ((50 / 100) * maxHr).round(),
+        maxHeartRate: ((60 / 100) * maxHr).round(),
+        cadenceMin: 80,
+        cadenceMax: 90,
+        instructions: 'Locker einrollen, Beine aktivieren',
+      ),
+
+      // Aufbau-Phase: 4× 30s @ 120% FTP (Zone 6)
+      for (int i = 1; i <= 4; i++) ...[
+        WorkoutInterval(
+          name: 'Aufbau-Sprint $i',
+          duration: const Duration(seconds: 30),
+          type: IntervalType.work,
+          powerTarget: PowerTarget.ftpPercent(120),
+          targetHeartRate: ((80 / 100) * maxHr).round(),
+          maxHeartRate: ((90 / 100) * maxHr).round(),
+          cadenceMin: 95,
+          cadenceMax: 110,
+          instructions: i == 1
+              ? 'Los geht\'s! Hohes Tempo'
+              : 'Halte das Tempo!',
+        ),
+        WorkoutInterval(
+          name: 'Erholung $i',
+          duration: const Duration(seconds: 30),
+          type: IntervalType.rest,
+          powerTarget: PowerTarget.ftpPercent(40),
+          instructions: 'Tief durchatmen, erholen',
+        ),
+      ],
+
+      // Peak-Phase: 4× 30s @ 140% FTP (Zone 7)
+      for (int i = 1; i <= 4; i++) ...[
+        WorkoutInterval(
+          name: 'Peak-Sprint $i',
+          duration: const Duration(seconds: 30),
+          type: IntervalType.work,
+          powerTarget: PowerTarget.ftpPercent(140),
+          targetHeartRate: ((88 / 100) * maxHr).round(),
+          maxHeartRate: ((95 / 100) * maxHr).round(),
+          cadenceMin: 100,
+          cadenceMax: 120,
+          instructions: 'Alles geben! Maximale Intensität',
+        ),
+        WorkoutInterval(
+          name: 'Erholung ${i + 4}',
+          duration: const Duration(seconds: 30),
+          type: IntervalType.rest,
+          powerTarget: PowerTarget.ftpPercent(40),
+          instructions: i < 4 ? 'Erholen für nächsten Sprint' : 'Letzter Sprint geschafft!',
+        ),
+      ],
+
+      // Cooldown
+      WorkoutInterval(
+        name: 'Cooldown',
+        duration: const Duration(minutes: 5),
+        type: IntervalType.cooldown,
+        powerTarget: PowerTarget.ftpPercent(40),
+        targetHeartRate: ((55 / 100) * maxHr).round(),
+        maxHeartRate: ((65 / 100) * maxHr).round(),
+        cadenceMin: 75,
+        cadenceMax: 85,
+        instructions: 'Ruhig ausrollen, Puls senken',
+        monitorRecovery: true,
+      ),
+    ];
+
+    return Workout(
+      id: 'health_evening_hiit_${athlete.id}',
+      name: 'Abend-HIIT',
+      description:
+          'Kurzes Abend-HIIT (21 Min) — Empfehlung: 18:00–19:30 Uhr. '
+          'Progressive Sprints von 120% auf 140% FTP für maximalen Trainingsreiz.',
+      type: WorkoutType.hiit,
       intervals: intervals,
       createdAt: DateTime.now(),
     );
