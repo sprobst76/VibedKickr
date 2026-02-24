@@ -22,6 +22,11 @@ class MorningWorkoutTab extends ConsumerWidget {
         const MorningWorkoutCard(),
         const SizedBox(height: 24),
 
+        // Wöchentliche Zusammenfassung
+        _SectionHeader(title: 'Diese Woche'),
+        const _WeeklySummaryCard(),
+        const SizedBox(height: 24),
+
         // Recovery Trend Chart
         _SectionHeader(title: 'Recovery Verlauf'),
         const RecoveryTrendChart(),
@@ -142,6 +147,149 @@ class MorningWorkoutTab extends ConsumerWidget {
         _SectionHeader(title: 'Einstellungen'),
         const MorningWorkoutSettingsSection(),
         const SizedBox(height: 24),
+      ],
+    );
+  }
+}
+
+/// Wöchentliche Zusammenfassung der Morning Recovery Scores
+class _WeeklySummaryCard extends ConsumerWidget {
+  const _WeeklySummaryCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final thisWeek = ref.watch(weeklyRecoveryScoresProvider);
+    final prevWeek = ref.watch(previousWeekRecoveryScoresProvider);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: thisWeek.when(
+          data: (scores) {
+            if (scores.isEmpty) {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: Text(
+                    'Noch keine Trainings diese Woche',
+                    style: TextStyle(
+                      color: AppColors.textMuted,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              );
+            }
+
+            final avgScore =
+                scores.map((s) => s.recoveryScore).reduce((a, b) => a + b) /
+                    scores.length;
+            final avgScoreInt = avgScore.round();
+            final scoreColor = avgScoreInt >= 70
+                ? Colors.green
+                : avgScoreInt >= 50
+                    ? Colors.orange
+                    : Colors.red;
+
+            // Trend vs. Vorwoche
+            final prevAvg = prevWeek.whenData((prev) {
+              if (prev.isEmpty) return null;
+              return prev
+                      .map((s) => s.recoveryScore)
+                      .reduce((a, b) => a + b) /
+                  prev.length;
+            }).valueOrNull;
+
+            final trendDelta =
+                prevAvg != null ? (avgScore - prevAvg).round() : null;
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                // Trainingstage
+                _WeekStat(
+                  icon: Icons.calendar_today,
+                  value: '${scores.length}',
+                  label: 'Tage',
+                  color: AppColors.primary,
+                ),
+                // Ø Recovery Score
+                _WeekStat(
+                  icon: Icons.favorite,
+                  value: '$avgScoreInt',
+                  label: 'Ø Score',
+                  color: scoreColor,
+                ),
+                // Trend vs. Vorwoche
+                _WeekStat(
+                  icon: trendDelta == null
+                      ? Icons.trending_flat
+                      : trendDelta > 0
+                          ? Icons.trending_up
+                          : trendDelta < 0
+                              ? Icons.trending_down
+                              : Icons.trending_flat,
+                  value: trendDelta == null
+                      ? '--'
+                      : trendDelta > 0
+                          ? '+$trendDelta'
+                          : '$trendDelta',
+                  label: 'vs. Vorwoche',
+                  color: trendDelta == null
+                      ? AppColors.textMuted
+                      : trendDelta > 0
+                          ? Colors.green
+                          : trendDelta < 0
+                              ? Colors.red
+                              : AppColors.textMuted,
+                ),
+              ],
+            );
+          },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (_, __) =>
+              const Center(child: Text('Fehler beim Laden')),
+        ),
+      ),
+    );
+  }
+}
+
+class _WeekStat extends StatelessWidget {
+  final IconData icon;
+  final String value;
+  final String label;
+  final Color color;
+
+  const _WeekStat({
+    required this.icon,
+    required this.value,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: color, size: 22),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 10,
+            color: AppColors.textMuted,
+          ),
+        ),
       ],
     );
   }

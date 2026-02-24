@@ -55,3 +55,13 @@ final morningWorkoutStreakProvider = FutureProvider<int>((ref) async {
   final dao = ref.watch(morningRecoveryDaoProvider);
   return dao.getStreak();
 });
+
+/// Recovery Scores der Vorwoche (7-14 Tage zurück)
+final previousWeekRecoveryScoresProvider =
+    FutureProvider<List<MorningRecoveryScoreEntity>>((ref) async {
+  final dao = ref.watch(morningRecoveryDaoProvider);
+  final now = DateTime.now();
+  final twoWeeksAgo = now.subtract(const Duration(days: 14));
+  final weekAgo = now.subtract(const Duration(days: 7));
+  return dao.getScoresByDateRange(twoWeeksAgo, weekAgo);
+});

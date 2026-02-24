@@ -6,6 +6,7 @@ import '../../../../core/services/health_program_result_analyzer.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../domain/entities/training_session.dart';
 import '../../../../domain/entities/workout.dart';
+import '../../../../providers/morning_workout_providers.dart';
 import '../../../../providers/providers.dart';
 import '../widgets/recovery_analysis_card.dart';
 import '../widgets/fitness_level_card.dart';
@@ -28,7 +29,7 @@ class ProgramResultPage extends ConsumerStatefulWidget {
 }
 
 class _ProgramResultPageState extends ConsumerState<ProgramResultPage> {
-  late HealthProgramResultAnalysis analysis;
+  HealthProgramResultAnalysis? analysis;
 
   @override
   void initState() {
@@ -46,10 +47,9 @@ class _ProgramResultPageState extends ConsumerState<ProgramResultPage> {
     super.dispose();
   }
 
-  void _analyzeResults() {
+  Future<void> _analyzeResults() async {
     final athlete = ref.read(athleteProfileProvider);
 
-    // Analysiere Recovery, Fitness, Vergleich mit vorherigem Training, etc.
     final recoveryAnalysis = HealthProgramResultAnalyzer.analyzeHrRecovery(
       widget.session.dataPoints,
       athlete,
@@ -60,24 +60,44 @@ class _ProgramResultPageState extends ConsumerState<ProgramResultPage> {
       athlete,
     );
 
-    // TODO: Hole vorheriges Training für Vergleich
+    // Vorherige Session für Vergleich laden (nur bei Morgen-Training)
+    SessionStats? previousStats;
+    if (widget.program.id.contains('morning_wakeup')) {
+      try {
+        final dao = ref.read(morningRecoveryDaoProvider);
+        final recentScores = await dao.getLatestScores(2);
+        // Index 0 = aktuelle Session, Index 1 = vorherige
+        if (recentScores.length >= 2) {
+          final prevSessionId = recentScores[1].sessionId;
+          if (prevSessionId != null) {
+            final repo = ref.read(sessionRepositoryProvider);
+            final prevSession = await repo.getSessionMetadata(prevSessionId);
+            previousStats = prevSession?.stats;
+          }
+        }
+      } catch (_) {}
+    }
+
     final sessionComparison = HealthProgramResultAnalyzer.compareWithPrevious(
       widget.session.stats,
-      null, // Vorheriges Training - später implementieren
+      previousStats,
     );
 
-    // Generiere Empfehlung für nächstes Programm
     final nextProgram = _generateNextProgramRecommendation(
       fitnessEstimate,
       recoveryAnalysis,
     );
 
-    analysis = HealthProgramResultAnalysis(
-      recoveryAnalysis: recoveryAnalysis,
-      fitnessEstimate: fitnessEstimate,
-      sessionComparison: sessionComparison,
-      nextProgramRecommendation: nextProgram,
-    );
+    if (mounted) {
+      setState(() {
+        analysis = HealthProgramResultAnalysis(
+          recoveryAnalysis: recoveryAnalysis,
+          fitnessEstimate: fitnessEstimate,
+          sessionComparison: sessionComparison,
+          nextProgramRecommendation: nextProgram,
+        );
+      });
+    }
   }
 
   NextProgramRecommendation _generateNextProgramRecommendation(
@@ -144,7 +164,9 @@ class _ProgramResultPageState extends ConsumerState<ProgramResultPage> {
         title: Text('${widget.program.name} - Ergebnisse'),
         elevation: 0,
       ),
-      body: ListView(
+      body: analysis == null
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
         padding: const EdgeInsets.all(16),
         children: [
           // Summary Card
@@ -155,26 +177,26 @@ class _ProgramResultPageState extends ConsumerState<ProgramResultPage> {
           const SizedBox(height: 24),
 
           // Recovery Analysis
-          if (analysis.recoveryAnalysis != null) ...[
-            RecoveryAnalysisCard(analysis: analysis.recoveryAnalysis!),
+          if (analysis!.recoveryAnalysis != null) ...[
+            RecoveryAnalysisCard(analysis: analysis!.recoveryAnalysis!),
             const SizedBox(height: 24),
           ],
 
           // Fitness Level Estimate
-          if (analysis.fitnessEstimate != null) ...[
-            FitnessLevelCard(estimate: analysis.fitnessEstimate!),
+          if (analysis!.fitnessEstimate != null) ...[
+            FitnessLevelCard(estimate: analysis!.fitnessEstimate!),
             const SizedBox(height: 24),
           ],
 
           // Session Comparison
-          if (analysis.sessionComparison != null) ...[
-            SessionComparisonCard(comparison: analysis.sessionComparison!),
+          if (analysis!.sessionComparison != null) ...[
+            SessionComparisonCard(comparison: analysis!.sessionComparison!),
             const SizedBox(height: 24),
           ],
 
           // Next Program Recommendation
-          if (analysis.nextProgramRecommendation != null) ...[
-            RecommendationCard(recommendation: analysis.nextProgramRecommendation!),
+          if (analysis!.nextProgramRecommendation != null) ...[
+            RecommendationCard(recommendation: analysis!.nextProgramRecommendation!),
             const SizedBox(height: 24),
           ],
 
@@ -205,6 +227,7 @@ class _ProgramResultPageState extends ConsumerState<ProgramResultPage> {
         ],
       ),
     );
+
   }
 }
 
